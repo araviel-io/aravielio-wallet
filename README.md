@@ -6,10 +6,10 @@ Not a production build, for now it's only intended for testing and dev, have fun
 
 What is working : 
 
-Create Keypar (newly Account) from seed phrase (24 words) compliant to wallet.safecoin.org derivation path (`m/44'/19165'/0'/0'`)
-Display your receive address and implementing a react-qr code associated with it
-Sending
-Change networks and features sol airdrops for playing with balance with no harm done !
+Create Keypar (newly Account) from seed phrase (24 words) compliant to wallet.safecoin.org derivation path (`m/44'/19165'/0'/0'`)\
+Display your receive address and implementing a react-qr code associated with it\
+Sending\
+Change networks and features sol airdrops for playing with balance with no harm done !\
 
 # Getting Started with Create React App
 
