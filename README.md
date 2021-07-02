@@ -11,6 +11,18 @@ Display your receive address and a react-qr code associated with it\
 Sending\
 Change networks and features sol airdrops for playing with balance with no harm done !
 
+## Build it yourself
+
+If you'd rather build the application yourself, please ensure you have nodejs/npm/yarn already installed locally.
+
+```
+git clone https://github.com/araviel-io/aravielio-wallet.git 
+cd aravielio-wallet
+npm i
+npm start // to start a development
+npm run build // to create a production build 
+```
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
