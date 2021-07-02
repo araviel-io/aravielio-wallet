@@ -1,3 +1,7 @@
+![alt text](https://i.imgur.com/FbmzGXD.png)
+
+# Aravie.io SafeCoin Wallet
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
