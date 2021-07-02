@@ -1,0 +1,160 @@
+// Layouts
+https://webdeasy.de/en/top-css-buttons-en/
+https://css-tricks.com/building-skeleton-components-with-react/
+https://openbase.com/js/easyqrcodejs
+//Blockchain
+https://github.com/Fair-Exchange/safecoin-web3.js 
+https://herajscrypto.readthedocs.io/en/v0.16.0/api/seed.html mnemonic
+/// send & receive snippets & logic
+https://github.com/solana-labs/obsolete-dontuse-example-webwallet/blob/master/src/wallet.js
+https://github.com/zdbrig/react-solana-wallet/blob/main/src/client/util/send-and-confirm-transaction.js // < typescript
+////// convert L37 to regular non-typescript version
+https://github.com/chaindbkey/spl-token-chrome-extension-wallet/blob/master/src/pages/Popup/utils/wallet.js
+
+
+ transferSol = async (destination, amount) => {
+    return await this.connection.sendTransaction(
+      SystemProgram.transfer({
+        fromPubkey: this.publicKey,
+        toPubkey: destination,
+        lamports: amount,
+      }),
+      [this.account],
+    );
+  };
+
+
+
+https://www.chainnews.com/zh-hant/articles/480795370488.htm
+
+//////////////////////////////////////////////////////
+  var web = require('@solana/web3.js');  
+    function instructions(connection, account){  
+        const instruction = new web.TransactionInstruction({  
+            keys: [],  
+            programId:new web.PublicKey('D8Cnv1UcThay2WijWP4SQ8G683UuVsKPaZEU7TNVKW1j'),  
+            data: Buffer.from('cztest'),  
+        });  
+        console.log("account:", account.publicKey.toBase58())  
+        web.sendAndConfirmTransaction(  
+            connection,  
+            new web.Transaction().add(instruction),  
+            [account],  
+            {  
+                skipPreflight: true,  
+                commitment: "singleGossip",  
+            },  
+        )
+        .then(()=>{console.log("done")})
+        .catch((e)=>{console.log("error",e)});  
+    }
+    function exectransfert() {  
+        connection = new web.Connection("https://devnet.solana.com", 'singleGossip');  
+        const account = new web.Account()  
+        const lamports = 10*1000000000  
+        connection.requestAirdrop(account.publicKey, lamports).then(()=>{  
+            console.log("airdrop done")  
+            instructions(connection, account)  
+        });  
+    }
+    exectransfert()
+
+
+////////////////////////////////////////////////
+/////////////////////////////////////////////////
+export async function sendSafe() {
+
+    function instructions(connection, account){  
+        const sprogramId = web.SystemProgram.programId.toBase58(); // output : 11111111111111111111111111111111
+        const instruction = new web.TransactionInstruction({  
+            keys: [],  
+            programId:new web.PublicKey(sprogramId),  
+            data: Buffer.from('araviel'),  
+        });  
+        console.log("account: ", account.publicKey.toBase58())  
+        console.log("sprogramId: ", sprogramId)  
+        web.sendAndConfirmTransaction(  
+            connection,  
+            new web.Transaction().add(instruction),  
+            [account],  
+            {  
+                skipPreflight: true,  
+                commitment: "singleGossip",  
+            },  
+        )
+        .then(()=>{console.log("done")})
+        .catch((e)=>{console.log("error",e)});  
+    }
+
+    async function exectransfert() {  
+        const connection = new web.Connection("https://api.mainnet-beta.safecoin.org/", 'singleGossip'); 
+        //
+        const mnemonic = localStorage.getItem('mnemonic') 
+        const seed = await bip39.mnemonicToSeed(mnemonic);
+        const derivedSeed = deriveSeed(seed);
+        var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
+        //
+         
+        
+        const lamports = 1200000000  
+        connection.sendTransaction(account.publicKey, lamports).then(()=>{  
+            console.log("airdrop done")  
+            instructions(connection, account)  
+        });  
+    }
+    exectransfert()
+}
+///////////////////////////////////
+
+
+
+//// restore by keystore (python)
+https://michaelhly.github.io/solana-py/solana.html#module-solana.publickey
+////
+https://solana-labs.github.io/solana-web3.js/classes/connection.html#getbalance
+https://github.com/araviel-io/SolanaWallet/tree/master/src < simple usage
+
+//React
+https://www.makeschool.com/mediabook/oa/tutorials/react-fundamentals-vm0/build-a-header-component/ < BASIC COMPONENT
+https://www.digitalocean.com/community/tutorials/how-to-create-wrapper-components-in-react-with-props
+https://stackoverflow.com/questions/48131100/react-render-array-of-components
+https://levelup.gitconnected.com/fetch-api-data-with-axios-and-display-it-in-a-react-app-with-hooks-3f9c8fa89e7b
+// React - Router
+https://reactgo.com/react-refresh-page/
+https://reactrouter.com/web/example/basic
+// React + Typescript
+https://blog.bitsrc.io/5-strong-reasons-to-use-typescript-with-react-bc987da5d907
+https://www.pluralsight.com/guides/composing-react-components-with-typescript
+
+
+export async function sendSafe() {
+    function instructions(connection, account){  
+        const instruction = new web.TransactionInstruction({  
+            keys: [],  
+            programId:new web.PublicKey('D8Cnv1UcThay2WijWP4SQ8G683UuVsKPaZEU7TNVKW1j'),  
+            data: Buffer.from('cztest'),  
+        });  
+        console.log("account:", account.publicKey.toBase58())  
+        web.sendAndConfirmTransaction(  
+            connection,  
+            new web.Transaction().add(instruction),  
+            [account],  
+            {  
+                skipPreflight: true,  
+                commitment: "singleGossip",  
+            },  
+        )
+        .then(()=>{console.log("done")})
+        .catch((e)=>{console.log("error",e)});  
+    }
+    function exectransfert() {  
+        const connection = new web.Connection("https://api.devnet.solana.com/", 'singleGossip');  
+        const account = new web.Account()  
+        const lamports = 10*1000000000  
+        connection.requestAirdrop(account.publicKey, lamports).then(()=>{  
+            console.log("airdrop done")  
+            instructions(connection, account)  
+        });  
+    }
+    exectransfert()
+}

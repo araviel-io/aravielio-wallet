@@ -1,0 +1,276 @@
+import React, { useContext, useEffect, useMemo } from 'react';
+import * as web from '@safecoin/web3.js';
+import nacl from 'tweetnacl';
+import * as bip39 from 'bip39';
+import { derivePath } from 'ed25519-hd-key';
+
+var ApiUrl = web.clusterApiUrl("mainnet-beta");
+const connection = new web.Connection("https://api.mainnet-beta.safecoin.org", "max");
+//const connection =  new web.Connection(ApiUrl, 'recent');
+
+/* 
+const account = new solanaWeb3.Account();
+console.log(account.publicKey.toString());
+*/
+/*
+.handleAction(createAccountAction, (state, action) => ({
+    ...state,
+    secretKey: action.payload,
+    account: new web3.Account(action.payload),
+  }))
+*/
+function generateMnemonic() {
+    var mn = bip39.generateMnemonic(256);
+
+    return mn;
+}
+
+export async function wgetBalance(mnemonic) {
+    
+
+    
+    // Account creation is completely local. Mainnet connection is used for getting balance and signing transaction
+    const seed = await bip39.mnemonicToSeed(mnemonic);
+    const derivedSeed = deriveSeed(seed);
+    var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
+    
+    var lamports = await connection.getBalance(account.publicKey);
+    var totalSafe = lamports / web.LAMPORTS_PER_SAFE;
+    console.log("LAMPORT PER SAFE :", web.LAMPORTS_PER_SAFE)
+   // console.log("account.publicKey", account.publicKey.toBase58());
+    return totalSafe;
+    
+}
+
+async function accountret() {
+
+    const mnemonic = localStorage.getItem('mnemonic')
+
+    const seed = await bip39.mnemonicToSeed(mnemonic);
+    const derivedSeed = deriveSeed(seed);
+    var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
+
+    return account;
+}
+
+
+
+export async function transferSol (destination, amount) {
+
+    const mnemonic = localStorage.getItem('mnemonic') 
+    const seed = await bip39.mnemonicToSeed(mnemonic);
+    const derivedSeed = deriveSeed(seed);
+    var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
+
+    const tx = new web.Transaction().add(
+        web.SystemProgram.transfer({
+          fromPubkey: account.publicKey,
+          toPubkey: destination,
+          lamports: amount,
+        }),
+      );
+
+
+
+      return await connection.sendTransaction(tx, [account], {
+        preflightCommitment: 'single',
+      });
+}
+
+
+
+
+
+
+
+
+
+export async function sendSafe() {
+
+
+
+
+    function instructions(connection, account){  
+        const sprogramId = web.SystemProgram.programId.toBase58(); // output : 11111111111111111111111111111111
+        const instruction = new web.TransactionInstruction({  
+            keys: [],  
+            programId:new web.PublicKey(sprogramId),  
+            data: Buffer.from('araviel'),  
+        });  
+        console.log("account: ", account.publicKey.toBase58())  
+        console.log("sprogramId: ", sprogramId)  
+        web.sendAndConfirmTransaction(  
+            connection,  
+            new web.Transaction().add(instruction),  
+            [account],  
+            {  
+                skipPreflight: true,  
+                commitment: "singleGossip",  
+            },  
+        )
+        .then(()=>{console.log("done")})
+        .catch((e)=>{console.log("error",e)});  
+    }
+
+
+
+
+
+
+
+
+
+
+    
+    async function exectransfert() {  
+        const connection = new web.Connection("https://api.mainnet-beta.safecoin.org/", 'singleGossip'); 
+        //
+        const mnemonic = localStorage.getItem('mnemonic') 
+        const seed = await bip39.mnemonicToSeed(mnemonic);
+        const derivedSeed = deriveSeed(seed);
+        var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
+        //
+         
+        
+        const lamports = 1200000000  
+        connection.sendTransaction(account.publicKey, lamports).then(()=>{  
+            console.log("airdrop done")  
+            instructions(connection, account)  
+        });  
+    }
+    exectransfert()
+}
+
+export async function getAccountFromMnemonic(mnemonic) {
+
+    // Account creation is completely local. Mainnet connection is used for getting balance and signing transaction
+    const seed = await bip39.mnemonicToSeed(mnemonic);
+    const derivedSeed = deriveSeed(seed);
+    var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
+
+    return account;
+}
+
+export async function wgetPubKey(mnemonic) {
+    // Account creation is completely local. Mainnet connection is used for getting balance and signing transaction
+    const seed = await bip39.mnemonicToSeed(mnemonic);
+    const derivedSeed = deriveSeed(seed);
+    var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
+    
+    return account.publicKey;
+}
+
+async function createAccountFromMnemonic(mnemonic) {
+
+    const connection = new web.Connection("https://api.mainnet-beta.safecoin.org", "max");
+    
+    
+   
+
+
+    // Account creation is completely local. Mainnet connection is used for getting balance and signing transaction
+    const seed = await bip39.mnemonicToSeed(mnemonic);
+    const derivedSeed = deriveSeed(seed);
+    var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
+    
+    /*const keyPair = nacl.sign.keyPair.fromSeed(seed.slice(0, 32));
+    var accountSecretKey = keyPair.secretKey;
+    var account = new web.Account(accountSecretKey);*/
+  //  console.log(account.publicKey.toBase58());
+  //  console.log(account);
+    /* output : _keypair object
+    
+    
+    */
+   // console.log(account.secretKey);
+    /* output : Uint8Array(64) */
+   // console.log("output from createAccountFromMnemonic : PUBLIC KEY", account.publicKey.toBase58());
+   // console.log("output from createAccountFromMnemonic : getbalance ",connection.getBalance(account.publicKey));
+    var lamports = await connection.getBalance(account.publicKey);
+    var totalSafe = lamports / web.LAMPORTS_PER_SAFE;
+   // console.log(totalSafe);
+    //this._ee.emit('change');
+  //  await this._lf.setItem('accountSecretKey', keyPair.secretKey);
+  //console.log(accountSecretKey)
+
+}
+
+function deriveSeed(seed) {
+        // you can create others derive path from wallet.safecoin.org
+        const path44Change = `m/44'/19165'/0'/0'`;
+        return derivePath(path44Change, seed).key;    
+}
+
+export async function fetchzebi() {
+
+    const connection = new web.Connection("https://api.mainnet-beta.solana.com", "max");
+    const ApiUrl = 'https://api.nomics.com/v1/currencies/ticker?key=601eff44ab249d337b38cbb045d7b62d&ids=SAFECOIN&interval=1h&convert=USD&per-page=5&page=1';
+    var p1 = new Promise(
+        // La fonction de résolution est appelée avec la capacité de
+        // tenir ou de rompre la promesse
+        function (resolve, reject) {
+
+
+            // On tient la promesse !
+            var test = resolve(ApiUrl);
+            console.log(test);
+           // return test
+        });
+
+    p1.then(
+        // On affiche un message avec la valeur
+        function (val) {
+            console.log("p1 prom", val);
+        }).catch(
+            // Promesse rejetée
+            function () {
+                //  console.log("promesse rompue");
+            });
+
+}
+
+async function fetch() {
+
+
+    try {
+        const connection = new web.Connection("https://api.mainnet-beta.solana.com", "max");
+        // const account = new web.Account(ApiUrl, "max");
+        const [total, circulating, nonCirculating] = (
+            await Promise.all([
+                connection.getLargestAccounts(),
+                connection.getLargestAccounts({ filter: "circulating" }),
+                connection.getLargestAccounts({ filter: "nonCirculating" }),
+            ])
+        ).map((response) => console.log(response.value));
+        return { total, circulating, nonCirculating };
+        //console.log("TOTAL ",total);
+
+    } catch (err) {
+        console.log(err);
+    }
+
+}
+
+async function awaitfetch() {
+
+
+
+
+    let response = await fetch();
+    return response;
+}
+
+
+export function genMnemonic() {
+    return generateMnemonic();
+}
+
+export function robert() {
+    console.log(getAccountFromMnemonic("ice tube anxiety protect off feature pact network equal welcome girl canvas almost educate depend guilt chat suggest pyramid hidden ride merge diamond wear"));
+   // console.log(generateMnemonic());
+
+    
+    //alert(connection.getBalance("publicKey:" "zNH9FjR3JMVbnbzX6wFTKm9sTbAr75HuzxXmcmPR9vd"));
+    //return ApiUrl;
+}
+
