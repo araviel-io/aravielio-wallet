@@ -20,6 +20,7 @@ import { useEffect } from 'react';
 ///// FIXME: 
 // Add callbacks to every useEffect to avoid double sends / calls
 
+// if true disable CreateWalletPage & RestoreWalletPage
 function isSaved() {
 
   var getsave = localStorage.getItem('mnemonic');

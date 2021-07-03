@@ -23,11 +23,10 @@ function WalletPage(props) {
   const network = localStorage.getItem('network')
 //console.log("GET ITEM MNEMONIC", mnemonic)
     //safecoin cluster query state
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState();
   // nomics query
-  const [safeprice, setsafeprice] = useState(0);
-
-
+  const [safeprice, setsafeprice] = useState();
+  // Display airdrop button if solana devnet
   function checkDevnet() {
     
     if (network === 'https://api.devnet.solana.com') {
@@ -70,7 +69,7 @@ function WalletPage(props) {
   }
 
 function returnBalance () {
-    if (balance == null) {
+    if (balance === "NaN") {
         return ( 'Loading balance')
     } else if ( balance === 0 ){
         return ( '0')
