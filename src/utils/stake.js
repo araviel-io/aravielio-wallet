@@ -4,7 +4,7 @@ import * as bip39 from 'bip39';
 import { derivePath } from 'ed25519-hd-key';
 import { Authorized, Lockup } from '@safecoin/web3.js';
 
-
+// request airdrops on main account + stake account after creating them
 export async function wCreateStakeAccount() {
     const getNetwork = localStorage.getItem('network')
 
@@ -15,6 +15,7 @@ export async function wCreateStakeAccount() {
   
     const from = new web.Account();
     const authorized = new web.Account();
+    console.log("Requesting airdrops... ")
     await connection.requestAirdrop(from.publicKey, 2 * web.LAMPORTS_PER_SAFE);
     await connection.requestAirdrop(authorized.publicKey, 2 * web.LAMPORTS_PER_SAFE);
   
@@ -25,7 +26,7 @@ export async function wCreateStakeAccount() {
   
 
 
-
+    console.log("Creating new stake account... ")
      // Create Stake account without seed
      const newStakeAccount = new web.Account();
      let createAndInitialize = web.StakeProgram.createAccount({
@@ -35,7 +36,7 @@ export async function wCreateStakeAccount() {
        lockup: new Lockup(0, 0, new web.PublicKey(0)),
        lamports: minimumAmount + 42,
      });
- 
+     console.log("Prepare tx... ")
      await web.sendAndConfirmTransaction(
        connection,
        createAndInitialize,
@@ -45,7 +46,7 @@ export async function wCreateStakeAccount() {
         function(output)
         { 
            // console.log("tx-id: "+TransactionSignature); 
-            console.log("createAndInitialize : ", output)
+            console.log("createAndInitialize promise : ", output)
         });
     
      var getbalance = await connection.getBalance(newStakeAccount.publicKey);
@@ -56,7 +57,9 @@ export async function wCreateStakeAccount() {
        stakePubkey: newStakeAccount.publicKey,
        authorizedPubkey: authorized.publicKey,
        votePubkey,
-     });
+     })
+     // delegation can take some time and exceed the 30s
+     console.log("Starting delegation TX... ")
      await web.sendAndConfirmTransaction(connection, delegation, [authorized], {
        commitment: 'single',
        skipPreflight: true,
