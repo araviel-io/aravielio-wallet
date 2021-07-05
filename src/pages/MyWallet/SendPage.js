@@ -123,7 +123,7 @@ function SendPage(props) {
                                     <div className="send-safe-tb-wrapper">
                                         <div className="send-s-text">{returnBalance()}</div>
                                        
-                                        <input type="number" min="0" value="8" max={balance} step=".01" placeholder="0" className="card-input" onChange={onChangeHandlerAmount} ></input>
+                                        <input type="number" min="0" max={balance} step=".01" placeholder="0" className="card-input" onChange={onChangeHandlerAmount} ></input>
                                     </div>
                                 </div>
                             </div>

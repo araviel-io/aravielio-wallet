@@ -22,15 +22,9 @@ import { useEffect } from 'react';
 
 // if true disable CreateWalletPage & RestoreWalletPage
 function isSaved() {
-
   var getsave = localStorage.getItem('mnemonic');
-  if (getsave == null) {
-    getsave = false
-  
-  
-  }
+  if (getsave == null) {getsave = false}
   else {getsave = true}
-  console.log(getsave)
 return getsave;
 }
 
@@ -78,11 +72,9 @@ function App() {
               <Route path="/restore">
                 <RestoreWalletPage />
               </Route>
-           
               <Route path="/mywallet">
                 <MainWalletPage /> 
               </Route>
-  
             </Switch>
           </div>
         </Router>
@@ -90,19 +82,15 @@ function App() {
     );
   } else {
       return (
-      <div className="App">
+        <div className="App">
       {/* Wallet action navigation */}
-        
-      <Router>
+        <Router>
         {/* Page Content will be displayed here */}
-        <Redirect to='/mywallet'/>
-        <Route path="/mywallet">
-                <MainWalletPage /> 
-              </Route>
+          <Redirect to='/mywallet'/>
+          <Route path="/mywallet">
+            <MainWalletPage /> 
+          </Route>
         </Router>
-
-
-        
       </div>
       )
     }
@@ -110,12 +98,9 @@ function App() {
   else {
     console.log('App Checkconn false ', );
     return (
-      
       <MaintenancePage />
     );
   }
-
-
 }
 
 export default App;
