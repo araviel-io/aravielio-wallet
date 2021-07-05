@@ -46,8 +46,5 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "chai": "^4.3.4",
-    "mocha": "^9.0.2"
-  }
+  "devDependencies": {}
 }

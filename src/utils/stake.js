@@ -1,21 +1,33 @@
+// reference : https://github.com/solana-labs/solana-web3.js/blob/982dd0c9efe8b48e26f2dc96a09abe7975b16911/test/stake-program.test.js#L25
 import * as web from '@safecoin/web3.js';
 import nacl from 'tweetnacl';
 import * as bip39 from 'bip39';
 import { derivePath } from 'ed25519-hd-key';
 import { Authorized, Lockup } from '@safecoin/web3.js';
-
+import { genMnemonic } from './connection';
+// create authorized keypair from mnemonic
+export function wCreateAuthKeypair() {
+  var isSaved = localStorage.getItem('auth-mnemonic')
+  if (isSaved == null || isSaved === undefined) {
+    var authmnemonic = genMnemonic();
+    localStorage.setItem('auth-mnemonic', authmnemonic);
+    console.log("nothing saved, creating new auth keypair")
+  }
+  
+}
 // request airdrops on main account + stake account after creating them
 export async function wCreateStakeAccount() {
     const getNetwork = localStorage.getItem('network')
-
+    wCreateAuthKeypair();
     const connection = new web.Connection(getNetwork, 'recent');
     const voteAccounts = await connection.getVoteAccounts();
     const voteAccount = voteAccounts.current.concat(voteAccounts.delinquent)[0];
     const votePubkey = new web.PublicKey(voteAccount.votePubkey);
   
-    const from = new web.Account();
-    const authorized = new web.Account();
+    const from = new web.Account(); // always output keypair object "main" account
+    const authorized = new web.Account(); // always output keypair object
     console.log("Requesting airdrops... ")
+    console.log("authorized :  ",authorized)
     await connection.requestAirdrop(from.publicKey, 2 * web.LAMPORTS_PER_SAFE);
     await connection.requestAirdrop(authorized.publicKey, 2 * web.LAMPORTS_PER_SAFE);
   
@@ -53,6 +65,11 @@ export async function wCreateStakeAccount() {
      console.log("newStakeAccount * getbalance ", getbalance)
      console.log("Address :  ", newStakeAccount.publicKey.toBase58())
 
+
+
+
+
+
      let delegation = web.StakeProgram.delegate({
        stakePubkey: newStakeAccount.publicKey,
        authorizedPubkey: authorized.publicKey,
@@ -70,5 +87,10 @@ export async function wCreateStakeAccount() {
            // console.log("tx-id: "+TransactionSignature); 
             console.log("delegation : ", output)
         })
+
+}
+
+export async function wDelegate() {
+
 
 }
