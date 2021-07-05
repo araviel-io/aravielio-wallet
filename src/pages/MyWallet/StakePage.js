@@ -10,7 +10,11 @@ function StakePage(props) {
         <div>
             <Title titleHeader='Stake'/>
             <Card cardContent={
-                <button onClick={wCreateStakeAccount}>Create & delegate</button>
+                <div>
+                    <p>Working but with randoms keypairs (for now) see console</p>
+                    <p>you sometimes can have a timeout but that's fine</p>
+                    <button onClick={wCreateStakeAccount}>Create & delegate</button>
+                </div>
             }>
             </Card>
       </div>
