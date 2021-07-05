@@ -10,7 +10,7 @@ function StakePage(props) {
         <div>
             <Title titleHeader='Stake'/>
             <Card cardContent={
-                <button onClick={wCreateStakeAccount}></button>
+                <button onClick={wCreateStakeAccount}>Create & delegate</button>
             }>
             </Card>
       </div>
