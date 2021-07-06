@@ -332,7 +332,7 @@ font-size: x-small;
   border-radius: 5px;
   font-size: small;
   padding: 8px;
-  margin: auto;
+  margin: 15px auto;
   width: fit-content;
   background-color: #f5f8fa;
 }
@@ -443,4 +443,21 @@ font-size: 15px;
 color: #363B64;
 margin-top: auto;
     margin-bottom: auto;
+}
+
+.stake-account-infos {
+  display: flex;
+  justify-content: space-between;
+  width: 60%;
+}
+.card-button-center {
+  color: #FCFCFC;
+    background-color: #363B64;
+    box-shadow: 0px 20px 50px rgb(191 21 108 / 5%);
+    border-radius: 14px;
+    padding: 10px 24px;
+    cursor: pointer;
+    width: max-content;
+    margin: auto;
+    margin-top: 25px;
 }
