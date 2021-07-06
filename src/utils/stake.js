@@ -7,18 +7,17 @@ import { Authorized, Lockup } from '@safecoin/web3.js';
 import { genMnemonic } from './connection';
 // create authorized keypair from mnemonic
 export function wCreateAuthKeypair() {
-  var isSaved = localStorage.getItem('auth-mnemonic')
-  if (isSaved == null || isSaved === undefined) {
+ 
     var authmnemonic = genMnemonic();
     localStorage.setItem('auth-mnemonic', authmnemonic);
     console.log("nothing saved, creating new auth keypair")
-  }
+  
   
 }
 // request airdrops on main account + stake account after creating them
 export async function wCreateStakeAccount() {
     const getNetwork = localStorage.getItem('network')
-    wCreateAuthKeypair();
+   // wCreateAuthKeypair();
     const connection = new web.Connection(getNetwork, 'recent');
     const voteAccounts = await connection.getVoteAccounts();
     const voteAccount = voteAccounts.current.concat(voteAccounts.delinquent)[0];

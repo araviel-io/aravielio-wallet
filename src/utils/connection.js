@@ -50,14 +50,14 @@ export async function wgetBalance(mnemonic) {
 }
 
 // placeholder
-export async function wKeypair() {
+export async function wKeypair(mnemonic) {
 
-    const mnemonic = localStorage.getItem('mnemonic')
+    //const mnemonic = localStorage.getItem('mnemonic')
 
     const seed = await bip39.mnemonicToSeed(mnemonic);
     const derivedSeed = deriveSeed(seed);
     var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
-
+//console.log("executed from wKeypair ", account.publicKey.toBase58());
     return account;
 }
 
