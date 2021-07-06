@@ -25,7 +25,7 @@ function StakePage(props) {
     const [stakeAdd, setstakeAdd] = useState(null);
     const [stakebal, setstakebal] = useState(null);
 
-    async function getAuthKeypair() {
+    async function getAllKeypairs() {
 
         var mnMain = localStorage.getItem('mnemonic')
         var mnAuth = localStorage.getItem('auth-mnemonic')
@@ -52,7 +52,6 @@ function StakePage(props) {
            // setaccbal(result);
         });
 */
-
         await connection.getBalance(mainkeypair.publicKey).then(function(result){ 
            // console.log("requestAirdrop: "+ result); 
             setaccbal(result);
@@ -77,7 +76,7 @@ function StakePage(props) {
     }
 
     useEffect(() => {
-        getAuthKeypair();
+        getAllKeypairs();
        // getMainAccountKeypair();
 
     });
