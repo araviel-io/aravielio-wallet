@@ -28,8 +28,7 @@ function SendPage(props) {
 
     async function tryTransfert(addressInput, amountValue) {
         // check that every fields are filled before sending the request
-        if (addressInput !== undefined && amountValue !== 0)
-        {
+        if (addressInput !== undefined && amountValue !== 0) {
             const convToLamport = web.LAMPORTS_PER_SAFE * amountValue;
             const transfertToHook = await transferSafe(addressInput, convToLamport);
             sendStatusPromiseEffect(transfertToHook)
@@ -53,17 +52,17 @@ function SendPage(props) {
     });
     async function balancePromiseEffect() {
         const response = await wgetBalance(mnemonic)
-        .catch((e)=>{
-            const error = 'Error'
-           // return e.code;
-           //const error = e.
-            console.log("error",error.code)
-        });
+            .catch((e) => {
+                const error = 'Error'
+                // return e.code;
+                //const error = e.
+                console.log("error", error.code)
+            });
         //const nomreponse = await wngetSafePrice();
 
         // console.log("SAFE PRICE FROM WALLET :", safeprice)
         setBalance(response);
-        console.log("response ?",response)
+        console.log("response ?", response)
         // setsafeprice(nomreponse);
     }
     useEffect(() => {
@@ -72,12 +71,13 @@ function SendPage(props) {
     });
     function returnStatus() {
         console.log("SendStatus : ", sendStatus)
+        //TODO: fix this effect
         if (sendStatus === undefined) {
             return ('Send')
 
         } else if (sendStatus !== undefined) {
             return ('Sending...')
-        } 
+        }
     }
     function returnBalance() {
         if (balance == null) {
@@ -88,8 +88,7 @@ function SendPage(props) {
     }
 
     const onChangeHandlerAmount = event => {
-        if (event.target.value >= balance )
-        {
+        if (event.target.value >= balance) {
             //TODO:
             console.log("superior amount ")
         }
@@ -108,45 +107,45 @@ function SendPage(props) {
             return <div className="card-button-disabled"> Send</div>;
         }
     }
-        return (
-            <div>
-                <Title titleHeader='Send' />
-                <Card cardContent={
-                    <div>
-                        <div className="send-from-area">
-                            <div className="card-subtitle">From</div>
-                            <div className="send-from-content-main">
-                                <div className="send-safe-icon">
-                                    <img className="sendsafeimg" src={safelogo}></img>
-                                </div>
-                                <div className="send-safe-text-balance">
-                                    <div className="send-safe-tb-wrapper">
-                                        <div className="send-s-text">{returnBalance()}</div>
-                                       
-                                        <input type="number" min="0" max={balance} step=".01" placeholder="0" className="card-input" onChange={onChangeHandlerAmount} ></input>
-                                    </div>
-                                </div>
+    return (
+        <div>
+            <Title titleHeader='Send' />
+            <Card cardContent={
+                <div>
+                    <div className="send-from-area">
+                        <div className="card-subtitle">From</div>
+                        <div className="send-from-content-main">
+                            <div className="send-safe-icon">
+                                <img className="sendsafeimg" src={safelogo}></img>
                             </div>
-                        </div>
-                        <div className="clearfix"></div>
-                        <div className="send-from-area">
-                            <div className="card-subtitle">To</div>
-                            <div className="send-from-content-main">
-                                <input placeholder="Enter recipient" className="card-input-address" onBlur={onChangeHandlerAddress} ></input>
-                            </div>
-                        </div>
-                        <div>
-                            <div className="btncontainer">
-                                {/* return the according button */}
-                                {checkAmount(amountValue, addressInput)}
+                            <div className="send-safe-text-balance">
+                                <div className="send-safe-tb-wrapper">
+                                    <div className="send-s-text">{returnBalance()}</div>
 
+                                    <input type="number" min="0" max={balance} step=".01" placeholder="0" className="card-input" onChange={onChangeHandlerAmount} ></input>
+                                </div>
                             </div>
                         </div>
                     </div>
-                }>
-                </Card>
-            </div>
-        );
+                    <div className="clearfix"></div>
+                    <div className="send-from-area">
+                        <div className="card-subtitle">To</div>
+                        <div className="send-from-content-main">
+                            <input placeholder="Enter recipient" className="card-input-address" onBlur={onChangeHandlerAddress} ></input>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="btncontainer">
+                            {/* return the according button */}
+                            {checkAmount(amountValue, addressInput)}
+
+                        </div>
+                    </div>
+                </div>
+            }>
+            </Card>
+        </div>
+    );
 }
 
 export default SendPage;

@@ -335,6 +335,7 @@ font-size: x-small;
   margin: 15px auto;
   width: fit-content;
   background-color: #f5f8fa;
+  font-family: monospace;
 }
 .card-title {
   margin-top: 20px;
@@ -365,6 +366,57 @@ color: #363B64;
 }
 .card--content {
   padding:30px;
+}
+.staking {
+  background: linear-gradient(
+    96.84deg
+    , #505a5e 36.67%, #223841 112.57%);
+}
+.stake-address {
+  border-radius: 5px;
+  font-size: large;
+  padding: 8px;
+  margin: 15px auto;
+  width: -moz-fit-content;
+  width: fit-content;
+  text-shadow: 2px 4px 3px rgb(0 0 0 / 30%);
+  font-family: monospace;
+  color: aliceblue;
+}
+.stake-status {
+  display:flex;
+  justify-content: center;
+}
+.stake-status-event {
+  font-size: medium;
+  color: white;
+  border-radius: 7px;
+  background-color: #ffffff08;
+  border: 1px solid #ffffff2e;
+  padding: 2px 8px;
+}
+.ssor {
+  background-color: #dc71471a;
+  border: 1px solid #f8c6ae5c;
+}
+.ssgr {
+  background-color: #61dc471a;
+  border: 1px solid #b6f8ae5c;
+}
+.stake-numbers {
+  font-family: Poppins;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    color:white;
+}
+.horizontal-space {
+  width:30px;
+}
+.stake-numbers {
+  margin-top:20px;
+  display:flex;
+  justify-content: space-between;
 }
 .safecoin {
   background: linear-gradient(
