@@ -58,12 +58,10 @@ function SendPage(props) {
                 //const error = e.
                 console.log("error", error.code)
             });
-        //const nomreponse = await wngetSafePrice();
 
-        // console.log("SAFE PRICE FROM WALLET :", safeprice)
         setBalance(response);
         console.log("response ?", response)
-        // setsafeprice(nomreponse);
+
     }
     useEffect(() => {
         balancePromiseEffect();
