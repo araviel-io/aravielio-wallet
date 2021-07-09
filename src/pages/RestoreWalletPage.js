@@ -3,7 +3,7 @@ import {  wgetPubKey } from '../utils/connection'
 import NavCreateRestore from '../components/NavCreateRestore';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-
+// TODO: Full restore : main, authority, stake
 function WordCount(str) {
   return str.split(' ')
          .filter(function(n) { return n != '' })
