@@ -4,7 +4,8 @@ import { useEffect } from 'react';
 //import Container from '../../components/common/Container'
 import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
-
+import Delegation from '../../components/stake/Delegation';
+import { LockOpenOutline } from 'react-ionicons'
 import { wCreateStakeAccount, wCreateAuthKeypair, wCreateStakeKeypair, wgetParsedAccountInfo } from '../../utils/stake';
 import { wKeypair } from '../../utils/connection'
 import * as web from '@safecoin/web3.js';
@@ -42,7 +43,13 @@ function StakePage(props) {
         if (delegStatus === undefined) {
             return (<div className='stake-status-event'>Loading...</div>)
         } else if (delegStatus === null) {
-            return (<div className='stake-status-event ssor'>Not delegated</div>)
+            return (
+                <div className='stake-status-event ssor'>
+                    <div className="icon-container">
+                        <LockOpenOutline color={'#00000'} height="16px" width="16px" />
+                    </div>
+                    Not delegated
+                </div>)
         } else {
             // placeholder for : Warmup & cooldown delegating ? active ? or should i use getStakeActivation
             return (<div className='stake-status-event ssor'>unknown</div>)
@@ -130,6 +137,18 @@ function StakePage(props) {
 
     }
 
+    function displayDelegationComponent() {
+        if (delegStatus === undefined) {
+            return (<div className='stake-status-event'>Loading...</div>)
+        } else if (delegStatus === null) {
+            return (
+                <Delegation />
+            )
+        } else {
+            // placeholder for : Warmup & cooldown delegating ? active ? or should i use getStakeActivation
+            return (<div className='stake-status-event ssor'>unknown</div>)
+        }
+    }
     return (
         <div>
             <Title titleHeader='Stake' />
@@ -150,18 +169,16 @@ function StakePage(props) {
                     </div>
                 </div>
             } />
+            {displayDelegationComponent()}
             <Card cardContent={
                 <div>
-                    <div className="card-subtitle">Main address :</div>
-                    <div className="receive-address">{accAdd}</div>
                     <div className="card-subtitle">Authority address :</div>
                     <div className="receive-address">{authKp}</div>
-                    <div className="card-subtitle">Stake address :</div>
-                    <div className="receive-address">{stakeAdd}</div>
                     {displayCreateControl()}
                 </div>
             }>
             </Card>
+
         </div>
     );
 }

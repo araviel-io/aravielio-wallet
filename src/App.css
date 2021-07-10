@@ -372,6 +372,13 @@ color: #363B64;
     96.84deg
     , #505a5e 36.67%, #223841 112.57%);
 }
+.staking-delegation {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background: linear-gradient(
+    96.84deg
+    , #515e50 36.67%, #274122 112.57%);
+}
 .stake-address {
   border-radius: 5px;
   font-size: large;
@@ -417,6 +424,10 @@ color: #363B64;
   margin-top:20px;
   display:flex;
   justify-content: space-between;
+}
+.icon-container {
+  padding-left: 5px;
+  padding-right: 5px;
 }
 .safecoin {
   background: linear-gradient(

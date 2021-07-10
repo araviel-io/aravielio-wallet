@@ -41,7 +41,11 @@ export async function wgetBalance(mnemonic) {
     // console.log("account.publicKey", account.publicKey.toBase58());
     return totalSafe;
 }
-
+export async function wgetVoteAcc() {
+    const voteAccounts = await connection.getVoteAccounts();
+    const activeVoteAcc = voteAccounts.current;
+    return activeVoteAcc;
+  }
 // placeholder
 export async function wKeypair(mnemonic) {
 
