@@ -2,7 +2,8 @@
 import * as web from '@safecoin/web3.js';
 import { Authorized, Lockup } from '@safecoin/web3.js';
 import { genMnemonic, wKeypair } from './connection';
-
+const getNetwork = localStorage.getItem('network')
+ const connection = new web.Connection(getNetwork, 'recent');
 // create authorized keypair from mnemonic
 export function wCreateAuthKeypair() {
   // TODO: Double check
@@ -15,18 +16,27 @@ export function wCreateStakeKeypair() {
   localStorage.setItem('stake-mnemonic', stakemnemonic);
 }
 
-export async function wgetParsedAccountInfo(mnemonic) {
-  const getNetwork = localStorage.getItem('network')
-  // wCreateAuthKeypair();
-  const connection = new web.Connection(getNetwork, 'recent');
+export async function wgetParsedAccountInfo() {
 
-  var stakeKP = await wKeypair(mnemonic);
+  // wCreateAuthKeypair();
+  var mnStake = localStorage.getItem('stake-mnemonic')
+
+  var stakeKP = await wKeypair(mnStake);
   var getaccountinfo = await connection.getParsedAccountInfo(stakeKP.publicKey);
 
   return getaccountinfo;
 }
+export async function wgetStakeActivation() {
+  var mnStake = localStorage.getItem('stake-mnemonic')
+
+  var stakeKP = await wKeypair(mnStake);
+  var stakeActivation = await connection.getStakeActivation(stakeKP.publicKey);
+console.log("stakeinfo ",stakeActivation)
+  return stakeActivation;
+}
 // request airdrops on main account + stake account after creating them
 export async function wCreateStakeAccount(mnfrom, mnauthorized, stakeacc) {
+  // TODO: fund to authority otherwise not working
   // every keypairs are created from mnemonics
   const getNetwork = localStorage.getItem('network')
   // wCreateAuthKeypair();
@@ -74,28 +84,41 @@ export async function wCreateStakeAccount(mnfrom, mnauthorized, stakeacc) {
 }
 
 export async function wDelegate() {
-  /* 
-    const voteAccounts = await connection.getVoteAccounts();
-    const voteAccount = voteAccounts.current.concat(voteAccounts.delinquent)[0];
-    const votePubkey = new web.PublicKey(voteAccount.votePubkey);
-  
-  
-    let delegation = web.StakeProgram.delegate({
-      stakePubkey: newStakeAccount.publicKey,
-      authorizedPubkey: authorized.publicKey,
-      votePubkey,
+// FIXME: use parameter for node selection
+  const getNetwork = localStorage.getItem('network')
+  const connection = new web.Connection(getNetwork, 'max');
+
+  var mnAuth = localStorage.getItem('auth-mnemonic')
+  var mnStake = localStorage.getItem('stake-mnemonic')
+
+  var authkeypair = await wKeypair(mnAuth); // don't forget to right click on wKeypair > Go to definition for more
+  var stakekeypair = await wKeypair(mnStake);
+  const voteAccounts = await connection.getVoteAccounts();
+  const voteAccount = voteAccounts.current.concat(voteAccounts.delinquent)[1];
+  console.log("VOTE ACCOUNTS : ", voteAccount);
+  const votePubkey = new web.PublicKey(voteAccount.votePubkey);
+
+  let delegation = web.StakeProgram.delegate({
+    stakePubkey: stakekeypair.publicKey,
+    authorizedPubkey: authkeypair.publicKey,
+    votePubkey,
+  })
+  // delegation can take some time and exceed the 30s in the devnet
+  console.log("Starting delegation TX... ")
+  var needsign = await web.sendAndConfirmTransaction(connection, delegation, [authkeypair], {
+    commitment: 'single',
+    skipPreflight: true,
+  })
+  .then(
+    function (signature) {
+      // console.log("tx-id: "+TransactionSignature); 
+      console.log("**createAndInitialize promise : ", signature)
+      return signature;
     })
-    // delegation can take some time and exceed the 30s
-    console.log("Starting delegation TX... ")
-    await web.sendAndConfirmTransaction(connection, delegation, [authorized], {
-      commitment: 'single',
-      skipPreflight: true,
-    })
-    .then( 
-       function(output)
-       { 
-          // console.log("tx-id: "+TransactionSignature); 
-           console.log("delegation : ", output)
-       })
-  */
+  .catch((e) => {
+      console.log("**createAndInitialize promise ERROR", e)
+    });
+
+  console.log("DELEGATION SIGNATURE MAIN RETURN : ", needsign);
+  return needsign;
 }

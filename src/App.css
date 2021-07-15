@@ -355,17 +355,47 @@ color: #363B64;
 .card {
   width: 550px;
   display:block;
-  height: 100%;
+  min-height: 230px;
 
   margin-left: auto;
   margin-right: auto;
   border-radius:6px;
   
   background-color: #ffffff;
-  box-shadow: 0 10px 45px rgba(255, 255, 255, 0.1);
+  filter: drop-shadow(0px 15px 15px rgba(37, 37, 37, 0.02));
 }
 .card--content {
   padding:30px;
+}
+.white-card-heading {
+  /* Heading/Heading 3 */
+
+font-family: Poppins;
+font-style: normal;
+font-weight: bold;
+font-size: 20px;
+line-height: 36px;
+/* identical to box height */
+
+
+/* Color/Main */
+
+color: #363B64;
+}
+.dark-card-heading {
+  /* Heading/Heading 3 */
+
+font-family: Poppins;
+font-style: normal;
+font-weight: bold;
+font-size: 20px;
+line-height: 36px;
+/* identical to box height */
+
+
+/* Color/Main */
+
+color: #e9e6db;
 }
 .staking {
   background: linear-gradient(
@@ -375,9 +405,7 @@ color: #363B64;
 .staking-delegation {
   margin-top: 20px;
   margin-bottom: 20px;
-  background: linear-gradient(
-    96.84deg
-    , #515e50 36.67%, #274122 112.57%);
+  min-height: 230px;
 }
 .stake-address {
   border-radius: 5px;
@@ -412,10 +440,14 @@ color: #363B64;
 }
 .stake-numbers {
   font-family: Poppins;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 14px;
-    color:white;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  color:white;
+}
+.stake-validator-dpd-cont {
+  margin-top:20px;
+  margin-bottom:20px; 
 }
 .horizontal-space {
   width:30px;
@@ -523,4 +555,10 @@ margin-top: auto;
     width: max-content;
     margin: auto;
     margin-top: 25px;
+}
+.center-middle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
 }
