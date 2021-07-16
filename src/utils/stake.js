@@ -93,9 +93,6 @@ export async function wDelegate(selectedNode) {
 
   var authkeypair = await wKeypair(mnAuth); // don't forget to right click on wKeypair > Go to definition for more
   var stakekeypair = await wKeypair(mnStake);
-  const voteAccounts = await connection.getVoteAccounts();
-  const voteAccount = voteAccounts.current.concat(voteAccounts.delinquent)[1];
-  console.log("VOTE ACCOUNTS : ", voteAccount);
   const votePubkey = new web.PublicKey(selectedNode);
 
   let delegation = web.StakeProgram.delegate({
