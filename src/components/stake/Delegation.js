@@ -22,7 +22,7 @@ function Delegation(props) {
     /// if delegated display :
     /// + show amount & APY + rewards
     /// actual validator
-    wgetMyVoterStats();
+
     const [NodeArray, setNodeArray] = useState([]);
     const [selectedNode, setSelectedNode] = useState(null);
 
@@ -35,10 +35,15 @@ function Delegation(props) {
 
     const [stakeAuthority, setstakeAuthority] = useState(null);
     const [withdrawAuthority, setwithdrawAuthority] = useState(null);
+
+
+    wgetMyVoterStats(voter);
+
+
     console.log(" NODE ARRAY BEFORE useEffect : ", NodeArray.length)
 
     useEffect(() => {
-        if (selectedNode != null) {
+        
             wgetVoteAcc()
                 .then(
                     function (result) {
@@ -46,7 +51,7 @@ function Delegation(props) {
                         console.log("NE DEVRAIT PAS SAFFICHER")
                     })
                 .catch((e) => { console.log("error", e) });
-        }
+
 
     }, [])
 
