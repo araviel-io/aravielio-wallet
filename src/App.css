@@ -445,6 +445,16 @@ color: #e9e6db;
 .stake-subadd {
   color:#f0f8ffb8;
 }
+.active-stake-container {
+  display:flex;
+  justify-content: center;
+}
+.active-stake-amount {
+  background-color: #fcc093;
+  padding:15px;
+  margin-right: 10px;
+  color:white;
+}
 .ssor {
   color: #dc7147c9;
  /* border: 1px solid #f8c6ae5c;*/

@@ -167,7 +167,10 @@ function StakePage(props) {
         } else if (stakeInit === "delegated") {
             // no controls show delegation component with stake data
             return (
-                <Delegation status={"DELEGATED"} balance={stakebal / web.LAMPORTS_PER_SAFE} />
+                <div>
+                    <Delegation status={"DELEGATED"} balance={stakebal / web.LAMPORTS_PER_SAFE} />
+                    <div className="card-button-center" onClick={() => {  }}>Undelegate</div>
+                </div>
             )
         } else {
 
