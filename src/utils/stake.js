@@ -122,3 +122,22 @@ export async function wDelegate() {
   console.log("DELEGATION SIGNATURE MAIN RETURN : ", needsign);
   return needsign;
 }
+
+export async function wgetMyVoterStats(myvoteaddress) {
+  const voteAccounts = await connection.getVoteAccounts();
+  const activeVoteAcc = voteAccounts.current;
+ // const activeVoteAccCom = voteAccounts.current;
+  const activeLength = activeVoteAcc.length;
+  const array = [];
+
+  console.log("first array test ", activeVoteAcc[0])
+  for (let i = 0; i < activeLength; i += 1) {
+      var test = activeVoteAcc[i].votePubkey;
+      console.log("---VOTE ACOOUNTS : ", test)
+     // array.push({ value: activeVoteAcc[i].votePubkey, label: activeVoteAcc[i].votePubkey + " | " + activeVoteAcc[i].commission + " % "  });
+  }
+  //localStorage.setItem("voteAccounts", array)
+  //console.log("custom array: ",array)
+
+ // return array;
+}

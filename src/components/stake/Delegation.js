@@ -6,7 +6,7 @@ import Select from 'react-select'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { LAMPORTS_PER_SAFE } from '@safecoin/web3.js';
-import { wDelegate, wCreateStakeAccount, wgetStakeActivation, wgetParsedAccountInfo } from '../../utils/stake';
+import { wDelegate, wCreateStakeAccount, wgetStakeActivation, wgetParsedAccountInfo, wgetMyVoterStats } from '../../utils/stake';
 import Loader from "react-loader-spinner";
 import { Line } from 'rc-progress';
 //import { , wCreateAuthKeypair, wCreateStakeKeypair, wgetParsedAccountInfo } from '../../utils/stake';
@@ -22,7 +22,7 @@ function Delegation(props) {
     /// if delegated display :
     /// + show amount & APY + rewards
     /// actual validator
-
+    wgetMyVoterStats();
     const [NodeArray, setNodeArray] = useState([]);
     const [selectedNode, setSelectedNode] = useState(null);
 

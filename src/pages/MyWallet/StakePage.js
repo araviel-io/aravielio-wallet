@@ -33,16 +33,19 @@ function StakePage(props) {
     // placeholder for a more dynamic UI
 
     function returnDelegstatus() {
+        console.log("returnDelegstatus stakeInit", stakeInit)
+        console.log("returnDelegstatus delegStatus", delegStatus)
     // TOP CARD
         if (delegStatus === undefined) {
             return (<div className='stake-status-event'>Loading...</div>)
-        } else if (delegStatus === null) {
-            return (
-                <div className='ssor'>Not delegated</div>
-            )
-        } else if (stakeInit === "initialized") {
+        }else if (stakeInit === "initialized") {
             return (<div className='ssgr'>initialized</div>)
-        } else if (stakeInit === "delegated") {
+        } 
+        else if (stakeInit === null && delegStatus === null) {
+            return (
+                <div className='ssor'>Not initialized</div>
+            )
+        }  else if (stakeInit === "delegated") {
             // placeholder for : Warmup & cooldown delegating ? active ? or should i use getStakeActivation
             return (
                 <div className='ssgr'>Delegated</div>

@@ -56,6 +56,7 @@ export async function wgetVoteAcc() {
     //console.log("custom array: ",array)
     return array;
 }
+
 // placeholder
 export async function wKeypair(mnemonic) {
 
