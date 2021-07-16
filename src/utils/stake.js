@@ -83,7 +83,7 @@ export async function wCreateStakeAccount(mnfrom, mnauthorized, stakeacc) {
   return needsign;
 }
 
-export async function wDelegate() {
+export async function wDelegate(selectedNode) {
 // FIXME: use parameter for node selection
   const getNetwork = localStorage.getItem('network')
   const connection = new web.Connection(getNetwork, 'max');
@@ -96,7 +96,7 @@ export async function wDelegate() {
   const voteAccounts = await connection.getVoteAccounts();
   const voteAccount = voteAccounts.current.concat(voteAccounts.delinquent)[1];
   console.log("VOTE ACCOUNTS : ", voteAccount);
-  const votePubkey = new web.PublicKey(voteAccount.votePubkey);
+  const votePubkey = new web.PublicKey(selectedNode);
 
   let delegation = web.StakeProgram.delegate({
     stakePubkey: stakekeypair.publicKey,
@@ -130,10 +130,10 @@ export async function wgetMyVoterStats(myvoteaddress) {
   const activeLength = activeVoteAcc.length;
   const array = [];
 
-  console.log("first array test ", activeVoteAcc[0])
+  //console.log("first array test ", activeVoteAcc[0])
   for (let i = 0; i < activeLength; i += 1) {
       var test = activeVoteAcc[i].votePubkey;
-      console.log("---VOTE ACOOUNTS : ", test)
+      //console.log("---VOTE ACOOUNTS : ", test)
      // array.push({ value: activeVoteAcc[i].votePubkey, label: activeVoteAcc[i].votePubkey + " | " + activeVoteAcc[i].commission + " % "  });
   }
   //localStorage.setItem("voteAccounts", array)

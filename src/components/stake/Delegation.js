@@ -64,8 +64,8 @@ function Delegation(props) {
         console.log("Selected Node : ", event.value)
         setSelectedNode(event.value);
     }
-    function tryToexecuteDelegation(selectedNode) {
-        wDelegate()
+    function tryToexecuteDelegation() {
+        wDelegate(selectedNode)
             .then(function (val) {
                 // you access the value from the promise here
                 console.log("signature for wDelegate(selectedNode) : ", val);
