@@ -141,7 +141,11 @@ function Delegation(props) {
             )
         }
         return (
-            <div>{wgetStakeStatus} stake : {wgetStakeAmount}</div>
+            <div>
+                <div>{wgetStakeStatus} stake : {wgetStakeAmount}</div>
+                <div>delegated to {voter}</div>
+                <div>staking activated at epoch {ActivationEpoch}</div>
+            </div>
         )
     }
 

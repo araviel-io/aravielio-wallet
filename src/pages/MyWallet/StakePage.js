@@ -38,23 +38,14 @@ function StakePage(props) {
             return (<div className='stake-status-event'>Loading...</div>)
         } else if (delegStatus === null) {
             return (
-                <div className='stake-status-event ssor'>
-                    <div className="icon-container">
-                        <LockOpenOutline color={'#00000'} height="16px" width="16px" />
-                    </div>
-                    Not delegated
-                </div>)
+                <div className='ssor'>Not delegated</div>
+            )
         } else if (stakeInit === "initialized") {
-            return (<div className='stake-status-event ssgr'>initialized</div>)
+            return (<div className='ssgr'>initialized</div>)
         } else if (stakeInit === "delegated") {
             // placeholder for : Warmup & cooldown delegating ? active ? or should i use getStakeActivation
             return (
-                <div className='stake-status-event ssgr'>
-                    <div className="icon-container">
-                        <LockClosedOutline color={'#00000'} height="16px" width="16px" />
-                    </div>
-                    Delegated
-                </div>
+                <div className='ssgr'>Delegated</div>
             )
         } //<div className='stake-status-event ssgr'>Delegated</div>
     }
@@ -193,6 +184,14 @@ function StakePage(props) {
                     <div className='safe-logo'></div>
                     <div className='safe-balance-numbers'>
                         <div className="stake-address">{stakeAdd}</div>
+                        <div className="stake-auth">
+                            <div className="stake-sauth-label">S-AUTH</div>
+                            <div className="stake-subadd">{authKp}</div>
+                        </div>
+                        <div className="stake-auth">
+                            <div className="stake-sauth-label">W-AUTH</div>
+                            <div className="stake-subadd">{authKp}</div>
+                        </div>
                     </div>
                     <div className='stake-status'>
                         <div className="auth-container">
@@ -200,11 +199,11 @@ function StakePage(props) {
                         </div>
                         <div className='horizontal-space'></div>
                         {/* to rework*/}
-                        {returnDelegstatus()}
+                        
                     </div>
                     <div className='stake-numbers'>
-                        <div className=''>Balance : <b>{stakebal / web.LAMPORTS_PER_SAFE}</b></div>
-                        <div className=''>Delegated : <b>0</b></div>
+                        <div className='stake-numb-grid'>Balance : <b>{stakebal / web.LAMPORTS_PER_SAFE}</b></div>
+                        <div className='stake-numb-grid'>Status : <b>{returnDelegstatus()}</b></div>
                     </div>
                 </div>
             } />

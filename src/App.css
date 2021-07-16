@@ -355,7 +355,7 @@ color: #363B64;
 .card {
   width: 550px;
   display:block;
-  min-height: 230px;
+  
 
   margin-left: auto;
   margin-right: auto;
@@ -398,9 +398,8 @@ line-height: 36px;
 color: #e9e6db;
 }
 .staking {
-  background: linear-gradient(
-    96.84deg
-    , #505a5e 36.67%, #223841 112.57%);
+  background: linear-gradient(96.84deg, #505a5e 36.67%, #223841 112.57%);
+  height:223px;
 }
 .staking-delegation {
   margin-top: 20px;
@@ -410,8 +409,8 @@ color: #e9e6db;
 .stake-address {
   border-radius: 5px;
   font-size: large;
-  padding: 8px;
-  margin: 15px auto;
+  padding: 8px 8px 0px 8px;
+  margin: 15px auto 0px auto;
   width: -moz-fit-content;
   width: fit-content;
   text-shadow: 2px 4px 3px rgb(0 0 0 / 30%);
@@ -430,13 +429,29 @@ color: #e9e6db;
   border: 1px solid #ffffff2e;
   padding: 2px 8px;
 }
+.stake-auth {
+  display:flex;
+  font-family: monospace;
+  justify-content: center;
+}
+.stake-sauth-label {
+  background-color: red;
+  border-radius: 3px;
+  color: white;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin-right: 7px;
+}
+.stake-subadd {
+  color:#f0f8ffb8;
+}
 .ssor {
-  background-color: #dc71471a;
-  border: 1px solid #f8c6ae5c;
+  color: #dc7147c9;
+ /* border: 1px solid #f8c6ae5c;*/
 }
 .ssgr {
-  background-color: #61dc471a;
-  border: 1px solid #b6f8ae5c;
+  color: #60dc47c0;
+ /* border: 1px solid #b6f8ae5c;*/
 }
 .stake-numbers {
   font-family: Poppins;
@@ -444,6 +459,9 @@ color: #e9e6db;
   font-weight: 500;
   font-size: 14px;
   color:white;
+}
+.stake-numb-grid {
+  display:grid;
 }
 .stake-validator-dpd-cont {
   margin-top:20px;
@@ -456,6 +474,9 @@ color: #e9e6db;
   margin-top:20px;
   display:flex;
   justify-content: space-between;
+}
+.delegated-amount {
+
 }
 .icon-container {
   padding-left: 5px;
