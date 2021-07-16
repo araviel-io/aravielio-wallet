@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { LAMPORTS_PER_SAFE } from '@safecoin/web3.js';
 import { wDelegate, wCreateStakeAccount, wgetStakeActivation, wgetParsedAccountInfo } from '../../utils/stake';
 import Loader from "react-loader-spinner";
+import { Line } from 'rc-progress';
 //import { , wCreateAuthKeypair, wCreateStakeKeypair, wgetParsedAccountInfo } from '../../utils/stake';
 //const options = listCurrentVotesAccounts();
 
@@ -39,14 +40,14 @@ function Delegation(props) {
     useEffect(() => {
         if (selectedNode != null) {
             wgetVoteAcc()
-            .then(
-                function (result) {
-                    setNodeArray([result]);
-                    console.log("NE DEVRAIT PAS SAFFICHER")
-                })
-            .catch((e) => { console.log("error", e) });
+                .then(
+                    function (result) {
+                        setNodeArray([result]);
+                        console.log("NE DEVRAIT PAS SAFFICHER")
+                    })
+                .catch((e) => { console.log("error", e) });
         }
-        
+
     }, [])
 
     // console.log("options WWwesh : ", post)
@@ -126,29 +127,44 @@ function Delegation(props) {
     }, [])
 
     function returnDelegationInfo() {
+
         // show only if retrieved status is delegated
         if (wgetStakeStatus === null || wgetStakeStatus === undefined) {
             return (
                 <div className="center-middle">
-                <Loader
-                    type="Puff"
-                    color="#00BFFF"
-                    height={100}
-                    width={100}
-                    timeout={3000} //3 secs
-                />
+                    <Loader
+                        type="Puff"
+                        color="#00BFFF"
+                        height={100}
+                        width={100}
+                        timeout={3000} //3 secs
+                    />
                 </div>
             )
         }
         return (
             <div>
                 <div className="active-stake-container">
-                    <div className="active-stake-amount">{wgetStakeAmount}</div>
-                    <div className="active-stake-state"></div>
+                    <div className="active-stake-amount">{wgetStakeAmount.toFixed(1)}</div>
+                    <div className="active-stake-state">safe in <b>{wgetStakeStatus}</b> staking</div>
                 </div>
-                <div>{wgetStakeStatus} stake : {wgetStakeAmount}</div>
-                <div>delegated to {voter}</div>
-                <div>staking activated at epoch {ActivationEpoch}</div>
+                <div className="dotted-separator"></div>
+
+                <div className="stake-voter-container">
+                    <div className="stake-voter-label">VOTE</div>
+                    <div>
+                        <div className="black-bg">{voter}</div>
+                        <div className="stake-voter-info">
+                            <div className="stake-voter-info"> comission  <div className="black-bg">8</div></div>
+                            <div className="stake-voter-info"> total stake <div className="black-bg">54267</div></div>
+                        </div>
+                    </div>
+
+                </div>
+                <div className="dotted-separator"></div>
+                <div className="vertical-space"></div>
+                <div>Next payout : </div>
+                <Line percent="10" strokeWidth="4" strokeColor="#f3b283" />
             </div>
         )
     }
@@ -157,12 +173,12 @@ function Delegation(props) {
 
     function DelegationHub() {
 
-      /*  if (props.status === null) {
-            return (
-                <div>rentinfos & initialize info</div>
-            )
-        } */
-        
+        /*  if (props.status === null) {
+              return (
+                  <div>rentinfos & initialize info</div>
+              )
+          } */
+
         if (props.status === "INITIALIZED") {
             return (
                 returnDelegationSelect()
@@ -179,9 +195,9 @@ function Delegation(props) {
     return (
         <Card styleName='staking-delegation' cardContent={
             <div>
-                <div className="white-card-heading">Delegation infos</div>
-                <div>{DelegationHub()}</div>
                
+                <div>{DelegationHub()}</div>
+
             </div>
         }></Card>
     );

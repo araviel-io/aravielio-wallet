@@ -317,7 +317,7 @@ font-size: x-small;
 }
 .page-container {
   margin-left:25px;
-  min-height: 650px;
+  min-height: 670px;
 }
 .receive-qr-code-container {
   text-align: center;
@@ -448,12 +448,51 @@ color: #e9e6db;
 .active-stake-container {
   display:flex;
   justify-content: center;
+  margin-bottom: 15px;
+  margin-top: 15px;
 }
 .active-stake-amount {
-  background-color: #fcc093;
-  padding:15px;
+  background: linear-gradient(
+120deg
+, #f3b283 36.67%, #ab83b1 112.57%);
+border-radius: 8px;
+  padding:12px;
   margin-right: 10px;
   color:white;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: bold;
+  font-size: large;
+}
+.active-stake-state {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+.stake-voter-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+.stake-voter-info {
+  justify-content: center;
+  display: flex;
+  font-family: monospace;
+}
+.stake-voter-label {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 15px;
+}
+.dotted-separator {
+  border-top: 5px dotted #847878;
+  width: 70%;
+  margin: auto;
+}
+.actual-voter-address {
+  text-align: center;
+
+  font-family: monospace;
 }
 .ssor {
   color: #dc7147c9;
@@ -480,10 +519,24 @@ color: #e9e6db;
 .horizontal-space {
   width:30px;
 }
+.vertical-space {
+  height:20px;
+}
 .stake-numbers {
   margin-top:20px;
   display:flex;
   justify-content: space-between;
+}
+.black-bg {
+  background-color: rgb(34, 33, 33);
+  border-radius: 3px;
+  color: white;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin-right: 7px;
+  margin-left: 7px;
+  font-size: small;
+  font-family: monospace;
 }
 .delegated-amount {
 
