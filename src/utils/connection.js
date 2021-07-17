@@ -113,8 +113,8 @@ function instructions(connection, account) {
             commitment: "singleGossip",
         },
     )
-        .then(() => { console.log("done") })
-        .catch((e) => { console.log("error", e) });
+    .then(() => { console.log("done") })
+    .catch((e) => { console.log("error", e) });
 }
 
 export async function solRequestAirdrop() {

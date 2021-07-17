@@ -31,7 +31,7 @@ export async function wgetStakeActivation() {
 
   var stakeKP = await wKeypair(mnStake);
   var stakeActivation = await connection.getStakeActivation(stakeKP.publicKey);
-console.log("stakeinfo ",stakeActivation)
+  console.log("stakeinfo ",stakeActivation)
   return stakeActivation;
 }
 // request airdrops on main account + stake account after creating them
@@ -129,12 +129,17 @@ export async function wgetMyVoterStats(myvoteaddress) {
 
   //console.log("first array test ", activeVoteAcc[0])
   for (let i = 0; i < activeLength; i += 1) {
-      var test = activeVoteAcc[i].votePubkey;
-      //console.log("---VOTE ACOOUNTS : ", test)
+     // var test = activeVoteAcc[i].votePubkey;
+      console.log("---VOTE ACOOUNTS : ", activeVoteAcc)
+      if (myvoteaddress === activeVoteAcc[i].votePubkey) {
+        console.log("found")
+        array.push({ com: activeVoteAcc[i].commission, stake: activeVoteAcc[i].activatedStake });
+        console.log("comstakefound", array)
+      }
      // array.push({ value: activeVoteAcc[i].votePubkey, label: activeVoteAcc[i].votePubkey + " | " + activeVoteAcc[i].commission + " % "  });
   }
   //localStorage.setItem("voteAccounts", array)
   //console.log("custom array: ",array)
 
- // return array;
+  return array;
 }

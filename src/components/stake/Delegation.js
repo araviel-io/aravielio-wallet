@@ -31,6 +31,9 @@ function Delegation(props) {
 
     // getAccountinfo area
     const [voter, setvoter] = useState(null);
+    const [voterCom, setvoterCom] = useState(null);
+    const [voterTotStake, setvoterTotStake] = useState(null);
+
     const [ActivationEpoch, setActivationEpoch] = useState(null);
 
     const [stakeAuthority, setstakeAuthority] = useState(null);
@@ -39,11 +42,7 @@ function Delegation(props) {
 
     //wgetMyVoterStats(voter);
 
-
-    console.log(" NODE ARRAY BEFORE useEffect : ", NodeArray.length)
-
     useEffect(() => {
-        
             wgetVoteAcc()
                 .then(
                     function (result) {
@@ -51,11 +50,8 @@ function Delegation(props) {
                         console.log("NE DEVRAIT PAS SAFFICHER")
                     })
                 .catch((e) => { console.log("error", e) });
-
-
     }, [])
 
-    // console.log("options WWwesh : ", post)
 
     const valist = NodeArray[0];
     console.log("options template : ", valist)
@@ -64,6 +60,7 @@ function Delegation(props) {
         console.log("Selected Node : ", event.value)
         setSelectedNode(event.value);
     }
+
     function tryToexecuteDelegation() {
         wDelegate(selectedNode)
             .then(function (val) {
@@ -71,7 +68,9 @@ function Delegation(props) {
                 console.log("signature for wDelegate(selectedNode) : ", val);
             });
     }
+
     function returnDelegationActions() {
+        // second display if account is initialized and a validator have been selected
         if (selectedNode != null) {
             return (
                 <div>
@@ -82,18 +81,17 @@ function Delegation(props) {
             )
         }
     }
+
     function returnDelegationSelect() {
         // first display after init ( not delegated )
         return (
             <div>
-
                 <div className="stake-validator-dpd-cont">
                     <Select placeholder="Select a validator..." isSearchable={false} options={valist} onChange={handleSelectedNode} />
                 </div>
                 <div>
                     {returnDelegationActions()}
                 </div>
-
             </div>
         )
     }
@@ -123,16 +121,37 @@ function Delegation(props) {
             setActivationEpoch(activationEpoch);
             setstakeAuthority(authstake);
             setwithdrawAuthority(withdrawer);
-            console.log("** VOTE ADDRESS : ", result);
+
+            //var test = await getvoter(voter);
+
+            console.log("** voterstatsvoterstats : ", test);
 
         }).catch((e) => {
             console.log("getParsedAccountInfo ", e)
             //constatus = false;
         });
+        wgetMyVoterStats(voter).then(function(result) {
+        
+        var votercom = result[0].com;
+        var voterstake = result[0].stake;
+        var voterstakeTolam = voterstake / LAMPORTS_PER_SAFE;
+        setvoterCom(votercom);
+        setvoterTotStake(voterstakeTolam.toFixed(1));
+        }).catch((e) => {
+            console.log("getParsedAccountInfo ", e)
+            //constatus = false;
+        });
+
     }, [])
 
-    function returnDelegationInfo() {
+    async function getvoter(voter) {
 
+        var voterstats =  await wgetMyVoterStats(voter);
+        
+        return voterstats;
+    }
+
+    function returnDelegationInfo() {
         // show only if retrieved status is delegated
         if (wgetStakeStatus === null || wgetStakeStatus === undefined) {
             return (
@@ -146,35 +165,32 @@ function Delegation(props) {
                     />
                 </div>
             )
-        }
-        return (
-            <div>
-                <div className="active-stake-container">
-                    <div className="active-stake-amount">{wgetStakeAmount.toFixed(1)}</div>
-                    <div className="active-stake-state">safe in <b>{wgetStakeStatus}</b> staking</div>
-                </div>
-                <div className="dotted-separator"></div>
-
-                <div className="stake-voter-container">
-                    <div className="stake-voter-label">VOTE</div>
-                    <div>
-                        <div className="black-bg">{voter}</div>
-                        <div className="stake-voter-info">
-                            <div className="stake-voter-info"> comission  <div className="black-bg">8</div></div>
-                            <div className="stake-voter-info"> total stake <div className="black-bg">54267</div></div>
+        } else {
+            return (
+                <div>
+                    <div className="active-stake-container">
+                        <div className="active-stake-amount">{wgetStakeAmount.toFixed(1)}</div>
+                        <div className="active-stake-state">safe in <b>{wgetStakeStatus}</b> staking</div>
+                    </div>
+                    <div className="dotted-separator"></div>
+                    <div className="stake-voter-container">
+                        <div className="stake-voter-label">VOTE</div>
+                        <div>
+                            <div className="black-bg">{voter}</div>
+                            <div className="stake-voter-info">
+                                <div className="stake-voter-info"> comission  <div className="black-bg">{voterCom}</div></div>
+                                <div className="stake-voter-info"> total stake <div className="black-bg">{voterTotStake}</div></div>
+                            </div>
                         </div>
                     </div>
-
+                    <div className="dotted-separator"></div>
+                    <div className="vertical-space"></div>
+                    <div>Next payout : </div>
+                    <Line percent="10" strokeWidth="4" strokeColor="#f3b283" />
                 </div>
-                <div className="dotted-separator"></div>
-                <div className="vertical-space"></div>
-                <div>Next payout : </div>
-                <Line percent="10" strokeWidth="4" strokeColor="#f3b283" />
-            </div>
-        )
+            )
+        }
     }
-
-    console.log("props.status : ", props.status)
 
     function DelegationHub() {
 
@@ -200,9 +216,7 @@ function Delegation(props) {
     return (
         <Card styleName='staking-delegation' cardContent={
             <div>
-               
                 <div>{DelegationHub()}</div>
-
             </div>
         }></Card>
     );

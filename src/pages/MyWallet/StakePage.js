@@ -67,7 +67,7 @@ function StakePage(props) {
         var mainkeypair = await wKeypair(mnMain);
         var authkeypair = await wKeypair(mnAuth); // don't forget to right click on wKeypair > Go to definition for more
         var stakekeypair = await wKeypair(mnStake);
-        console.log("stakekeypair ", stakekeypair)
+        //console.log("stakekeypair ", stakekeypair)
         //  getAuthkpPromiseEffect(authkeypair.publicKey.toBase58())
         var mainAddress = mainkeypair.publicKey.toBase58();
         var authAddress = authkeypair.publicKey.toBase58();
