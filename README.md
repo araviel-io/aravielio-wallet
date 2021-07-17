@@ -1,4 +1,5 @@
 ![alt text](https://i.imgur.com/FbmzGXD.png)
+![alt text](https://i.imgur.com/TnIV44k.png)
 
 # Aravie.io SafeCoin Wallet
 
