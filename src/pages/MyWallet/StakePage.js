@@ -76,15 +76,16 @@ function StakePage(props) {
         setaccAdd(mainAddress);
         setauthAdd(authAddress);
         setstakeAdd(stakeAddress);
-
+/*
         await connection.getBalance(mainkeypair.publicKey).then(function (result) {
             setaccbal(result);
+           
         });
 
         await connection.getBalance(authkeypair.publicKey).then(function (result) {
             setauthbal(result);
         });
-
+*/
         await connection.getBalance(stakekeypair.publicKey).then(function (result) {
             setstakebal(result);
         });

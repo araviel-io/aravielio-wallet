@@ -37,7 +37,7 @@ function Delegation(props) {
     const [withdrawAuthority, setwithdrawAuthority] = useState(null);
 
 
-    wgetMyVoterStats(voter);
+    //wgetMyVoterStats(voter);
 
 
     console.log(" NODE ARRAY BEFORE useEffect : ", NodeArray.length)
