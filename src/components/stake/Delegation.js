@@ -34,6 +34,8 @@ function Delegation(props) {
     const [voterCom, setvoterCom] = useState(null);
     const [voterTotStake, setvoterTotStake] = useState(null);
 
+    const [epochProgress, setepochProgress] = useState(null);
+
     const [ActivationEpoch, setActivationEpoch] = useState(null);
 
     const [stakeAuthority, setstakeAuthority] = useState(null);
@@ -97,9 +99,15 @@ function Delegation(props) {
 
     useEffect(() => {
         wgetStakeActivation().then(function (result) {
-
-            var clamport = result.active / LAMPORTS_PER_SAFE;
-            setwgetStakeAmount(clamport);
+            var activelamport = result.active;
+            if (activelamport > 0 ) {
+                setwgetStakeAmount(activelamport);
+            }
+            var inactivelamport = result.inactive;
+            //if (active)
+            if (inactivelamport > 0 ) {
+                setwgetStakeAmount(inactivelamport);
+            }           
             setwgetStakeStatus(result.state);
             console.log("**wgetStakeActivation : ", result);
 
@@ -130,6 +138,13 @@ function Delegation(props) {
             //constatus = false;
         });
 
+        wgetCurrentEpoch().then(function(result) {
+            setepochProgress(result)
+            console.log("wgetCurrentEpoch", result)
+        }).catch((e) => {
+            console.log("wgetCurrentEpoch ", e)
+            //constatus = false;
+        });
 
     }, [])
 
@@ -143,17 +158,28 @@ function Delegation(props) {
                 setvoterCom(votercom);
                 setvoterTotStake(voterstakeTolam.toFixed(1));
             }).catch((e) => {
-                console.log("getParsedAccountInfo ", e)
+                console.log("wgetMyVoterStats ", e)
                 //constatus = false;
             });
 
         }
     }, [voter])
 
-    async function returnProgressEpoch(){
+    function returnProgressEpoch(){
+        var label = "Checking..."
 
-        const test = await wgetCurrentEpoch();
-        console.log("GETEPOCHINFO :", test)
+        if (wgetStakeStatus === "activating"){
+            label = "Activation cooldown :"
+        } else if (wgetStakeStatus === "active"){
+            label = "Next payout :"
+        }
+
+        return (
+            <div>
+                <div>{label}</div>
+                <Line percent={epochProgress} strokeWidth="3" strokeColor="#f3b283" />
+            </div>
+        )
     }
 
     function returnDelegationInfo() {
@@ -190,9 +216,8 @@ function Delegation(props) {
                     </div>
                     <div className="dotted-separator"></div>
                     <div className="vertical-space"></div>
-                    <div>{returnProgressEpoch()}</div>
-                    <div>Next payout : </div>
-                    <Line percent="10" strokeWidth="4" strokeColor="#f3b283" />
+                    {returnProgressEpoch()}
+                   
                 </div>
             )
         }

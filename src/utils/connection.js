@@ -49,7 +49,7 @@ export async function wgetCurrentEpoch() {
     const epochprogress = slotindex * 100 / slotinEpochs;
     var epochProgressTFixed = epochprogress.toFixed(0);
     return epochProgressTFixed;
-
+//console.log("", epochProgressTFixed)
 }
 
 export async function wgetVoteAcc() {
