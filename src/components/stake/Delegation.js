@@ -43,13 +43,13 @@ function Delegation(props) {
     //wgetMyVoterStats(voter);
 
     useEffect(() => {
-            wgetVoteAcc()
-                .then(
-                    function (result) {
-                        setNodeArray([result]);
-                        console.log("NE DEVRAIT PAS SAFFICHER")
-                    })
-                .catch((e) => { console.log("error", e) });
+        wgetVoteAcc()
+            .then(
+                function (result) {
+                    setNodeArray([result]);
+                    console.log("NE DEVRAIT PAS SAFFICHER")
+                })
+            .catch((e) => { console.log("error", e) });
     }, [])
 
 
@@ -130,26 +130,28 @@ function Delegation(props) {
             console.log("getParsedAccountInfo ", e)
             //constatus = false;
         });
-        wgetMyVoterStats(voter).then(function(result) {
-        
-        var votercom = result[0].com;
-        var voterstake = result[0].stake;
-        var voterstakeTolam = voterstake / LAMPORTS_PER_SAFE;
-        setvoterCom(votercom);
-        setvoterTotStake(voterstakeTolam.toFixed(1));
-        }).catch((e) => {
-            console.log("getParsedAccountInfo ", e)
-            //constatus = false;
-        });
+
 
     }, [])
 
-    async function getvoter(voter) {
+    useEffect(() => {
+        if (voter != null) {
+            wgetMyVoterStats(voter).then(function (result) {
+                console.log("wgetMyVoterStats ", voter);
+                var votercom = result[0].com;
+                var voterstake = result[0].stake;
+                var voterstakeTolam = voterstake / LAMPORTS_PER_SAFE;
+                setvoterCom(votercom);
+                setvoterTotStake(voterstakeTolam.toFixed(1));
+            }).catch((e) => {
+                console.log("getParsedAccountInfo ", e)
+                //constatus = false;
+            });
 
-        var voterstats =  await wgetMyVoterStats(voter);
-        
-        return voterstats;
-    }
+        }
+    }, [voter])
+
+
 
     function returnDelegationInfo() {
         // show only if retrieved status is delegated
