@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import Card from '../common/Card';
 import React from 'react';
-import { wgetVoteAcc } from '../../utils/connection'
+import { wgetVoteAcc, wgetCurrentEpoch } from '../../utils/connection'
 import Select from 'react-select'
 import { useState } from 'react';
 import { useEffect } from 'react';
@@ -47,7 +47,6 @@ function Delegation(props) {
             .then(
                 function (result) {
                     setNodeArray([result]);
-                    console.log("NE DEVRAIT PAS SAFFICHER")
                 })
             .catch((e) => { console.log("error", e) });
     }, [])
@@ -151,7 +150,11 @@ function Delegation(props) {
         }
     }, [voter])
 
+    async function returnProgressEpoch(){
 
+        const test = await wgetCurrentEpoch();
+        console.log("GETEPOCHINFO :", test)
+    }
 
     function returnDelegationInfo() {
         // show only if retrieved status is delegated
@@ -187,6 +190,7 @@ function Delegation(props) {
                     </div>
                     <div className="dotted-separator"></div>
                     <div className="vertical-space"></div>
+                    <div>{returnProgressEpoch()}</div>
                     <div>Next payout : </div>
                     <Line percent="10" strokeWidth="4" strokeColor="#f3b283" />
                 </div>

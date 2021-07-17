@@ -41,6 +41,17 @@ export async function wgetBalance(mnemonic) {
     // console.log("account.publicKey", account.publicKey.toBase58());
     return totalSafe;
 }
+
+export async function wgetCurrentEpoch() {
+    const epochInfo = await connection.getEpochInfo();
+    const slotindex = epochInfo.slotIndex;
+    const slotinEpochs = epochInfo.slotsInEpoch;
+    const epochprogress = slotindex * 100 / slotinEpochs;
+    var epochProgressTFixed = epochprogress.toFixed(0);
+    return epochProgressTFixed;
+
+}
+
 export async function wgetVoteAcc() {
     const voteAccounts = await connection.getVoteAccounts();
     const activeVoteAcc = voteAccounts.current;

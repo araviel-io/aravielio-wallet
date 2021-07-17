@@ -130,9 +130,7 @@ export async function wgetMyVoterStats(myvoteaddress) {
   //console.log("first array test ", activeVoteAcc[0])
   for (let i = 0; i < activeLength; i += 1) {
      // var test = activeVoteAcc[i].votePubkey;
-      console.log("---VOTE ACOOUNTS : ", activeVoteAcc)
       if (myvoteaddress === activeVoteAcc[i].votePubkey) {
-        console.log("found")
         array.push({ com: activeVoteAcc[i].commission, stake: activeVoteAcc[i].activatedStake });
         console.log("comstakefound", array)
       }
