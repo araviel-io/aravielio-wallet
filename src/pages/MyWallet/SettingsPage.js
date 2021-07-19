@@ -46,6 +46,12 @@ function SettingsPage(props) {
 
                     </div>
                     <div className="settings-row">
+                        <div className="settings-title">Backup account</div>
+                        <div className="settings-action-container">
+                            <div className="card-button-settings">Backup</div>
+                        </div>
+                    </div>
+                    <div className="settings-row">
                         <div className="settings-title">Delete account</div>
                         <div className="settings-action-container">
                             <div className="card-button-settings">Clear cache</div>

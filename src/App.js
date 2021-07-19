@@ -18,7 +18,6 @@ import { useEffect } from 'react';
 // return create restore if no localstorage mnemonic
 // encrypt more + seed passwd
 ///// FIXME: 
-// IMPORTANT : try to drastically reduces requests by : returning awaits, use callbacks or by splitting effect
 // sending state button
 
 // if true disable CreateWalletPage & RestoreWalletPage

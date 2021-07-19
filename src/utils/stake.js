@@ -109,15 +109,66 @@ export async function wDelegate(selectedNode) {
   .then(
     function (signature) {
       // console.log("tx-id: "+TransactionSignature); 
-      console.log("**createAndInitialize promise : ", signature)
+      console.log("**wDelegate promise : ", signature)
       return signature;
     })
   .catch((e) => {
-      console.log("**createAndInitialize promise ERROR", e)
+      console.log("**wDelegate promise ERROR", e)
     });
 
   console.log("DELEGATION SIGNATURE MAIN RETURN : ", needsign);
   return needsign;
+}
+
+export async function wDesactivate(){
+  var mnAuth = localStorage.getItem('auth-mnemonic')
+  var mnStake = localStorage.getItem('stake-mnemonic')
+
+  var authkeypair = await wKeypair(mnAuth); // don't forget to right click on wKeypair > Go to definition for more
+  var stakekeypair = await wKeypair(mnStake);
+
+  let deactivate = web.StakeProgram.deactivate({
+    stakePubkey: stakekeypair,
+    authorizedPubkey: authkeypair.publicKey,
+  });
+  var needsign = await web.sendAndConfirmTransaction(connection, deactivate, [authkeypair], {
+    commitment: 'single',
+    skipPreflight: true,
+  })
+  .then(
+    function (signature) {
+      // console.log("tx-id: "+TransactionSignature); 
+      console.log("**wDelegate promise : ", signature)
+      return signature;
+    })
+  .catch((e) => {
+      console.log("**wDelegate promise ERROR", e)
+    });
+}
+
+export async function wWithdrawStake(minimumAmount, recipient) {
+  var mnAuth = localStorage.getItem('auth-mnemonic')
+  var mnStake = localStorage.getItem('stake-mnemonic')
+
+  var authkeypair = await wKeypair(mnAuth); // don't forget to right click on wKeypair > Go to definition for more
+  var stakekeypair = await wKeypair(mnStake);
+
+  let withdraw =  web.StakeProgram.withdraw({
+    stakePubkey: stakekeypair,
+    authorizedPubkey: authkeypair.publicKey,
+    toPubkey: recipient.publicKey,
+    lamports: minimumAmount + 20,
+/*
+    stakePubkey: newAccountPubkey,
+    authorizedPubkey: newAuthorized.publicKey,
+    toPubkey: recipient.publicKey,
+    lamports: minimumAmount + 20,*/
+
+  });
+  var needsign = await web.sendAndConfirmTransaction(connection, withdraw, [authkeypair], {
+    commitment: 'single',
+    skipPreflight: true,
+  });
 }
 
 export async function wgetMyVoterStats(myvoteaddress) {

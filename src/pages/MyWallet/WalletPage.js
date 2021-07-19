@@ -40,7 +40,7 @@ function WalletPage(props) {
     
 }
 
-
+//FIXME: rework thoses hooks
   async function balancePromiseEffect() {
     const response = await wgetBalance(mnemonic);
     //const nomreponse = await wngetSafePrice();

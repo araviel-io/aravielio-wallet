@@ -9,8 +9,6 @@ import { LAMPORTS_PER_SAFE } from '@safecoin/web3.js';
 import { wDelegate, wCreateStakeAccount, wgetStakeActivation, wgetParsedAccountInfo, wgetMyVoterStats } from '../../utils/stake';
 import Loader from "react-loader-spinner";
 import { Line } from 'rc-progress';
-//import { , wCreateAuthKeypair, wCreateStakeKeypair, wgetParsedAccountInfo } from '../../utils/stake';
-//const options = listCurrentVotesAccounts();
 
 function Delegation(props) {
     // if initialized > show this component > Done
@@ -18,10 +16,10 @@ function Delegation(props) {
     /// + validator selection list > Done
     /// + selected validator infos (com) > Done
     /// + summary of the staking instruction
-    /// + approx time of activation duration (epoch)
+    /// + approx time of activation duration (epoch) > done
     /// if delegated display :
     /// + show amount & APY + rewards
-    /// actual validator
+    /// actual validator > done
 
     const [NodeArray, setNodeArray] = useState([]);
     const [selectedNode, setSelectedNode] = useState(null);
@@ -104,7 +102,6 @@ function Delegation(props) {
                 setwgetStakeAmount(activelamport);
             }
             var inactivelamport = result.inactive;
-            //if (active)
             if (inactivelamport > 0 ) {
                 setwgetStakeAmount(inactivelamport);
             }           
@@ -117,9 +114,6 @@ function Delegation(props) {
         });
         wgetParsedAccountInfo().then(function (result) {
 
-            //var clamport = result.active / LAMPORTS_PER_SAFE;
-            //setwgetStakeAmount(clamport);
-            //setwgetStakeStatus(result.state);
             var voter = result.value.data.parsed.info.stake.delegation.voter;
             var activationEpoch = result.value.data.parsed.info.stake.delegation.activationEpoch;
             var authstake = result.value.data.parsed.info.meta.authorized.staker;
@@ -167,7 +161,6 @@ function Delegation(props) {
 
     function returnProgressEpoch(){
         var label = "Checking..."
-
         if (wgetStakeStatus === "activating"){
             label = "Activation cooldown :"
         } else if (wgetStakeStatus === "active"){
@@ -216,8 +209,7 @@ function Delegation(props) {
                     </div>
                     <div className="dotted-separator"></div>
                     <div className="vertical-space"></div>
-                    {returnProgressEpoch()}
-                   
+                    {returnProgressEpoch()} 
                 </div>
             )
         }
