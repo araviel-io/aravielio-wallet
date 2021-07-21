@@ -46,8 +46,6 @@ export async function wCreateStakeAccount(mnfrom, mnauthorized, stakeacc) {
   const authorized = await wKeypair(mnauthorized); // always output keypair object
   const newStakeAccount = await wKeypair(stakeacc);
 
-  //await connection.requestAirdrop(authorized.publicKey, 2 * web.LAMPORTS_PER_SAFE);
-
   const minimumAmount = await connection.getMinimumBalanceForRentExemption(
     web.StakeProgram.space,
     'recent',
@@ -144,6 +142,7 @@ export async function wDesactivate(){
   .catch((e) => {
       console.log("**wDelegate promise ERROR", e)
     });
+  return needsign;
 }
 
 export async function wWithdrawStake(minimumAmount, recipient) {
@@ -152,11 +151,13 @@ export async function wWithdrawStake(minimumAmount, recipient) {
 
   var authkeypair = await wKeypair(mnAuth); // don't forget to right click on wKeypair > Go to definition for more
   var stakekeypair = await wKeypair(mnStake);
+// get a PublicKey from address
+  var recipientpkp = new web.PublicKey(recipient)
 
   let withdraw =  web.StakeProgram.withdraw({
-    stakePubkey: stakekeypair,
+    stakePubkey: stakekeypair.publicKey,
     authorizedPubkey: authkeypair.publicKey,
-    toPubkey: recipient.publicKey,
+    toPubkey: recipientpkp,
     lamports: minimumAmount + 20,
 /*
     stakePubkey: newAccountPubkey,
@@ -165,10 +166,21 @@ export async function wWithdrawStake(minimumAmount, recipient) {
     lamports: minimumAmount + 20,*/
 
   });
+  console.log("recipientpkprecipientpkp", recipientpkp)
   var needsign = await web.sendAndConfirmTransaction(connection, withdraw, [authkeypair], {
     commitment: 'single',
     skipPreflight: true,
-  });
+  }).then(
+    function (signature) {
+      // console.log("tx-id: "+TransactionSignature); 
+      console.log("**wWithdrawStake promise : ", signature)
+      return signature;
+    })
+  .catch((e) => {
+      console.log("**wWithdrawStake promise ERROR", e)
+    });
+
+  return needsign;
 }
 
 export async function wgetMyVoterStats(myvoteaddress) {
@@ -178,17 +190,12 @@ export async function wgetMyVoterStats(myvoteaddress) {
   const activeLength = activeVoteAcc.length;
   const array = [];
 
-  //console.log("first array test ", activeVoteAcc[0])
   for (let i = 0; i < activeLength; i += 1) {
-     // var test = activeVoteAcc[i].votePubkey;
       if (myvoteaddress === activeVoteAcc[i].votePubkey) {
         array.push({ com: activeVoteAcc[i].commission, stake: activeVoteAcc[i].activatedStake });
         console.log("comstakefound", array)
       }
-     // array.push({ value: activeVoteAcc[i].votePubkey, label: activeVoteAcc[i].votePubkey + " | " + activeVoteAcc[i].commission + " % "  });
   }
-  //localStorage.setItem("voteAccounts", array)
-  //console.log("custom array: ",array)
 
   return array;
 }

@@ -629,6 +629,7 @@ margin-top: auto;
   width: 60%;
 }
 .card-button-center {
+  border: 0;
   color: #FCFCFC;
     background-color: #363B64;
     box-shadow: 0px 20px 50px rgb(191 21 108 / 5%);
@@ -650,7 +651,11 @@ margin-top: auto;
 }
 
 .modal {
-  font-size: 12px;
+  background-color: #F5F5F5;
+  /* font-size: 12px; */
+  border-radius: 10px;
+  padding: 30px;
+  max-width: 400px;
 }
 .modal > .header {
   width: 100%;
@@ -668,6 +673,7 @@ margin-top: auto;
   padding: 10px 5px;
   margin: auto;
   text-align: center;
+  display:flex;
 }
 .modal > .close {
   cursor: pointer;
@@ -681,4 +687,59 @@ margin-top: auto;
   background: #ffffff;
   border-radius: 18px;
   border: 1px solid #cfcece;
+}
+.popup-overlay {
+  background-color: #0000004b;
+}
+.stake-withdraw-avaiable{
+  text-align: center;
+  padding: 8px;
+  font-size: large;
+  font-weight: 700;
+}
+.input-address-form{
+  font-family: monospace;
+  background: #FCFCFC;
+  border-radius: 10px;
+  -webkit-appearance: unset;
+  appearance: unset;
+  border: none;
+  padding: 5px 8px;
+  margin: 15px 5px;
+  height: 23px;
+  width:350px;
+  text-align: center;
+}
+.input-address-form:focus{
+  border-color: inherit;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  outline:none;
+}
+.input-amount-form{
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  background: #FCFCFC;
+  border-radius: 10px;
+  -webkit-appearance: unset;
+  appearance: unset;
+  border: none;
+  padding: 5px 8px;
+  margin: 15px 5px;
+  height: 23px;
+}
+.input-amount-form:focus{
+  border-color: inherit;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  outline:none;
+}
+.label-stake-withdraw{
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 17px;
+  /* line-height: 25px; */
+  color: #363B64;
 }

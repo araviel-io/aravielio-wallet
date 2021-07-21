@@ -5,10 +5,11 @@ import { useEffect } from 'react';
 import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
 import Delegation from '../../components/stake/Delegation';
-import { LockOpenOutline,LockClosedOutline  } from 'react-ionicons'
-import { wCreateStakeAccount, wCreateAuthKeypair, wCreateStakeKeypair, wgetParsedAccountInfo } from '../../utils/stake';
+import { LockOpenOutline, LockClosedOutline } from 'react-ionicons'
+import { wCreateStakeAccount, wCreateAuthKeypair, wCreateStakeKeypair, wgetParsedAccountInfo, wWithdrawStake } from '../../utils/stake';
 import { wKeypair } from '../../utils/connection'
 import * as web from '@safecoin/web3.js';
+import Popup from 'reactjs-popup';
 
 const network = localStorage.getItem('network')
 const connection = new web.Connection(network, "processed");
@@ -35,17 +36,17 @@ function StakePage(props) {
     function returnDelegstatus() {
         console.log("returnDelegstatus stakeInit", stakeInit)
         console.log("returnDelegstatus delegStatus", delegStatus)
-    // TOP CARD
+        // TOP CARD
         if (delegStatus === undefined) {
             return (<div className='stake-status-event'>Loading...</div>)
-        }else if (stakeInit === "initialized") {
+        } else if (stakeInit === "initialized") {
             return (<div className='ssgr'>initialized</div>)
-        } 
+        }
         else if (stakeInit === null && delegStatus === null) {
             return (
                 <div className='ssor'>Not initialized</div>
             )
-        }  else if (stakeInit === "delegated") {
+        } else if (stakeInit === "delegated") {
             // placeholder for : Warmup & cooldown delegating ? active ? or should i use getStakeActivation
             return (
                 <div className='ssgr'>Delegated</div>
@@ -76,49 +77,45 @@ function StakePage(props) {
         setaccAdd(mainAddress);
         setauthAdd(authAddress);
         setstakeAdd(stakeAddress);
-/*
-        await connection.getBalance(mainkeypair.publicKey).then(function (result) {
-            setaccbal(result);
-           
-        });
-
-        await connection.getBalance(authkeypair.publicKey).then(function (result) {
-            setauthbal(result);
-        });
-*/
+        /*
+                await connection.getBalance(mainkeypair.publicKey).then(function (result) {
+                    setaccbal(result);
+                   
+                });
+        
+                await connection.getBalance(authkeypair.publicKey).then(function (result) {
+                    setauthbal(result);
+                });
+        */
         await connection.getBalance(stakekeypair.publicKey).then(function (result) {
             setstakebal(result);
         });
 
         await connection.getParsedAccountInfo(stakekeypair.publicKey)
-        .then(function (result) {
-            var getStakingType;
-            try {
-                getStakingType = result.value.data.parsed.type;
-            } catch(e) {
-                // FIXME: VERY DIRTY
-                getStakingType = null;
-            }
-             //.data.parsed.type
-            var getDelegationStatus = result.value.data.parsed.info.stake;
-            //TODO: try to drastically reduces requests by : returning or callbacks or by splitting effect
-            setstakeInit(getStakingType);
-            setdelegStatus(getDelegationStatus);
-            console.log("*getParsedAccountInfo : ", result);
-           /* console.log("**getDelegationStatus : ", getDelegationStatus);
-            console.log("**getStakingType : ", getStakingType);
-            console.log("** stakekeypair.publicKey.toBase58() : ", stakekeypair.publicKey.toBase58());*/
-        }).catch((e) => {
-            console.log("getParsedAccountInfo ", e)
-            //constatus = false;
-        });
+            .then(function (result) {
+                var getStakingType;
+                try {
+                    getStakingType = result.value.data.parsed.type;
+                } catch (e) {
+                    // FIXME: VERY DIRTY
+                    getStakingType = null;
+                }
+                //.data.parsed.type
+                var getDelegationStatus = result.value.data.parsed.info.stake;
+                //TODO: try to drastically reduces requests by : returning or callbacks or by splitting effect
+                setstakeInit(getStakingType);
+                setdelegStatus(getDelegationStatus);
+                console.log("*getParsedAccountInfo : ", result);
+            }).catch((e) => {
+                console.log("getParsedAccountInfo ", e)
+            });
     }
 
     useEffect(() => {
         getAllKeypairs();
         // getMainAccountKeypair();
 
-    },[]);
+    }, []);
 
     async function tryToCreateStakeAccount() {
         var AuthSave = localStorage.getItem('auth-mnemonic')
@@ -133,15 +130,20 @@ function StakePage(props) {
                 // you access the value from the promise here
                 console.log("PLEASE RETURN A SIGNATURE ", val);
             });
-        // return await 
-
     }
     // never returns actions if accounts are not loaded
-    function displayCreateControl() {
+    async function tryToWithdrawStake(amount, address) {
+        var myMainAddress = localStorage.getItem('pubkey')
 
-
+        wWithdrawStake(5 * web.LAMPORTS_PER_SAFE ,myMainAddress)
+        .then(function (result) {
+            // you access the value from the promise here
+            console.log("tryToWithdrawStake signature: ", result);
+        })
+        .catch((e) => {
+            console.log("**tryToWithdrawStake signature error: ", e)
+          });
     }
-
     function displayDelegationComponent() {
         var AuthSave = localStorage.getItem('auth-mnemonic')
         var MainSave = localStorage.getItem('mnemonic')
@@ -149,7 +151,7 @@ function StakePage(props) {
         console.log("stakeinitstakeinit : ", stakeInit)
         if (stakeInit === null || stakeInit === undefined) {
             // placeholder for : Warmup & cooldown delegating ? active ? or should i use getStakeActivation
-         
+
             if (AuthSave != null && MainSave != null && StakeSave != null) {
                 // var accountkeypair = await wKeypair(isMainSaved); 
                 //var authkeypair = await wKeypair(isAuthSaved); 
@@ -164,7 +166,7 @@ function StakePage(props) {
             // means initialized & not delegated FIXME: more intuitive conditions
             return (
                 <div>
-                    
+
                     <Delegation status={"INITIALIZED"} balance={stakebal / web.LAMPORTS_PER_SAFE} />
                 </div>
             )
@@ -173,7 +175,47 @@ function StakePage(props) {
             return (
                 <div>
                     <Delegation status={"DELEGATED"} balance={stakebal / web.LAMPORTS_PER_SAFE} />
-                    <div className="card-button-center" onClick={() => {  }}>Undelegate</div>
+                    <div className="just-flex">
+                        <Popup
+                            trigger={<div className="card-button-center" >Wothdraw</div>}
+                            modal
+                            nested
+                        >
+                            {close => (
+                                <div className="modal">
+                                    <button className="close" onClick={close}>
+                                        &times;
+                                    </button>
+                                    {/* <div className="header"> Withdraw from atake account </div> */}
+                                    <div className="stake-withdraw-avaiable">{stakebal / web.LAMPORTS_PER_SAFE} avaiable</div>
+                                    <div className="content">
+                                        {' '}
+                                        You can withdraw a total amount of {stakebal} SafeCoin. Please note that you can't directly withdraw delegated stake, you have to desactivate it first.
+                                        <br />
+                                        <div className="label-stake-withdraw">Amount</div>
+                                        <input type="number" placeholder="0.00" className="input-amount-form" />
+                                        <div className="label-stake-withdraw">Recipient</div>
+                                        <input placeholder="Address" className="input-address-form" />
+                                    </div>
+                                    <div className="actions">
+                                        <button
+                                            className="card-button-center"
+                                            onClick={() => { tryToWithdrawStake();} }>
+                                            Withdraw
+                                        </button>
+                                        <button
+                                            className="card-button-center"
+                                            onClick={() => { close();} }>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </Popup>
+
+                        <div className="card-button-center" onClick={() => { }}>Desactivate</div>
+                    </div>
+
                 </div>
             )
         } else {
@@ -185,9 +227,8 @@ function StakePage(props) {
         <div>
             <Title titleHeader='Stake' />
             <Card styleName='staking' cardContent={
-                
+
                 <div className='stake-address-wrapper'>
-                    <div className="dark-card-heading">Staking account</div>
                     <div className='safe-logo'></div>
                     <div className='safe-balance-numbers'>
                         <div className="stake-address">{stakeAdd}</div>
@@ -206,7 +247,7 @@ function StakePage(props) {
                         </div>
                         <div className='horizontal-space'></div>
                         {/* to rework*/}
-                        
+
                     </div>
                     <div className='stake-numbers'>
                         <div className='stake-numb-grid'>Balance : <b>{stakebal / web.LAMPORTS_PER_SAFE}</b></div>

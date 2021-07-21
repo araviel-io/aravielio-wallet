@@ -99,7 +99,7 @@ function Delegation(props) {
         wgetStakeActivation().then(function (result) {
             var activelamport = result.active;
             if (activelamport > 0 ) {
-                setwgetStakeAmount(activelamport);
+                setwgetStakeAmount(activelamport / LAMPORTS_PER_SAFE);
             }
             var inactivelamport = result.inactive;
             if (inactivelamport > 0 ) {
@@ -193,7 +193,7 @@ function Delegation(props) {
             return (
                 <div>
                     <div className="active-stake-container">
-                        <div className="active-stake-amount">{wgetStakeAmount.toFixed(1)}</div>
+                        <div className="active-stake-amount">{wgetStakeAmount / LAMPORTS_PER_SAFE}</div>
                         <div className="active-stake-state">safe in <b>{wgetStakeStatus}</b> staking</div>
                     </div>
                     <div className="dotted-separator"></div>
