@@ -681,12 +681,12 @@ margin-top: auto;
   display: block;
   padding: 2px 5px;
   line-height: 20px;
-  right: -10px;
-  top: -10px;
-  font-size: 24px;
-  background: #ffffff;
-  border-radius: 18px;
-  border: 1px solid #cfcece;
+  right: 8px;
+  top: 8px;
+  font-size: 35px;
+  background: #ffffff00;
+  /* border-radius: 18px; */
+  border: inherit;
 }
 .popup-overlay {
   background-color: #0000004b;
@@ -740,6 +740,14 @@ margin-top: auto;
   font-style: normal;
   font-weight: 500;
   font-size: 17px;
+  /* line-height: 25px; */
+  color: #363B64;
+}
+.text-form-withdraw{
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
   /* line-height: 25px; */
   color: #363B64;
 }

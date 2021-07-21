@@ -11,6 +11,8 @@ import { wKeypair } from '../../utils/connection'
 import * as web from '@safecoin/web3.js';
 import Popup from 'reactjs-popup';
 
+import { BanOutline } from 'react-ionicons'
+
 const network = localStorage.getItem('network')
 const connection = new web.Connection(network, "processed");
 
@@ -31,6 +33,8 @@ function StakePage(props) {
     const [stakeInit, setstakeInit] = useState(null);
     const [delegStatus, setdelegStatus] = useState(null);
 
+    const [withdrwAmount, setwithdrwAmount] = useState(null);
+    const [withdrwAddress, setwithdrwAddress] = useState(null);
     // placeholder for a more dynamic UI
 
     function returnDelegstatus() {
@@ -77,16 +81,7 @@ function StakePage(props) {
         setaccAdd(mainAddress);
         setauthAdd(authAddress);
         setstakeAdd(stakeAddress);
-        /*
-                await connection.getBalance(mainkeypair.publicKey).then(function (result) {
-                    setaccbal(result);
-                   
-                });
-        
-                await connection.getBalance(authkeypair.publicKey).then(function (result) {
-                    setauthbal(result);
-                });
-        */
+
         await connection.getBalance(stakekeypair.publicKey).then(function (result) {
             setstakebal(result);
         });
@@ -144,6 +139,36 @@ function StakePage(props) {
             console.log("**tryToWithdrawStake signature error: ", e)
           });
     }
+/*
+    useEffect(() => {
+        if (withdrwAmount != null && withdrwAddress != null) {
+            // display button unlock
+        }else {
+            //btn lock
+        }
+console.log(withdrwAmount)
+    });
+*/
+    function returnWithdrawStatus() {
+        if (withdrwAmount != null && withdrwAddress != null) {
+            // display button unlock
+            return (
+                <button
+                className="card-button-center"
+                onClick={() => { tryToWithdrawStake();} }>
+                Withdraw
+                </button>
+            )
+        }
+    }
+    const onChangeHandlerAddress = event => {
+
+        setwithdrwAddress(event.target.value);
+    };
+    const onChangeHandlerAmount = event => {
+
+        setwithdrwAmount(event.target.value);
+    };
     function displayDelegationComponent() {
         var AuthSave = localStorage.getItem('auth-mnemonic')
         var MainSave = localStorage.getItem('mnemonic')
@@ -187,27 +212,20 @@ function StakePage(props) {
                                         &times;
                                     </button>
                                     {/* <div className="header"> Withdraw from atake account </div> */}
-                                    <div className="stake-withdraw-avaiable">{stakebal / web.LAMPORTS_PER_SAFE} avaiable</div>
+                                    <div className="header-form">
+                                        <div className="stake-withdraw-avaiable">{stakebal / web.LAMPORTS_PER_SAFE} avaiable</div>
+                                    </div>
                                     <div className="content">
                                         {' '}
                                         You can withdraw a total amount of {stakebal} SafeCoin. Please note that you can't directly withdraw delegated stake, you have to desactivate it first.
                                         <br />
                                         <div className="label-stake-withdraw">Amount</div>
-                                        <input type="number" placeholder="0.00" className="input-amount-form" />
+                                        <input type="number" placeholder="0.00" className="input-amount-form" onChange={onChangeHandlerAmount} />
                                         <div className="label-stake-withdraw">Recipient</div>
-                                        <input placeholder="Address" className="input-address-form" />
+                                        <input placeholder="Address" className="input-address-form" onChange={onChangeHandlerAddress} />
                                     </div>
                                     <div className="actions">
-                                        <button
-                                            className="card-button-center"
-                                            onClick={() => { tryToWithdrawStake();} }>
-                                            Withdraw
-                                        </button>
-                                        <button
-                                            className="card-button-center"
-                                            onClick={() => { close();} }>
-                                            Cancel
-                                        </button>
+                                        {returnWithdrawStatus()}
                                     </div>
                                 </div>
                             )}
