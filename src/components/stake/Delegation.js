@@ -24,9 +24,6 @@ function Delegation(props) {
     const [NodeArray, setNodeArray] = useState([]);
     const [selectedNode, setSelectedNode] = useState(null);
 
-    const [wgetStakeStatus, setwgetStakeStatus] = useState(null);
-    const [wgetStakeAmount, setwgetStakeAmount] = useState(null);
-
     // getAccountinfo area
     const [voter, setvoter] = useState(null);
     const [voterCom, setvoterCom] = useState(null);
@@ -96,22 +93,6 @@ function Delegation(props) {
     }
 
     useEffect(() => {
-        wgetStakeActivation().then(function (result) {
-            var activelamport = result.active;
-            if (activelamport > 0 ) {
-                setwgetStakeAmount(activelamport / LAMPORTS_PER_SAFE);
-            }
-            var inactivelamport = result.inactive;
-            if (inactivelamport > 0 ) {
-                setwgetStakeAmount(inactivelamport);
-            }           
-            setwgetStakeStatus(result.state);
-            console.log("**wgetStakeActivation : ", result);
-
-        }).catch((e) => {
-            console.log("getParsedAccountInfo ", e)
-            //constatus = false;
-        });
         wgetParsedAccountInfo().then(function (result) {
 
             var voter = result.value.data.parsed.info.stake.delegation.voter;
@@ -161,9 +142,9 @@ function Delegation(props) {
 
     function returnProgressEpoch(){
         var label = "Checking..."
-        if (wgetStakeStatus === "activating"){
+        if (props.delegatedStatus === "activating"){
             label = "Activation cooldown :"
-        } else if (wgetStakeStatus === "active"){
+        } else if (props.delegatedStatus === "active"){
             label = "Next payout :"
         }
 
@@ -177,7 +158,7 @@ function Delegation(props) {
 
     function returnDelegationInfo() {
         // show only if retrieved status is delegated
-        if (wgetStakeStatus === null || wgetStakeStatus === undefined) {
+        if (props.delegatedStatus === null || props.delegatedStatus === undefined) {
             return (
                 <div className="center-middle">
                     <Loader
@@ -193,8 +174,8 @@ function Delegation(props) {
             return (
                 <div>
                     <div className="active-stake-container">
-                        <div className="active-stake-amount">{wgetStakeAmount / LAMPORTS_PER_SAFE}</div>
-                        <div className="active-stake-state">safe in <b>{wgetStakeStatus}</b> staking</div>
+                        <div className="active-stake-amount">{props.delegatedAmount / LAMPORTS_PER_SAFE}</div>
+                        <div className="active-stake-state">safe in <b>{props.delegatedStatus}</b> staking</div>
                     </div>
                     <div className="dotted-separator"></div>
                     <div className="stake-voter-container">

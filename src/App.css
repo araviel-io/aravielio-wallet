@@ -654,8 +654,8 @@ margin-top: auto;
   background-color: #F5F5F5;
   /* font-size: 12px; */
   border-radius: 10px;
-  padding: 30px;
-  max-width: 400px;
+ /* padding: 30px;*/
+  max-width: 480px;
 }
 .modal > .header {
   width: 100%;
@@ -665,8 +665,8 @@ margin-top: auto;
   padding: 5px;
 }
 .modal > .content {
-  width: 100%;
-  padding: 10px 5px;
+
+  padding: 10px 15px;
 }
 .modal > .actions {
   width: 100%;
@@ -684,6 +684,7 @@ margin-top: auto;
   right: 8px;
   top: 8px;
   font-size: 35px;
+  color: white;
   background: #ffffff00;
   /* border-radius: 18px; */
   border: inherit;
@@ -692,7 +693,7 @@ margin-top: auto;
   background-color: #0000004b;
 }
 .stake-withdraw-avaiable{
-  text-align: center;
+
   padding: 8px;
   font-size: large;
   font-weight: 700;
@@ -744,10 +745,17 @@ margin-top: auto;
   color: #363B64;
 }
 .text-form-withdraw{
+  padding: 12px;
   font-family: Poppins;
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
   /* line-height: 25px; */
   color: #363B64;
+}
+.header-form{
+  background-color: #363b64;
+    color: #fcfcfc;
+    padding: 30px 20px;
+    text-align: left;
 }

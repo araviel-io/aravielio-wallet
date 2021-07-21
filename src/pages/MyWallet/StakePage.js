@@ -6,7 +6,7 @@ import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
 import Delegation from '../../components/stake/Delegation';
 import { LockOpenOutline, LockClosedOutline } from 'react-ionicons'
-import { wCreateStakeAccount, wCreateAuthKeypair, wCreateStakeKeypair, wgetParsedAccountInfo, wWithdrawStake } from '../../utils/stake';
+import { wCreateStakeAccount, wCreateAuthKeypair, wCreateStakeKeypair, wgetStakeActivation, wWithdrawStake } from '../../utils/stake';
 import { wKeypair } from '../../utils/connection'
 import * as web from '@safecoin/web3.js';
 import Popup from 'reactjs-popup';
@@ -33,13 +33,14 @@ function StakePage(props) {
     const [stakeInit, setstakeInit] = useState(null);
     const [delegStatus, setdelegStatus] = useState(null);
 
+    const [wgetStakeAmount, setwgetStakeAmount] = useState(null);
+    const [wgetStakeStatus, setwgetStakeStatus] = useState(null);
+
     const [withdrwAmount, setwithdrwAmount] = useState(null);
     const [withdrwAddress, setwithdrwAddress] = useState(null);
     // placeholder for a more dynamic UI
 
     function returnDelegstatus() {
-        console.log("returnDelegstatus stakeInit", stakeInit)
-        console.log("returnDelegstatus delegStatus", delegStatus)
         // TOP CARD
         if (delegStatus === undefined) {
             return (<div className='stake-status-event'>Loading...</div>)
@@ -108,6 +109,23 @@ function StakePage(props) {
 
     useEffect(() => {
         getAllKeypairs();
+
+        wgetStakeActivation().then(function (result) {
+            var activelamport = result.active;
+            if (activelamport > 0 ) {
+                setwgetStakeAmount(activelamport / web.LAMPORTS_PER_SAFE);
+            }
+            var inactivelamport = result.inactive;
+            if (inactivelamport > 0 ) {
+                setwgetStakeAmount(inactivelamport);
+            }           
+            setwgetStakeStatus(result.state);
+            console.log("**wgetStakeActivation : ", result);
+
+        }).catch((e) => {
+            console.log("getParsedAccountInfo ", e)
+            //constatus = false;
+        });
         // getMainAccountKeypair();
 
     }, []);
@@ -128,9 +146,7 @@ function StakePage(props) {
     }
     // never returns actions if accounts are not loaded
     async function tryToWithdrawStake(amount, address) {
-        var myMainAddress = localStorage.getItem('pubkey')
-
-        wWithdrawStake(5 * web.LAMPORTS_PER_SAFE ,myMainAddress)
+        wWithdrawStake(amount * web.LAMPORTS_PER_SAFE ,address)
         .then(function (result) {
             // you access the value from the promise here
             console.log("tryToWithdrawStake signature: ", result);
@@ -139,23 +155,26 @@ function StakePage(props) {
             console.log("**tryToWithdrawStake signature error: ", e)
           });
     }
-/*
-    useEffect(() => {
-        if (withdrwAmount != null && withdrwAddress != null) {
-            // display button unlock
-        }else {
-            //btn lock
+
+    function returnNetStakeBalance() {
+        var balance;
+        if (stakeInit === "delegated") {
+            var rawbalance = stakebal / web.LAMPORTS_PER_SAFE;
+            balance = rawbalance - (wgetStakeAmount / web.LAMPORTS_PER_SAFE);
+            console.log("wgetStakeAmountwgetStakeAmount : ", wgetStakeAmount)
+        } else {
+            balance = stakebal / web.LAMPORTS_PER_SAFE;
         }
-console.log(withdrwAmount)
-    });
-*/
+        return balance.toFixed(2);
+    }
+
     function returnWithdrawStatus() {
         if (withdrwAmount != null && withdrwAddress != null) {
             // display button unlock
             return (
                 <button
                 className="card-button-center"
-                onClick={() => { tryToWithdrawStake();} }>
+                onClick={() => { tryToWithdrawStake(withdrwAmount, withdrwAddress);} }>
                 Withdraw
                 </button>
             )
@@ -199,10 +218,15 @@ console.log(withdrwAmount)
             // no controls show delegation component with stake data
             return (
                 <div>
-                    <Delegation status={"DELEGATED"} balance={stakebal / web.LAMPORTS_PER_SAFE} />
+                    <Delegation 
+                    status={"DELEGATED"} 
+                    balance={stakebal / web.LAMPORTS_PER_SAFE}
+                    delegatedAmount={wgetStakeAmount}
+                    delegatedStatus={wgetStakeStatus}
+                    />
                     <div className="just-flex">
                         <Popup
-                            trigger={<div className="card-button-center" >Wothdraw</div>}
+                            trigger={<div className="card-button-center" >Withdraw</div>}
                             modal
                             nested
                         >
@@ -213,11 +237,13 @@ console.log(withdrwAmount)
                                     </button>
                                     {/* <div className="header"> Withdraw from atake account </div> */}
                                     <div className="header-form">
-                                        <div className="stake-withdraw-avaiable">{stakebal / web.LAMPORTS_PER_SAFE} avaiable</div>
+                                        <div className="stake-withdraw-avaiable">Balance : { returnNetStakeBalance()}</div>
                                     </div>
                                     <div className="content">
-                                        {' '}
-                                        You can withdraw a total amount of {stakebal} SafeCoin. Please note that you can't directly withdraw delegated stake, you have to desactivate it first.
+                                        <div className="text-form-withdraw">
+                                            {' '}
+                                           Please note that you can't directly withdraw delegated stake, <i>you have to desactivate it first</i>.
+                                        </div>
                                         <br />
                                         <div className="label-stake-withdraw">Amount</div>
                                         <input type="number" placeholder="0.00" className="input-amount-form" onChange={onChangeHandlerAmount} />
@@ -268,7 +294,7 @@ console.log(withdrwAmount)
 
                     </div>
                     <div className='stake-numbers'>
-                        <div className='stake-numb-grid'>Balance : <b>{stakebal / web.LAMPORTS_PER_SAFE}</b></div>
+                        <div className='stake-numb-grid'>Balance : <b>{returnNetStakeBalance()}</b></div>
                         <div className='stake-numb-grid'>Status : <b>{returnDelegstatus()}</b></div>
                     </div>
                 </div>
