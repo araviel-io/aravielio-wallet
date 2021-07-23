@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import Card from '../common/Card';
 import React from 'react';
 import { wgetVoteAcc, wgetCurrentEpoch } from '../../utils/connection'
@@ -6,8 +5,7 @@ import Select from 'react-select'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { LAMPORTS_PER_SAFE } from '@safecoin/web3.js';
-import { wDelegate, wCreateStakeAccount, wgetStakeActivation, wgetParsedAccountInfo, wgetMyVoterStats } from '../../utils/stake';
-import Loader from "react-loader-spinner";
+import { wDelegate, wgetParsedAccountInfo, wgetMyVoterStats } from '../../utils/stake';
 import { Line } from 'rc-progress';
 
 function Delegation(props) {
@@ -113,7 +111,7 @@ function Delegation(props) {
             //constatus = false;
         });
 
-        wgetCurrentEpoch().then(function(result) {
+        wgetCurrentEpoch().then(function (result) {
             setepochProgress(result)
             console.log("wgetCurrentEpoch", result)
         }).catch((e) => {
@@ -140,11 +138,11 @@ function Delegation(props) {
         }
     }, [voter])
 
-    function returnProgressEpoch(){
+    function returnProgressEpoch() {
         var label = "Checking..."
-        if (props.delegatedStatus === "activating"){
+        if (props.delegatedStatus === "activating") {
             label = "Activation cooldown :"
-        } else if (props.delegatedStatus === "active"){
+        } else if (props.delegatedStatus === "active") {
             label = "Next payout :"
         }
 
@@ -161,13 +159,7 @@ function Delegation(props) {
         if (props.delegatedStatus === null || props.delegatedStatus === undefined) {
             return (
                 <div className="center-middle">
-                    <Loader
-                        type="Puff"
-                        color="#00BFFF"
-                        height={100}
-                        width={100}
-                        timeout={3000} //3 secs
-                    />
+                    {/* placeholder : include loader*/}
                 </div>
             )
         } else {
@@ -190,7 +182,7 @@ function Delegation(props) {
                     </div>
                     <div className="dotted-separator"></div>
                     <div className="vertical-space"></div>
-                    {returnProgressEpoch()} 
+                    {returnProgressEpoch()}
                 </div>
             )
         }

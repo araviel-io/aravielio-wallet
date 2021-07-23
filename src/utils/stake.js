@@ -1,9 +1,9 @@
 // reference : https://github.com/solana-labs/solana-web3.js/blob/982dd0c9efe8b48e26f2dc96a09abe7975b16911/test/stake-program.test.js#L25
 import * as web from '@safecoin/web3.js';
-import { Authorized, Lockup } from '@safecoin/web3.js';
+import { Authorized, Lockup, Connection } from '@safecoin/web3.js';
 import { genMnemonic, wKeypair } from './connection';
 const getNetwork = localStorage.getItem('network')
- const connection = new web.Connection(getNetwork, 'recent');
+ const connection = new web.Connection(getNetwork, 'max');
 // create authorized keypair from mnemonic
 export function wCreateAuthKeypair() {
   // TODO: Double check

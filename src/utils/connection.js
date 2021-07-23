@@ -161,7 +161,12 @@ export async function wgetPubKey(mnemonic) {
 
     return account.publicKey;
 }
+export async function wgetSignatureStatus(sign){
 
+    const signature = await connection.getSignatureStatus(sign);
+    return signature;
+  }
+  
 // derivation path, should not be changed (compliant to wallet.safecoin.org)
 function deriveSeed(seed) {
     // you can create others derive path from wallet.safecoin.org

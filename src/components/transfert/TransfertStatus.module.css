@@ -1,0 +1,15 @@
+.alertcontainer {
+    height:80px;
+ 
+    margin:auto;
+    padding:0px 15px;
+}
+.alertcontent {
+    margin:auto;
+    left: 0; 
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto; 
+    position: relative;
+    top:50%;
+}

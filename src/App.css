@@ -640,6 +640,14 @@ margin-top: auto;
     margin: auto;
     margin-top: 25px;
 }
+.disabled{
+  background-color: #6e6e6e;
+  cursor:not-allowed;
+}
+.complete{
+  background-color: #2d975d;
+  cursor:not-allowed;
+}
 .center-middle {
   display: flex;
   justify-content: center;

@@ -1,22 +1,23 @@
 import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import Popup from 'reactjs-popup';
+
 //import Container from '../../components/common/Container'
 import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
 import Delegation from '../../components/stake/Delegation';
-import { LockOpenOutline, LockClosedOutline } from 'react-ionicons'
-import { wCreateStakeAccount, wCreateAuthKeypair, wCreateStakeKeypair, wgetStakeActivation, wWithdrawStake } from '../../utils/stake';
-import { wKeypair } from '../../utils/connection'
-import * as web from '@safecoin/web3.js';
-import Popup from 'reactjs-popup';
+import TransfertStatus from '../../components/transfert/TransfertStatus';
 
-import { BanOutline } from 'react-ionicons'
+import { wCreateStakeAccount, wCreateAuthKeypair, wCreateStakeKeypair, wgetStakeActivation, wWithdrawStake } from '../../utils/stake';
+import { wKeypair,wgetSignatureStatus } from '../../utils/connection'
+
+import * as web from '@safecoin/web3.js';
+
 
 const network = localStorage.getItem('network')
 const connection = new web.Connection(network, "processed");
-
-
+// TODO: clear inputs if confirmed status
 
 function StakePage(props) {
 
@@ -38,6 +39,10 @@ function StakePage(props) {
 
     const [withdrwAmount, setwithdrwAmount] = useState(null);
     const [withdrwAddress, setwithdrwAddress] = useState(null);
+
+    const [withDrwSignStatus, setwithDrwSignStatus] = useState(null);
+
+    const [signature, setSignature] = useState(null);
     // placeholder for a more dynamic UI
 
     function returnDelegstatus() {
@@ -146,14 +151,36 @@ function StakePage(props) {
     }
     // never returns actions if accounts are not loaded
     async function tryToWithdrawStake(amount, address) {
+        setwithDrwSignStatus("request");
         wWithdrawStake(amount * web.LAMPORTS_PER_SAFE ,address)
-        .then(function (result) {
+        .then(function (signature) {
             // you access the value from the promise here
-            console.log("tryToWithdrawStake signature: ", result);
+            //
+            setwithDrwSignStatus("sent");
+            setSignature(signature);
+            console.log("tryToWithdrawStake signature: ", signature);
+            wgetSignatureStatus(signature)
+            .then(function (result) {
+                console.log("SIGNATURE DETAILS", result)
+                
+                setwithDrwSignStatus("confirmed");
+            })
+            //console.log("SIGNATURE DETAILS", test)
         })
         .catch((e) => {
             console.log("**tryToWithdrawStake signature error: ", e)
           });
+    }
+
+    function returnSignStatWithdraw() {
+        if (withDrwSignStatus === "request") {
+            // loader
+            return "request";
+        } else if (withDrwSignStatus === "sent") {
+            return "sent";
+        } else if (withDrwSignStatus === "confirmed") {
+            return "CONFIRMEDE";
+        } 
     }
 
     function returnNetStakeBalance() {
@@ -169,6 +196,18 @@ function StakePage(props) {
     }
 
     function returnWithdrawStatus() {
+
+        if (withDrwSignStatus === "confirmed") {
+
+            return (
+                <button
+                className="card-button-center complete"
+                >
+                Sent !
+                </button>
+            )
+        }
+
         if (withdrwAmount != null && withdrwAddress != null) {
             // display button unlock
             return (
@@ -178,16 +217,33 @@ function StakePage(props) {
                 Withdraw
                 </button>
             )
+        } else {
+            return (
+                <button className="card-button-center disabled">
+                Withdraw
+                </button>
+            )
         }
     }
     const onChangeHandlerAddress = event => {
-
         setwithdrwAddress(event.target.value);
     };
-    const onChangeHandlerAmount = event => {
 
+    const onChangeHandlerAmount = event => {
         setwithdrwAmount(event.target.value);
     };
+    
+    function displayTransfertStatusComponent() {
+
+        return (
+            <div>
+                <TransfertStatus status={withDrwSignStatus} sign={signature} />
+               
+            </div>
+        )
+
+    }
+
     function displayDelegationComponent() {
         var AuthSave = localStorage.getItem('auth-mnemonic')
         var MainSave = localStorage.getItem('mnemonic')
@@ -221,7 +277,7 @@ function StakePage(props) {
                     <Delegation 
                     status={"DELEGATED"} 
                     balance={stakebal / web.LAMPORTS_PER_SAFE}
-                    delegatedAmount={wgetStakeAmount}
+                    delegatedAmount={wgetStakeAmount.toFixed(2) * web.LAMPORTS_PER_SAFE}
                     delegatedStatus={wgetStakeStatus}
                     />
                     <div className="just-flex">
@@ -246,12 +302,16 @@ function StakePage(props) {
                                         </div>
                                         <br />
                                         <div className="label-stake-withdraw">Amount</div>
-                                        <input type="number" placeholder="0.00" className="input-amount-form" onChange={onChangeHandlerAmount} />
+                                        <input type="number" max={returnNetStakeBalance()} placeholder="0.00" className="input-amount-form" onChange={onChangeHandlerAmount} />
                                         <div className="label-stake-withdraw">Recipient</div>
                                         <input placeholder="Address" className="input-address-form" onChange={onChangeHandlerAddress} />
                                     </div>
+                                    {displayTransfertStatusComponent()}
+                                    {/* Display future Transfert Component here */}
                                     <div className="actions">
+                                        
                                         {returnWithdrawStatus()}
+                                       
                                     </div>
                                 </div>
                             )}
