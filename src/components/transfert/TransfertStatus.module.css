@@ -1,6 +1,4 @@
 .alertcontainer {
-    height:80px;
- 
     margin:auto;
     padding:0px 15px;
 }
@@ -12,4 +10,43 @@
     margin-right: auto; 
     position: relative;
     top:50%;
+    font-family: monospace;
+}
+.alertconfirmed {
+    display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+}
+.successbadge{
+    font-family: monospace;
+    color: rgb(188 234 173);
+    background-color: rgb(45 151 93);
+    display: inline-block;
+    font-size: 115%;
+    font-weight: 400;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    padding: 0.33em 0.5em;
+    border-radius: 0.375rem;
+    transition: color 0.15s ease-in-out 0s, background-color 0.15s ease-in-out 0s, border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    margin-right: 25px;
+}
+.errorbadge{
+    font-family: monospace;
+    color: rgb(234 173 234);
+    background-color: rgb(119 50 119 / 70%);
+    display: inline-block;
+    font-size: 115%;
+    font-weight: 400;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    padding: 0.33em 0.5em;
+    border-radius: 0.375rem;
+    transition: color 0.15s ease-in-out 0s, background-color 0.15s ease-in-out 0s, border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    margin-right: 25px;
 }

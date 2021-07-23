@@ -48,7 +48,7 @@ function Delegation(props) {
 
 
     const valist = NodeArray[0];
-    console.log("options template : ", valist)
+    //console.log("options template : ", valist)
 
     const handleSelectedNode = (event) => {
         console.log("Selected Node : ", event.value)

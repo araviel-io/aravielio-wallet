@@ -12,6 +12,7 @@ import TransfertStatus from '../../components/transfert/TransfertStatus';
 import { wCreateStakeAccount, wCreateAuthKeypair, wCreateStakeKeypair, wgetStakeActivation, wWithdrawStake } from '../../utils/stake';
 import { wKeypair,wgetSignatureStatus } from '../../utils/connection'
 
+
 import * as web from '@safecoin/web3.js';
 
 
@@ -37,7 +38,7 @@ function StakePage(props) {
     const [wgetStakeAmount, setwgetStakeAmount] = useState(null);
     const [wgetStakeStatus, setwgetStakeStatus] = useState(null);
 
-    const [withdrwAmount, setwithdrwAmount] = useState(null);
+    const [withdrwAmount, setwithdrwAmount] = useState("");
     const [withdrwAddress, setwithdrwAddress] = useState(null);
 
     const [withDrwSignStatus, setwithDrwSignStatus] = useState(null);
@@ -125,10 +126,10 @@ function StakePage(props) {
                 setwgetStakeAmount(inactivelamport);
             }           
             setwgetStakeStatus(result.state);
-            console.log("**wgetStakeActivation : ", result);
+            //console.log("**wgetStakeActivation : ", result);
 
         }).catch((e) => {
-            console.log("getParsedAccountInfo ", e)
+           // console.log("getParsedAccountInfo ", e)
             //constatus = false;
         });
         // getMainAccountKeypair();
@@ -146,49 +147,50 @@ function StakePage(props) {
                     setstakeInit("initialized");
                 }
                 // you access the value from the promise here
-                console.log("PLEASE RETURN A SIGNATURE ", val);
+                //console.log("PLEASE RETURN A SIGNATURE ", val);
             });
     }
     // never returns actions if accounts are not loaded
     async function tryToWithdrawStake(amount, address) {
-        setwithDrwSignStatus("request");
+        setwithDrwSignStatus("requesting");
+
         wWithdrawStake(amount * web.LAMPORTS_PER_SAFE ,address)
         .then(function (signature) {
             // you access the value from the promise here
             //
             setwithDrwSignStatus("sent");
             setSignature(signature);
-            console.log("tryToWithdrawStake signature: ", signature);
+            //console.log("tryToWithdrawStake signature: ", signature);
+
             wgetSignatureStatus(signature)
             .then(function (result) {
                 console.log("SIGNATURE DETAILS", result)
+                if (result.value.err === null) {
+                    setwithDrwSignStatus("confirmed");
+                } else {
+                    setwithDrwSignStatus(result.value.err.InstructionError[1]);
+                }
+                // TODO: parse result to check the transaction status
+                // clear input field after confirm or error
                 
-                setwithDrwSignStatus("confirmed");
+                setwithdrwAmount(0);
             })
+            .catch((e) => {
+                console.log("*---- getSignatureStatus(signature) : ", e)
+              });
             //console.log("SIGNATURE DETAILS", test)
         })
         .catch((e) => {
-            console.log("**tryToWithdrawStake signature error: ", e)
+            console.log("**tryToWithdrawStake ERROR FROM STAKEPAGE : ", e)
           });
-    }
-
-    function returnSignStatWithdraw() {
-        if (withDrwSignStatus === "request") {
-            // loader
-            return "request";
-        } else if (withDrwSignStatus === "sent") {
-            return "sent";
-        } else if (withDrwSignStatus === "confirmed") {
-            return "CONFIRMEDE";
-        } 
     }
 
     function returnNetStakeBalance() {
         var balance;
         if (stakeInit === "delegated") {
             var rawbalance = stakebal / web.LAMPORTS_PER_SAFE;
-            balance = rawbalance - (wgetStakeAmount / web.LAMPORTS_PER_SAFE);
-            console.log("wgetStakeAmountwgetStakeAmount : ", wgetStakeAmount)
+            balance = rawbalance - wgetStakeAmount;
+            //console.log("wgetStakeAmountwgetStakeAmount : ", wgetStakeAmount)
         } else {
             balance = stakebal / web.LAMPORTS_PER_SAFE;
         }
@@ -233,6 +235,11 @@ function StakePage(props) {
         setwithdrwAmount(event.target.value);
     };
     
+    function clearStates() {
+       /* setwithDrwSignStatus(null);
+        setwithdrwAmount("")
+        setwithdrwAddress("")*/
+    }
     function displayTransfertStatusComponent() {
 
         return (
@@ -282,7 +289,7 @@ function StakePage(props) {
                     />
                     <div className="just-flex">
                         <Popup
-                            trigger={<div className="card-button-center" >Withdraw</div>}
+                            trigger={<div className="card-button-center" onClick={() => { clearStates() }}>Withdraw</div>}
                             modal
                             nested
                         >
@@ -302,7 +309,7 @@ function StakePage(props) {
                                         </div>
                                         <br />
                                         <div className="label-stake-withdraw">Amount</div>
-                                        <input type="number" max={returnNetStakeBalance()} placeholder="0.00" className="input-amount-form" onChange={onChangeHandlerAmount} />
+                                        <input type="number" value={withdrwAmount} max={returnNetStakeBalance()} placeholder="0.00" className="input-amount-form" onChange={onChangeHandlerAmount} />
                                         <div className="label-stake-withdraw">Recipient</div>
                                         <input placeholder="Address" className="input-address-form" onChange={onChangeHandlerAddress} />
                                     </div>

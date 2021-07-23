@@ -2,6 +2,8 @@
 import * as web from '@safecoin/web3.js';
 import { Authorized, Lockup, Connection } from '@safecoin/web3.js';
 import { genMnemonic, wKeypair } from './connection';
+import { ForceSignatureFromException } from './transfert'
+
 const getNetwork = localStorage.getItem('network')
  const connection = new web.Connection(getNetwork, 'max');
 // create authorized keypair from mnemonic
@@ -177,7 +179,17 @@ export async function wWithdrawStake(minimumAmount, recipient) {
       return signature;
     })
   .catch((e) => {
-      console.log("**wWithdrawStake promise ERROR", e)
+    
+    var test = e.message;
+    var exsignature =  ForceSignatureFromException(test)
+     /* if (test.toString().indexOf('InsufficientFunds') > -1)
+      {
+        
+      }*/
+      console.log("*exsignatureexsignatureexsignatureexsignature", exsignature)
+      return exsignature;
+      
+      
     });
 
   return needsign;
