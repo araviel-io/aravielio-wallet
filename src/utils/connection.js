@@ -173,6 +173,10 @@ function deriveSeed(seed) {
     const path44Change = `m/44'/19165'/0'/0'`;
     return derivePath(path44Change, seed).key;
 }
+export async function wgetVersion() {
+   const clusterVer =   await connection.getVersion();
+   return clusterVer;
+}
 // below is useless, for reference only
 export async function tryfetch() {
 

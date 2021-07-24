@@ -1,5 +1,6 @@
 import React from 'react';
-
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 import logo from '../assets/img/logo.png';
 import {
@@ -15,14 +16,25 @@ import SendPage from './MyWallet/SendPage';
 import StakePage from './MyWallet/StakePage';
 import SettingsPage from './MyWallet/SettingsPage';
 
+import {wgetVersion} from  '../utils/connection'
 
 function MainWalletPage(props) {
 
+  const [version, setVersion] = useState(null);
+
+  useEffect(() => {
+    wgetVersion()
+        .then(
+            function (result) {
+              setVersion(result['solana-core']);
+            })
+        .catch((e) => { console.log("version error", e) });
+}, [])
   function selectedNetwork() {
    // console.log("NETWORKLOL ", network)
    const network = localStorage.getItem('network')
-    if (network === 'https://api.devnet.solana.com') {return (<div>{' '}<b>Solana devnet</b></div>)}
-    else if (network === 'https://api.mainnet-beta.safecoin.org') {return (<div>{' '}<b>Safe mainnet</b></div>)}
+    if (network === 'https://api.devnet.solana.com') {return (<div>{' '}<b>Solana devnet</b><br />ver. {version}</div>)}
+    else if (network === 'https://api.mainnet-beta.safecoin.org') {return (<div>{' '}<b>Safe mainnet</b><br />ver. {version}</div>)}
     
 }
 
@@ -30,7 +42,7 @@ function MainWalletPage(props) {
       <div className="WrapperWallet">
         <Router>
           <div className="menu-container">
-            <div className="menu-actual-network">Network : {' '}{selectedNetwork()}</div>
+            <div className="menu-actual-network">{selectedNetwork()}</div>
             <div className="menu-logo-container">
               <img className="menu-logo" src={logo} alt="Araviel.io Wallet" />
             </div>
