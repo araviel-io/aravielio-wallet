@@ -134,7 +134,7 @@ export async function solRequestAirdrop() {
     const derivedSeed = deriveSeed(seed);
     var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
 
-    const lamports = 10 * 1000000000
+    const lamports = 8 * 1000000000
     connection.requestAirdrop(account.publicKey, lamports).then(() => {
         console.log("airdrop done")
         instructions(connection, account)

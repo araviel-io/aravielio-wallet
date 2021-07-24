@@ -5,7 +5,7 @@ import { genMnemonic, wKeypair } from './connection';
 import { ForceSignatureFromException } from './transfert'
 
 const getNetwork = localStorage.getItem('network')
- const connection = new web.Connection(getNetwork, 'max');
+const connection = new web.Connection(getNetwork, 'max');
 // create authorized keypair from mnemonic
 export function wCreateAuthKeypair() {
   // TODO: Double check
@@ -33,19 +33,14 @@ export async function wgetStakeActivation() {
 
   var stakeKP = await wKeypair(mnStake);
   var stakeActivation = await connection.getStakeActivation(stakeKP.publicKey);
-  console.log("stakeinfo ",stakeActivation)
+  console.log("stakeinfo ", stakeActivation, "for : ", stakeKP.publicKey.toBase58())
   return stakeActivation;
 }
 // request airdrops on main account + stake account after creating them
-export async function wCreateStakeAccount(mnfrom, mnauthorized, stakeacc) {
-  // TODO: fund to authority otherwise not working
-  // every keypairs are created from mnemonics
-  const getNetwork = localStorage.getItem('network')
-  // wCreateAuthKeypair();
-  const connection = new web.Connection(getNetwork, 'recent');
+export async function wCreateStakeAccount(mnfrom, stakeacc) {
 
   const from = await wKeypair(mnfrom); // always output keypair object "main" account
-  const authorized = await wKeypair(mnauthorized); // always output keypair object
+ // const authorized = await wKeypair(mnauthorized); // always output keypair object
   const newStakeAccount = await wKeypair(stakeacc);
 
   const minimumAmount = await connection.getMinimumBalanceForRentExemption(
@@ -58,7 +53,7 @@ export async function wCreateStakeAccount(mnfrom, mnauthorized, stakeacc) {
   let createAndInitialize = web.StakeProgram.createAccount({
     fromPubkey: from.publicKey,
     stakePubkey: newStakeAccount.publicKey,
-    authorized: new Authorized(authorized.publicKey, authorized.publicKey),
+    authorized: new Authorized(from.publicKey, from.publicKey),
     lockup: new Lockup(0, 0, new web.PublicKey(0)),
     lamports: minimumAmount + 42,
   });
@@ -83,12 +78,13 @@ export async function wCreateStakeAccount(mnfrom, mnauthorized, stakeacc) {
   return needsign;
 }
 
+
 export async function wDelegate(selectedNode) {
-// FIXME: use parameter for node selection
+  // FIXME: use parameter for node selection
   const getNetwork = localStorage.getItem('network')
   const connection = new web.Connection(getNetwork, 'max');
 
-  var mnAuth = localStorage.getItem('auth-mnemonic')
+  var mnAuth = localStorage.getItem('mnemonic')
   var mnStake = localStorage.getItem('stake-mnemonic')
 
   var authkeypair = await wKeypair(mnAuth); // don't forget to right click on wKeypair > Go to definition for more
@@ -100,19 +96,19 @@ export async function wDelegate(selectedNode) {
     authorizedPubkey: authkeypair.publicKey,
     votePubkey,
   })
-  // delegation can take some time and exceed the 30s in the devnet
+
   console.log("Starting delegation TX... ")
   var needsign = await web.sendAndConfirmTransaction(connection, delegation, [authkeypair], {
     commitment: 'single',
     skipPreflight: true,
   })
-  .then(
-    function (signature) {
-      // console.log("tx-id: "+TransactionSignature); 
-      console.log("**wDelegate promise : ", signature)
-      return signature;
-    })
-  .catch((e) => {
+    .then(
+      function (signature) {
+        // console.log("tx-id: "+TransactionSignature); 
+        console.log("**wDelegate promise : ", signature)
+        return signature;
+      })
+    .catch((e) => {
       console.log("**wDelegate promise ERROR", e)
     });
 
@@ -120,8 +116,8 @@ export async function wDelegate(selectedNode) {
   return needsign;
 }
 
-export async function wDesactivate(){
-  var mnAuth = localStorage.getItem('auth-mnemonic')
+export async function wDesactivate() {
+  var mnAuth = localStorage.getItem('mnemonic')
   var mnStake = localStorage.getItem('stake-mnemonic')
 
   var authkeypair = await wKeypair(mnAuth); // don't forget to right click on wKeypair > Go to definition for more
@@ -135,37 +131,37 @@ export async function wDesactivate(){
     commitment: 'single',
     skipPreflight: true,
   })
-  .then(
-    function (signature) {
-      // console.log("tx-id: "+TransactionSignature); 
-      console.log("**wDelegate promise : ", signature)
-      return signature;
-    })
-  .catch((e) => {
+    .then(
+      function (signature) {
+        // console.log("tx-id: "+TransactionSignature); 
+        console.log("**wDelegate promise : ", signature)
+        return signature;
+      })
+    .catch((e) => {
       console.log("**wDelegate promise ERROR", e)
     });
   return needsign;
 }
 
 export async function wWithdrawStake(minimumAmount, recipient) {
-  var mnAuth = localStorage.getItem('auth-mnemonic')
+  var mnAuth = localStorage.getItem('mnemonic')
   var mnStake = localStorage.getItem('stake-mnemonic')
 
   var authkeypair = await wKeypair(mnAuth); // don't forget to right click on wKeypair > Go to definition for more
   var stakekeypair = await wKeypair(mnStake);
-// get a PublicKey from address
+  // get a PublicKey from address
   var recipientpkp = new web.PublicKey(recipient)
 
-  let withdraw =  web.StakeProgram.withdraw({
+  let withdraw = web.StakeProgram.withdraw({
     stakePubkey: stakekeypair.publicKey,
     authorizedPubkey: authkeypair.publicKey,
     toPubkey: recipientpkp,
     lamports: minimumAmount + 20,
-/*
-    stakePubkey: newAccountPubkey,
-    authorizedPubkey: newAuthorized.publicKey,
-    toPubkey: recipient.publicKey,
-    lamports: minimumAmount + 20,*/
+    /*
+        stakePubkey: newAccountPubkey,
+        authorizedPubkey: newAuthorized.publicKey,
+        toPubkey: recipient.publicKey,
+        lamports: minimumAmount + 20,*/
 
   });
   console.log("recipientpkprecipientpkp", recipientpkp)
@@ -178,35 +174,27 @@ export async function wWithdrawStake(minimumAmount, recipient) {
       console.log("**wWithdrawStake promise : ", signature)
       return signature;
     })
-  .catch((e) => {
-    
-    var test = e.message;
-    var exsignature =  ForceSignatureFromException(test)
-     /* if (test.toString().indexOf('InsufficientFunds') > -1)
-      {
-        
-      }*/
-      console.log("*exsignatureexsignatureexsignatureexsignature", exsignature)
+    .catch((e) => {
+      var test = e.message;
+      var exsignature = ForceSignatureFromException(test)
+      console.log("*exsignature", exsignature)
       return exsignature;
-      
-      
     });
-
   return needsign;
 }
 
 export async function wgetMyVoterStats(myvoteaddress) {
   const voteAccounts = await connection.getVoteAccounts();
   const activeVoteAcc = voteAccounts.current;
- // const activeVoteAccCom = voteAccounts.current;
+  // const activeVoteAccCom = voteAccounts.current;
   const activeLength = activeVoteAcc.length;
   const array = [];
 
   for (let i = 0; i < activeLength; i += 1) {
-      if (myvoteaddress === activeVoteAcc[i].votePubkey) {
-        array.push({ com: activeVoteAcc[i].commission, stake: activeVoteAcc[i].activatedStake });
-        console.log("comstakefound", array)
-      }
+    if (myvoteaddress === activeVoteAcc[i].votePubkey) {
+      array.push({ com: activeVoteAcc[i].commission, stake: activeVoteAcc[i].activatedStake });
+      console.log("comstakefound", array)
+    }
   }
 
   return array;

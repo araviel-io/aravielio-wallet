@@ -7,12 +7,11 @@ import Card from '../../components/common/Card';
 import safelogo from '../../assets/img/safecoin_logov3.png'
 // complex
 import * as web from '@safecoin/web3.js';
-import { sendSafe, transferSafe } from '../../utils/connection';
+import { transferSafe } from '../../utils/connection';
 import { wgetBalance } from '../../utils/connection';
-import { wKeypair } from '../../utils/connection';
 
 const network = localStorage.getItem('network')
-const connection = new web.Connection(network, "processed");
+const connection = new web.Connection(network, "max");
 
 
 function SendPage(props) {
@@ -50,23 +49,20 @@ function SendPage(props) {
         sendStatusPromiseEffect();
 
     });
-    async function balancePromiseEffect() {
-        const response = await wgetBalance(mnemonic)
-            .catch((e) => {
-                const error = 'Error'
-                // return e.code;
-                //const error = e.
-                console.log("error", error.code)
-            });
 
-        setBalance(response);
-        console.log("response ?", response)
-
-    }
     useEffect(() => {
-        balancePromiseEffect();
+        // balancePromiseEffect();
+        wgetBalance(mnemonic).then(
+            function (balance) {
+              // console.log("tx-id: "+TransactionSignature); 
+              setBalance(balance);
+              console.log("**wgetBalance promise : ", balance)
+            })
+          .catch((e) => {
+            console.log("**wgetBalance promise ERROR", e)
+          });
+    }, [balance]);
 
-    });
     function returnStatus() {
         console.log("SendStatus : ", sendStatus)
         //TODO: fix this effect

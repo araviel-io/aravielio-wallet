@@ -34,7 +34,7 @@ function Delegation(props) {
     const [stakeAuthority, setstakeAuthority] = useState(null);
     const [withdrawAuthority, setwithdrawAuthority] = useState(null);
 
-
+    const [refreshTest, setRefreshTest] = useState(null);
     //wgetMyVoterStats(voter);
 
     useEffect(() => {
@@ -55,9 +55,19 @@ function Delegation(props) {
         setSelectedNode(event.value);
     }
 
+    function trytorefresh() {
+        if (refreshTest === "test") {
+            return (
+
+                <div>tests</div>
+            )
+        }
+    }
+
     function tryToexecuteDelegation() {
         wDelegate(selectedNode)
             .then(function (val) {
+               setRefreshTest("test");
                 // you access the value from the promise here
                 console.log("signature for wDelegate(selectedNode) : ", val);
             });
@@ -80,6 +90,7 @@ function Delegation(props) {
         // first display after init ( not delegated )
         return (
             <div>
+                {trytorefresh()}
                 <div className="stake-validator-dpd-cont">
                     <Select placeholder="Select a validator..." isSearchable={false} options={valist} onChange={handleSelectedNode} />
                 </div>
@@ -91,6 +102,7 @@ function Delegation(props) {
     }
 
     useEffect(() => {
+        if (props.status === "DELEGATED") {
         wgetParsedAccountInfo().then(function (result) {
 
             var voter = result.value.data.parsed.info.stake.delegation.voter;
@@ -118,6 +130,8 @@ function Delegation(props) {
             console.log("wgetCurrentEpoch ", e)
             //constatus = false;
         });
+        }
+
 
     }, [])
 

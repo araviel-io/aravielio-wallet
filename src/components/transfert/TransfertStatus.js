@@ -24,7 +24,7 @@ function TransfertStatus(props) {
 
     function returnLoaderOrSummary() {
         console.log("props.statusprops.statusprops.status : ", props.status)
-        if (props.status === "request" || props.status === "sent") {
+        if (props.status === "request" || props.status === "requesting") {
             return (
                 <ThreeHorseLoading />
             );
@@ -67,9 +67,11 @@ function TransfertStatus(props) {
                     <div className="dotted-separator"></div>
                 </div>
             );
+        }  else if (props.status === null || props.status === undefined) {
+            return (
+                <div></div>
+            )
         }
-
-
     }
 
     return (

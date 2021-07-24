@@ -125,7 +125,8 @@ https://reactrouter.com/web/example/basic
 // React + Typescript
 https://blog.bitsrc.io/5-strong-reasons-to-use-typescript-with-react-bc987da5d907
 https://www.pluralsight.com/guides/composing-react-components-with-typescript
-
+// React useEffect
+https://dmitripavlutin.com/react-useeffect-explanation/
 
 export async function sendSafe() {
     function instructions(connection, account){  
