@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './TransfertStatus.module.css';
 import { ThreeHorseLoading } from 'react-loadingg';
-import { CheckmarkCircleOutline, BanOutline } from 'react-ionicons'
 
 function TransfertStatus(props) {
 

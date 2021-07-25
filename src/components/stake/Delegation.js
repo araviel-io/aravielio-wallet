@@ -92,7 +92,7 @@ function Delegation(props) {
             <div>
                 {trytorefresh()}
                 <div className="stake-validator-dpd-cont">
-                    <Select placeholder="Select a validator..." isSearchable={false} options={valist} onChange={handleSelectedNode} />
+                    <Select placeholder="Select a validator..." className="input-react-select" isSearchable={false} options={valist} onChange={handleSelectedNode} />
                 </div>
                 <div>
                     {returnDelegationActions()}

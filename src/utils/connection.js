@@ -174,8 +174,18 @@ function deriveSeed(seed) {
     return derivePath(path44Change, seed).key;
 }
 export async function wgetVersion() {
-   const clusterVer =   await connection.getVersion();
+   const clusterVer = await connection.getVersion();
    return clusterVer;
+}
+/*
+export async function wgetFees() {
+    const fees = connection.getFeeCalculatorForBlockhash
+    return fees;
+}*/
+export async function wgetMiniRent() {
+    const rent = await connection.getMinimumBalanceForRentExemption();
+    console.log("bordel", rent);
+    return rent;
 }
 // below is useless, for reference only
 export async function tryfetch() {

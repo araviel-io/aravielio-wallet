@@ -373,6 +373,9 @@ color: #e9e6db;
 .staking {
   background: linear-gradient(96.84deg, #505a5e 36.67%, #223841 112.57%);
 }
+.staking-init {
+  background: linear-gradient(96.84deg, #496a80 36.67%, #2c5f74 112.57%);
+}
 .staking-delegation {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -611,6 +614,18 @@ margin-top: auto;
     margin: auto;
     margin-top: 25px;
 }
+.card-button-bottom {
+  border: 0;
+  color: #363B64;
+    background-color: #FCFCFC;
+    box-shadow: 0px 20px 50px rgb(191 21 108 / 5%);
+    border-radius: 14px;
+    padding: 10px 24px;
+    cursor: pointer;
+    width: max-content;
+    margin: auto;
+    margin: 5px;
+}
 .disabled{
   background-color: #6e6e6e;
   cursor:not-allowed;
@@ -756,4 +771,7 @@ margin-top: auto;
 .auth-container {
   TEXT-ALIGN: center;
   margin-right:inherit;
+}
+.input-react-select {
+  font-family: monospace;
 }
