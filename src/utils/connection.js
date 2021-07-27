@@ -51,6 +51,15 @@ export async function wgetCurrentEpoch() {
     return epochProgressTFixed;
 //console.log("", epochProgressTFixed)
 }
+export async function wgetRemainingTime() {
+    // need getEpochInfo & getRecentPerformanceSamples
+    const epochInfo = await connection.getEpochInfo();
+    const slotindex = epochInfo.slotIndex;
+    const slotinEpochs = epochInfo.slotsInEpoch;
+    const samples = await connection.getRecentPerformanceSamples()
+   // return epochProgressTFixed;
+//console.log("", epochProgressTFixed)
+}
 
 export async function wgetVoteAcc() {
     const voteAccounts = await connection.getVoteAccounts();

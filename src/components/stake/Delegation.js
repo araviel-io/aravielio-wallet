@@ -1,11 +1,11 @@
 import Card from '../common/Card';
 import React from 'react';
-import { wgetVoteAcc, wgetCurrentEpoch } from '../../utils/connection'
 import Select from 'react-select'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { LAMPORTS_PER_SAFE } from '@safecoin/web3.js';
 import { wDelegate, wgetParsedAccountInfo, wgetMyVoterStats } from '../../utils/stake';
+import { wgetVoteAcc, wgetCurrentEpoch, wgetRemainingTime } from '../../utils/connection'
 import { Line } from 'rc-progress';
 
 function Delegation(props) {
@@ -28,6 +28,7 @@ function Delegation(props) {
     const [voterTotStake, setvoterTotStake] = useState(null);
 
     const [epochProgress, setepochProgress] = useState(null);
+    const [remainingTime, setremainingTime] = useState(null);
 
     const [ActivationEpoch, setActivationEpoch] = useState(null);
 
@@ -35,6 +36,8 @@ function Delegation(props) {
     const [withdrawAuthority, setwithdrawAuthority] = useState(null);
 
     const [refreshTest, setRefreshTest] = useState(null);
+
+    const [loadDelegStatus, setloadDelegStatus] = useState(null);
     //wgetMyVoterStats(voter);
 
     useEffect(() => {
@@ -50,9 +53,21 @@ function Delegation(props) {
     const valist = NodeArray[0];
     //console.log("options template : ", valist)
 
+    // only for select (pre-delegation)
     const handleSelectedNode = (event) => {
         console.log("Selected Node : ", event.value)
         setSelectedNode(event.value);
+        wgetMyVoterStats(event.value).then(function (result) {
+            console.log("wgetMyVoterStats ", voter);
+            var votercom = result[0].com;
+            var voterstake = result[0].stake;
+            var voterstakeTolam = voterstake / LAMPORTS_PER_SAFE;
+            setvoterCom(votercom);
+            setvoterTotStake(voterstakeTolam.toFixed(1));
+        }).catch((e) => {
+            console.log("wgetMyVoterStats ", e)
+            //constatus = false;
+        });
     }
 
     function trytorefresh() {
@@ -65,12 +80,20 @@ function Delegation(props) {
     }
 
     function tryToexecuteDelegation() {
+        setloadDelegStatus("sent")
         wDelegate(selectedNode)
             .then(function (val) {
-               setRefreshTest("test");
+                setloadDelegStatus("complete")
+                //setRefreshTest("test");
                 // you access the value from the promise here
                 console.log("signature for wDelegate(selectedNode) : ", val);
             });
+    }
+
+    function returnDelegLoading() {
+        if (loadDelegStatus === "sent") { return ("...") }
+        else if (loadDelegStatus === "complete") { return ("Delegated") }
+        else { return ("Confirm delegation") }
     }
 
     function returnDelegationActions() {
@@ -78,9 +101,34 @@ function Delegation(props) {
         if (selectedNode != null) {
             return (
                 <div>
-                    <div>delegate : {props.balance}</div>
-                    <div>to : {selectedNode}</div>
-                    <div className="card-button-center" onClick={() => { tryToexecuteDelegation() }}>Confirm</div>
+                    <div className="summary-container">
+                        <div className="summary-content">
+                            <div>
+                                <div className="dotted-separator"></div>
+                                <div className="summary-t">
+                                    <div>
+                                        <div className="summary-aya">DELEGATION<br />SUMMARY</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div>DELEGATE : {props.balance} SAFE</div>
+                                    <div>TO : {selectedNode}</div>
+                                    <div className="stake-voter-info">
+                                        <div className="stake-voter-info"> comission  <div className="black-bg">{voterCom}</div></div>
+                                        <div className="stake-voter-info"> total stake <div className="black-bg">{voterTotStake}</div></div>
+                                    </div>
+                                </div>
+                                <div className="dotted-separator"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='stake-numbers'>
+                        <div className='stake-numb-grid'></div>
+                        <div className='stake-numb-grid'>
+                            <div className="card-button-bottom inverted" onClick={() => { tryToexecuteDelegation() }}>{returnDelegLoading()}</div>
+                        </div>
+                    </div>
+
                 </div>
             )
         }
@@ -102,34 +150,43 @@ function Delegation(props) {
     }
 
     useEffect(() => {
+        console.log("PROPSSTATUS : ", props.status)
         if (props.status === "DELEGATED") {
-        wgetParsedAccountInfo().then(function (result) {
+            wgetParsedAccountInfo().then(function (result) {
 
-            var voter = result.value.data.parsed.info.stake.delegation.voter;
-            var activationEpoch = result.value.data.parsed.info.stake.delegation.activationEpoch;
-            var authstake = result.value.data.parsed.info.meta.authorized.staker;
-            var withdrawer = result.value.data.parsed.info.meta.authorized.staker;
-            setvoter(voter);
-            setActivationEpoch(activationEpoch);
-            setstakeAuthority(authstake);
-            setwithdrawAuthority(withdrawer);
+                var voter = result.value.data.parsed.info.stake.delegation.voter;
+                var activationEpoch = result.value.data.parsed.info.stake.delegation.activationEpoch;
+                var authstake = result.value.data.parsed.info.meta.authorized.staker;
+                var withdrawer = result.value.data.parsed.info.meta.authorized.staker;
+                setvoter(voter);
+                setActivationEpoch(activationEpoch);
+                setstakeAuthority(authstake);
+                setwithdrawAuthority(withdrawer);
 
-            //var test = await getvoter(voter);
+                //var test = await getvoter(voter);
 
-            console.log("** voterstatsvoterstats : ", test);
+                console.log("** voterstatsvoterstats : ", test);
 
-        }).catch((e) => {
-            console.log("getParsedAccountInfo ", e)
-            //constatus = false;
-        });
+            }).catch((e) => {
+                console.log("getParsedAccountInfo ", e)
+                //constatus = false;
+            });
 
-        wgetCurrentEpoch().then(function (result) {
-            setepochProgress(result)
-            console.log("wgetCurrentEpoch", result)
-        }).catch((e) => {
-            console.log("wgetCurrentEpoch ", e)
-            //constatus = false;
-        });
+            wgetCurrentEpoch().then(function (result) {
+                setepochProgress(result)
+                console.log("wgetCurrentEpoch", result)
+            }).catch((e) => {
+                console.log("wgetCurrentEpoch ", e)
+                //constatus = false;
+            });
+        } else if (props.status === "INITIALIZED") {
+            wgetRemainingTime().then(function (result) {
+                setremainingTime(result)
+                console.log("wgetCurrentEpoch", result)
+            }).catch((e) => {
+                console.log("wgetCurrentEpoch ", e)
+                //constatus = false;
+            });
         }
 
 

@@ -143,6 +143,7 @@ export async function wDesactivate() {
   return needsign;
 }
 
+// withdraw only account balance, not related to any other status 
 export async function wWithdrawStake(minimumAmount, recipient) {
   var mnAuth = localStorage.getItem('mnemonic')
   var mnStake = localStorage.getItem('stake-mnemonic')
