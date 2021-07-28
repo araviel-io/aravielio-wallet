@@ -49,28 +49,41 @@ export async function wgetCurrentEpoch() {
     const epochprogress = slotindex * 100 / slotinEpochs;
     var epochProgressTFixed = epochprogress.toFixed(0);
     return epochProgressTFixed;
-//console.log("", epochProgressTFixed)
+    //console.log("", epochProgressTFixed)
 }
 export async function wgetRemainingTime() {
     // need getEpochInfo & getRecentPerformanceSamples
     const epochInfo = await connection.getEpochInfo();
     const slotindex = epochInfo.slotIndex;
     const slotinEpochs = epochInfo.slotsInEpoch;
-    const samples = await connection.getRecentPerformanceSamples()
-   // return epochProgressTFixed;
-//console.log("", epochProgressTFixed)
+    const slotsLeft = slotinEpochs - slotindex;
+    // issue with connection.getRecentPerformanceSamples, temporary fix below :
+    const response = await fetch(getNetwork, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ "jsonrpc": "2.0", "id": "1", "method": "getRecentPerformanceSamples", "params": [1] })
+    })
+    // returns > 0: {numSlots: 119, numTransactions: 53213, samplePeriodSecs: 60, slot: 75155782}
+    const data = await response.json();
+    const samples = data.result[0];
+    const numSlots = samples.numSlots;
+    const samplePeriodSecs = samples.samplePeriodSecs;
+    const _blocktime = samplePeriodSecs / numSlots;
+    const secsEta = slotsLeft * _blocktime;
+    const hourseta = secsEta / 3600;
+    console.log("samplessamples : ", hourseta.toFixed(1))
+    return hourseta.toFixed(1);
 }
 
 export async function wgetVoteAcc() {
     const voteAccounts = await connection.getVoteAccounts();
     const activeVoteAcc = voteAccounts.current;
-   // const activeVoteAccCom = voteAccounts.current;
+    // const activeVoteAccCom = voteAccounts.current;
     const activeLength = activeVoteAcc.length;
     const array = [];
 
     console.log("first array test ", activeVoteAcc[0])
     for (let i = 0; i < activeLength; i += 1) {
-        array.push({ value: activeVoteAcc[i].votePubkey, label: activeVoteAcc[i].votePubkey + " | " + activeVoteAcc[i].commission + " % "  });
+        array.push({ value: activeVoteAcc[i].votePubkey, label: activeVoteAcc[i].votePubkey + " | " + activeVoteAcc[i].commission + " % " });
     }
     //localStorage.setItem("voteAccounts", array)
     //console.log("custom array: ",array)
@@ -133,8 +146,8 @@ function instructions(connection, account) {
             commitment: "singleGossip",
         },
     )
-    .then(() => { console.log("done") })
-    .catch((e) => { console.log("error", e) });
+        .then(() => { console.log("done") })
+        .catch((e) => { console.log("error", e) });
 }
 
 export async function solRequestAirdrop() {
@@ -170,12 +183,12 @@ export async function wgetPubKey(mnemonic) {
 
     return account.publicKey;
 }
-export async function wgetSignatureStatus(sign){
+export async function wgetSignatureStatus(sign) {
 
     const signature = await connection.getSignatureStatus(sign);
     return signature;
-  }
-  
+}
+
 // derivation path, should not be changed (compliant to wallet.safecoin.org)
 function deriveSeed(seed) {
     // you can create others derive path from wallet.safecoin.org
@@ -183,8 +196,8 @@ function deriveSeed(seed) {
     return derivePath(path44Change, seed).key;
 }
 export async function wgetVersion() {
-   const clusterVer = await connection.getVersion();
-   return clusterVer;
+    const clusterVer = await connection.getVersion();
+    return clusterVer;
 }
 /*
 export async function wgetFees() {

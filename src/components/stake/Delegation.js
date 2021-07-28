@@ -7,7 +7,7 @@ import { LAMPORTS_PER_SAFE } from '@safecoin/web3.js';
 import { wDelegate, wgetParsedAccountInfo, wgetMyVoterStats } from '../../utils/stake';
 import { wgetVoteAcc, wgetCurrentEpoch, wgetRemainingTime } from '../../utils/connection'
 import { Line } from 'rc-progress';
-
+import { HourglassOutline } from 'react-ionicons'
 function Delegation(props) {
     // if initialized > show this component > Done
     /// if not delegated display :
@@ -117,6 +117,11 @@ function Delegation(props) {
                                         <div className="stake-voter-info"> comission  <div className="black-bg">{voterCom}</div></div>
                                         <div className="stake-voter-info"> total stake <div className="black-bg">{voterTotStake}</div></div>
                                     </div>
+                                    <div className="stake-activation-eta-container"><HourglassOutline color={'#00000'} height="40px" width="40px" />
+                                        <div className="stake-activation-eta-info">
+                                            your staking will be active in approx.<br /> <b>{remainingTime}</b> hours after delegation.
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="dotted-separator"></div>
                             </div>
@@ -182,14 +187,12 @@ function Delegation(props) {
         } else if (props.status === "INITIALIZED") {
             wgetRemainingTime().then(function (result) {
                 setremainingTime(result)
-                console.log("wgetCurrentEpoch", result)
+                console.log("wgetRemainingTime", result)
             }).catch((e) => {
-                console.log("wgetCurrentEpoch ", e)
+                console.log("wgetRemainingTime ", e)
                 //constatus = false;
             });
         }
-
-
     }, [])
 
     useEffect(() => {
