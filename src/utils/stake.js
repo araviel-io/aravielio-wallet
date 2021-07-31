@@ -124,7 +124,7 @@ export async function wDesactivate() {
   var stakekeypair = await wKeypair(mnStake);
 
   let deactivate = web.StakeProgram.deactivate({
-    stakePubkey: stakekeypair,
+    stakePubkey: stakekeypair.publicKey,
     authorizedPubkey: authkeypair.publicKey,
   });
   var needsign = await web.sendAndConfirmTransaction(connection, deactivate, [authkeypair], {
@@ -134,11 +134,11 @@ export async function wDesactivate() {
     .then(
       function (signature) {
         // console.log("tx-id: "+TransactionSignature); 
-        console.log("**wDelegate promise : ", signature)
+        console.log("**wDesactivate promise : ", signature)
         return signature;
       })
     .catch((e) => {
-      console.log("**wDelegate promise ERROR", e)
+      console.log("**wDesactivate promise ERROR", e)
     });
   return needsign;
 }

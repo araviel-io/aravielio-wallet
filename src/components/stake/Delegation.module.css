@@ -1,0 +1,27 @@
+.alertconfirmed {
+    display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace;
+}
+.successbadge{
+    font-family: monospace;
+    color: rgb(188 234 173);
+    display: inline-block;
+    font-size: 115%;
+    font-weight: bolder;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+
+    border-radius: 0.375rem;
+    transition: color 0.15s ease-in-out 0s, background-color 0.15s ease-in-out 0s, border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    margin-right: 25px;
+}
+.onetimefx {
+    -webkit-animation: fade 2s;
+    animation: fade 2s;
+    -moz-animation: fade 2s;
+    -o-animation: fade 2s;
+}

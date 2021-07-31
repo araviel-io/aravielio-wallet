@@ -1,20 +1,27 @@
+![Easy staking on Safecoin (Solana CE)](https://i.imgur.com/8CSV5UH.gif)
 ![alt text](https://i.imgur.com/FbmzGXD.png)
 ![alt text](https://i.imgur.com/TnIV44k.png)
 
-# Aravie.io SafeCoin Wallet
+# Araviel.io SafeCoin Wallet
 
 Not a production build, for now it's only intended for testing and dev, have fun !
 
-What is working : 
+### Features : 
 
-Create Keypar (newly Account) from seed phrase (24 words) compliant to wallet.safecoin.org derivation path (`m/44'/19165'/0'/0'`)\
-Display your receive address and a react-qr code associated with it\
-Sending\
-Stake account creation\
-Delegating to chosen validator\
-Change networks and features Solana airdrops for playing with balance with no harm done !
+* Create Keypar (newly Account) from seed phrase (24 words) compliant to wallet.safecoin.org derivation path (`m/44'/19165'/0'/0'`)\
+* Display your receive address and a react-qr code associated with it\
+* Sending\
+* Stake account creation\
+* Delegating / Undelegating to chosen validator\
+* Change networks and features Solana airdrops for playing with balance with no harm done !
 
 Web Wallet for Safecoin, the Community Edition (CE) of Solana.
+
+### Further development:
+
+* Improving security and data storage\
+* Tokens listing\
+* Prepare for public stress test\
 
 ## Build it yourself
 

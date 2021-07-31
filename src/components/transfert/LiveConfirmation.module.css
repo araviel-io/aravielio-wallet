@@ -50,3 +50,29 @@
     transition: color 0.15s ease-in-out 0s, background-color 0.15s ease-in-out 0s, border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
     margin-right: 25px;
 }
+.confcontainer {
+    display: flex;
+    justify-content: center;
+    position: initial;
+    font-family: monospace;
+}
+.liveconfAmount {
+    position: absolute;
+    top: 55%;
+    left: 42%;
+    font-weight: 900;
+    font-size: xx-large;
+    display: inherit;
+}
+.staticonfAmount {
+    font-size: inherit;
+    font-weight: inherit;
+    position: absolute;
+    top: 59%;
+    left: 48%;
+}
+.coffee{
+    position: absolute;
+    top: 40%;
+    left: 44%;
+}

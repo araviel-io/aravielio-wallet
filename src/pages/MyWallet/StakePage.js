@@ -7,13 +7,14 @@ import Popup from 'reactjs-popup';
 import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
 import Delegation from '../../components/stake/Delegation';
-import TransfertStatus from '../../components/transfert/TransfertStatus';
 
-import { wCreateStakeAccount, wCreateAuthKeypair, wCreateStakeKeypair, wgetStakeActivation, wWithdrawStake } from '../../utils/stake';
-import { wKeypair, wgetSignatureStatus, wgetMiniRent } from '../../utils/connection'
+
+import { wCreateStakeAccount, wCreateStakeKeypair, wgetStakeActivation, wWithdrawStake, wDesactivate } from '../../utils/stake';
+import { wKeypair, wgetSignatureStatus, wgetMiniRent, wgetSignatureConfirmation } from '../../utils/connection'
 
 
 import * as web from '@safecoin/web3.js';
+
 
 
 const network = localStorage.getItem('network')
@@ -24,11 +25,12 @@ function StakePage(props) {
 
     // never use those hooks for sending transactions, except if you know what you
     // are doing (callbacks)
+    /*
     const [accAdd, setaccAdd] = useState(null);
-    const [accbal, setaccbal] = useState(null);
+    const [accbal, setaccbal] = useState(null);*/
 
     const [authKp, setauthAdd] = useState(null);
-    const [authbal, setauthbal] = useState(null);
+    // const [authbal, setauthbal] = useState(null);
 
     const [stakeAdd, setstakeAdd] = useState(null);
     const [stakebal, setstakebal] = useState(null);
@@ -46,8 +48,13 @@ function StakePage(props) {
 
     const [withDrwSignStatus, setwithDrwSignStatus] = useState(null);
 
-    const [signature, setSignature] = useState(null);
-    const [rent, setRent] = useState(null);
+    // const [signature, setSignature] = useState(null);
+    // const [rent, setRent] = useState(null);
+
+
+    // Setinterval thing
+    const [recUnConfAmount, setrecUnConfAmount] = useState("");
+    const [recUnConfstatus, setrecUnConfstatus] = useState("");
     // placeholder for a more dynamic UI
 
     function returnDelegstatus() {
@@ -63,7 +70,7 @@ function StakePage(props) {
             )
         } else if (stakeInit === "delegated") {
             return (
-                <div className='ssgr'>Delegated</div>
+                <div className='ssgr'>{wgetStakeStatus}</div>
             )
         }
     }
@@ -88,41 +95,45 @@ function StakePage(props) {
         //var authAddress = authkeypair.publicKey.toBase58();
         var stakeAddress = stakekeypair.publicKey.toBase58();
 
-        setaccAdd(mainAddress);
+        //setaccAdd(mainAddress);
         setauthAdd(mainAddress);
         setstakeAdd(stakeAddress);
 
         await connection.getBalance(stakekeypair.publicKey).then(function (result) {
             setstakebal(result);
         });
-        
-            await connection.getParsedAccountInfo(stakekeypair.publicKey)
-                .then(function (result) {
-                    console.log("test", result)
-                    var getStakingType;
-                    try {
-                        getStakingType = result.value.data.parsed.type;
-                    } catch (e) {
-                        // FIXME: VERY DIRTY
-                        getStakingType = null;
-                    }
-                    //.data.parsed.type
-                    var getDelegationStatus = result.value.data.parsed.info.stake;
-                    //TODO: try to drastically reduces requests by : returning or callbacks or by splitting effect
-                    setstakeInit(getStakingType);
-                    setdelegStatus(getDelegationStatus);
-                    console.log("*getParsedAccountInfo : ", result);
-                }).catch((e) => {
-                    console.log("getParsedAccountInfo ex", e)
-                });
-        
+
+        await connection.getParsedAccountInfo(stakekeypair.publicKey)
+            .then(function (result) {
+                console.log("StakePage.js - getParsedAccountInfo(stakekeypair.publicKey) ", result)
+                var getStakingType;
+                try {
+                    getStakingType = result.value.data.parsed.type;
+                } catch (e) {
+                    // FIXME: VERY DIRTY
+                    getStakingType = null;
+                }
+                //.data.parsed.type
+                var getDelegationStatus = result.value.data.parsed.info.stake;
+                //TODO: try to drastically reduces requests by : returning or callbacks or by splitting effect
+                setstakeInit(getStakingType);
+                console.log("StakePage.js -  setstakeInit(getStakingType); ", getStakingType)
+                setdelegStatus(getDelegationStatus);
+                console.log("*getParsedAccountInfo : ", result);
+            }).catch((e) => {
+                console.log("getParsedAccountInfo ex", e)
+            });
+
 
     }
 
     useEffect(() => {
         getAllKeypairs();
-        if (stakeInit != null) {
+        console.log("   ddd d   stakeInitstakeInit", stakeInit)
+        if (stakeInit !== null) {
+            console.log("stakeInitstakeInit", stakeInit)
             wgetStakeActivation().then(function (result) {
+                console.log("StakePage.js - RESULT GALERE", result)
                 var activelamport = result.active;
                 if (activelamport > 0) {
                     setwgetStakeAmount(activelamport / web.LAMPORTS_PER_SAFE);
@@ -132,7 +143,7 @@ function StakePage(props) {
                     setwgetStakeAmount(inactivelamport / web.LAMPORTS_PER_SAFE);
                 }
                 setwgetStakeStatus(result.state);
-                //console.log("**wgetStakeActivation : ", result);
+
 
             }).catch((e) => {
                 console.log("StakePage - wgetStakeActivation Promise ", e)
@@ -140,19 +151,19 @@ function StakePage(props) {
             });
             // getMainAccountKeypair();
         } else {
-            
+
             wgetMiniRent()
-            .then(function (result) {
-                setRent(result);
-                console.log(result)
-            }).catch((e) => {
-                console.log("StakePage - wgetStakeActivation Promise ", e)
-                //constatus = false;
-            });
+                .then(function (result) {
+                    //setRent(result);
+                    console.log(result)
+                }).catch((e) => {
+                    console.log("StakePage - wgetStakeActivation Promise ", e)
+                    //constatus = false;
+                });
         }
 
 
-    }, []);
+    }, [stakeInit]);
 
     async function tryToCreateStakeAccount() {
         setloadstakeInit("sent")
@@ -181,12 +192,12 @@ function StakePage(props) {
                 // you access the value from the promise here
                 //
                 setwithDrwSignStatus("sent");
-                setSignature(signature);
+                // setSignature(signature);
                 //console.log("tryToWithdrawStake signature: ", signature);
 
                 wgetSignatureStatus(signature)
                     .then(function (result) {
-                        console.log("SIGNATURE DETAILS", result)
+                        console.log("StakePage.js - SIGNATURE DETAILS", result)
                         if (result.value.err === null) {
                             setwithDrwSignStatus("confirmed");
                             //TODO: update balance
@@ -208,22 +219,65 @@ function StakePage(props) {
             });
     }
 
+
+    async function tryToDeactivate() {
+        wDesactivate()
+            .then(function (val) {
+                if (val != null) {
+                    console.log("StakePage.js - tryToDeactivate()", val)
+                    // set interval HERE : set hook until .status is different finalized
+                    // put a condition to stop the set interval
+                    setInterval(function () {
+                        wgetSignatureConfirmation(val)
+                            .then(function (signArray) {
+                                //console.log(signArray)
+                                // set amount hook
+                                // set status hook
+                                var confamount = signArray[0].amount;
+                                var confstatus = signArray[0].label;
+                                setrecUnConfAmount(confamount)
+                                setrecUnConfstatus(confstatus)
+                                // if different finalized show amount ? loader ?
+                                console.log('%c StakePage.js : ', 'background: #da5820; color: #bada55', signArray[0].amount)
+                                console.log('%c StakePage.js : ', 'background: #da5820; color: #bada55', signArray[0].label)
+                                //console.log('%c StakePage.js recConfAmount : ', 'background: #da5820; color: #bada55', recConfAmount)
+                            })
+                    }, 3000);
+
+
+
+                }
+                // you access the value from the promise here
+                //console.log("PLEASE RETURN A SIGNATURE ", val);
+            })
+            .catch((e) => {
+                console.log("StakePage.js - tryToDeactivate() CATCH", e)
+            });
+    }
+
+    console.log('%c StakePage.js recUnConfAmount : ', 'background: red; color: #bada55', recUnConfAmount)
+    //console.log(recUnConfAmount)
     function returnStakeInitLoading() {
-        if (loadstakeInit === "sent") {return ("...")}
-        else if (loadstakeInit === "complete") {return ("good")}
-        else {return ("Initialize")}
+        if (loadstakeInit === "sent") { return ("...") }
+        else if (loadstakeInit === "complete") { return ("good") }
+        else { return ("Initialize") }
     }
 
     function returnNetStakeBalance() {
         var balance;
-        if (stakeInit === "delegated") {
+        //FIXME: merge all condition to wgetStakeStatus
+        if (wgetStakeStatus === "inactive") {
+            balance = stakebal / web.LAMPORTS_PER_SAFE;
+        }
+        else if (stakeInit === "delegated") {
             var rawbalance = stakebal / web.LAMPORTS_PER_SAFE;
             balance = rawbalance - wgetStakeAmount;
             //console.log("wgetStakeAmountwgetStakeAmount : ", wgetStakeAmount)
-        } else {
+        }
+        else {
             balance = stakebal / web.LAMPORTS_PER_SAFE;
         }
-        return balance.toFixed(2);
+        return balance.toFixed(3);
     }
 
     function returnWithdrawStatus() {
@@ -264,21 +318,7 @@ function StakePage(props) {
         setwithdrwAmount(event.target.value);
     };
 
-    function test() {
-        setwithDrwSignStatus("");
-        setwithdrwAmount("")
-        console.log("WITHDRAW SIGN STATUS : ", withDrwSignStatus)
-        //setwithdrwAddress("")
-    }
 
-    function displayTransfertStatusComponent() {
-
-        return (
-            <div>
-                <TransfertStatus status={withDrwSignStatus} sign={signature} />
-            </div>
-        )
-    }
 
 
     function displayAuthorityAddress() {
@@ -306,9 +346,11 @@ function StakePage(props) {
 
     function displayDelegationComponent() {
         //var AuthSave = localStorage.getItem('auth-mnemonic')
+        //console.log("++**wgetStakeStatus : ", wgetStakeStatus);
         var MainSave = localStorage.getItem('mnemonic')
         var StakeSave = localStorage.getItem('stake-mnemonic')
-        console.log("stakeinitstakeinit : ", stakeInit)
+        //console.log("stakeinitstakeinit : ", stakeInit)
+
         if (delegStatus === null && stakeInit === "initialized") {
             // means initialized & not delegated FIXME: more intuitive conditions
             return (
@@ -317,13 +359,29 @@ function StakePage(props) {
                 </div>
             )
         } else if (stakeInit === "delegated") {
+            console.log("StakePage.js - stakeInit CONDITION", wgetStakeStatus)
             // no controls show delegation component with stake data
+            //FIXME: delegatedStatus={wgetStakeStatus}
+
+            if (wgetStakeStatus === "inactive") {
+                return (
+                    <Delegation
+                        status={"DELEGATED"}
+                        balance={stakebal / web.LAMPORTS_PER_SAFE}
+                        delegatedAmount={wgetStakeAmount * web.LAMPORTS_PER_SAFE}
+
+                        delegatedStatus={wgetStakeStatus}
+                    />
+                )
+            }
+
             return (
                 <div>
                     <Delegation
                         status={"DELEGATED"}
                         balance={stakebal / web.LAMPORTS_PER_SAFE}
-                        delegatedAmount={wgetStakeAmount.toFixed(2) * web.LAMPORTS_PER_SAFE}
+                        delegatedAmount={wgetStakeAmount * web.LAMPORTS_PER_SAFE}
+
                         delegatedStatus={wgetStakeStatus}
                     />
                     <div className="just-flex">
@@ -352,7 +410,7 @@ function StakePage(props) {
                                         <div className="label-stake-withdraw">Recipient</div>
                                         <input placeholder="Address" className="input-address-form" onChange={onChangeHandlerAddress} />
                                     </div>
-                                    {displayTransfertStatusComponent()}
+
                                     <div className="actions">
                                         {returnWithdrawStatus()}
                                     </div>
@@ -361,7 +419,7 @@ function StakePage(props) {
                             }
                         </Popup>
 
-                        <div className="card-button-center" onClick={() => { }}>Deactivate</div>
+                        <div className="card-button-center" onClick={() => { tryToDeactivate() }}>Deactivate</div>
                     </div>
 
                 </div>
@@ -372,7 +430,7 @@ function StakePage(props) {
 
     function displayUninitializedCard() {
         if (stakeInit === null) {
-            console.log("Display non-initialized card")
+            console.log("StakePage.js - Display non-initialized card")
             return (
                 <Card styleName='staking' cardContent={
 
@@ -384,7 +442,7 @@ function StakePage(props) {
                         <div className='stake-status'>
                             <div className="auth-container">
                                 <div className="stake-address">You are about to initialize and create your stake account</div>
-                                
+
                             </div>
                             <div className='horizontal-space'></div>
                             {/* to rework*/}
@@ -401,7 +459,7 @@ function StakePage(props) {
             )
 
         } else {
-            console.log("Display Initialized card")
+            console.log("StakePage.js - Display Initialized card")
             return (
                 <Card styleName='staking-init' cardContent={
 

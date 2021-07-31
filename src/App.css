@@ -792,17 +792,20 @@ margin-top: auto;
   position: relative;
   top:50%;
   font-family: monospace;
-  padding-top: 15px;
   
 }
 .stake-activation-eta-container {
   display:flex;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: 25px;
     margin-bottom: 15px;
 }
 .stake-activation-eta-info {
   
+}
+.pre-delegation-summary-container {
+  display: flex;
+  justify-content: space-between;
 }
 .summary-t {
   display: flex;

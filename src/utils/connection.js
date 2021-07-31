@@ -89,6 +89,25 @@ export async function wgetVoteAcc() {
     //console.log("custom array: ",array)
     return array;
 }
+// don't know why i can't find getInflationRate method
+export async function wgetInflation() {
+    try {
+        const response2 = await fetch(getNetwork, {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ "jsonrpc": "2.0", "id": "1", "method": "getInflationRate" })
+        })
+        var data2 = await response2.json();
+        var _tempresult = data2.result;
+        var totalinflation = _tempresult.total;
+        var _totinf = parseFloat(totalinflation);
+        var fixedinf = _totinf * 100;
+        console.log(fixedinf.toFixed(1))
+    }
+    catch (e) {
+        console.log(e.message)
+    }
+    return fixedinf.toFixed(1);
+}
 
 // placeholder
 export async function wKeypair(mnemonic) {
@@ -187,6 +206,26 @@ export async function wgetSignatureStatus(sign) {
 
     const signature = await connection.getSignatureStatus(sign);
     return signature;
+}
+
+export async function wgetSignatureConfirmation(sign) {
+    // to be called at a setInterval > returns confirmations amount and MAX
+    const signStatusArr = [];
+    await connection.getSignatureStatus(sign)
+    .then(
+        function (status) {
+            //parse signature and retrieve the confirmation amount
+        var confAmount = status.value.confirmations;
+        var confStatus = status.value.confirmationStatus;
+        console.log('%c connection.js : ', 'background: #222; color: #bada55', confStatus, confAmount, status )
+        signStatusArr.push({ amount: confAmount, label: confStatus});
+        //return confStatus;
+        })
+      .catch((e) => {
+
+      });
+
+    return signStatusArr;
 }
 
 // derivation path, should not be changed (compliant to wallet.safecoin.org)
