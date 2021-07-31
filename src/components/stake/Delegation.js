@@ -6,7 +6,7 @@ import styles from './Delegation.module.css';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { LAMPORTS_PER_SAFE } from '@safecoin/web3.js';
-import { wDelegate, wgetParsedAccountInfo, wgetMyVoterStats } from '../../utils/stake';
+import { wDelegate, wgetParsedAccountInfo, wgetMyVoterStats,wDesactivate } from '../../utils/stake';
 import { wgetVoteAcc, wgetCurrentEpoch, wgetRemainingTime, wgetInflation, wgetSignatureConfirmation } from '../../utils/connection'
 import { Line } from 'rc-progress';
 import { HourglassOutline } from 'react-ionicons'
@@ -14,20 +14,9 @@ import { CoffeeLoading } from 'react-loadingg';
 
 import LiveConfirmation from '../../components/transfert/LiveConfirmation';
 function Delegation(props) {
-    // if initialized > show this component > Done
-    /// if not delegated display :
-    /// + validator selection list > Done
-    /// + selected validator infos (com) > Done
-    /// + summary of the staking instruction
-    /// + approx time of activation duration (epoch) > done
-    /// if delegated display :
-    /// + show amount & APY + rewards
-    /// actual validator > done
-
 
     const [NodeArray, setNodeArray] = useState([]);
     const [selectedNode, setSelectedNode] = useState(null);
-
     // getAccountinfo area
     const [voter, setvoter] = useState(null);
     const [voterCom, setvoterCom] = useState(null);
@@ -41,19 +30,18 @@ function Delegation(props) {
      const [stakeAuthority, setstakeAuthority] = useState(null);
      const [withdrawAuthority, setwithdrawAuthority] = useState(null);*/
 
-    const [loadDelegStatus, setloadDelegStatus] = useState(null);
-
     //setinterval master signature
+    const [loadDelegStatus, setloadDelegStatus] = useState(null);
     const [DelegSign, setDelegSign] = useState(null);
     const [DelegConfAmount, setDelegConfAmount] = useState(null);
     const [DelegConfStatus, setDelegConfStatus] = useState(null);
+
+    const [instructionType, setinstructionType] = useState(null);
 
     const [apy, setApy] = useState(null);
     //wgetMyVoterStats(voter);
 
     useEffect(() => {
-        // setPropsStatus(props.delegatedStatus);
-        // console.log("Delegation.js - PROPS MYSTIQUE : ", propsStatus);
         wgetVoteAcc()
             .then(
                 function (result) {
@@ -89,8 +77,8 @@ function Delegation(props) {
         });
     }
 
-
     function tryToexecuteDelegation() {
+        setinstructionType("delegate")
         setloadDelegStatus("requesting")
         wDelegate(selectedNode)
             .then(function (delegsign) {
@@ -101,20 +89,34 @@ function Delegation(props) {
                     wgetSignatureConfirmation(delegsign)
                         .then(function (signArray) {
                             setloadDelegStatus("processing")
-                            //setNodeArray(null)
                             setDelegConfAmount(signArray[0].amount)
                             setDelegConfStatus(signArray[0].label)
-                            console.log('%c DDDelegation.js : ', 'background: #da5820; color: #bada55', signArray[0].amount)
-                            console.log('%c DDDelegation.js : ', 'background: #da5820; color: #bada55', signArray[0].label)
-                            console.log('%c DDDelegation.js DelegConfAmount : ', 'background: #da5820; color: #bada55', DelegConfAmount)
                             if (signArray[0].label === "finalized") {
-                                console.log('%c Delegation.js : CLEAR INTERVAL', 'background: #da5820; color: #3861fb')
                                 clearInterval(interval);
                             }
                         })
                 }, 1000)
                 setloadDelegStatus("complete")
+            });
+    }
 
+    function tryToDeactivate() {
+        setinstructionType("deactivate")
+        setloadDelegStatus("requesting")
+        wDesactivate()
+            .then(function (undelegsign) {
+                const interval = setInterval(() => {
+                    wgetSignatureConfirmation(undelegsign)
+                        .then(function (signArray) {
+                            setloadDelegStatus("processing")
+                            setDelegConfAmount(signArray[0].amount)
+                            setDelegConfStatus(signArray[0].label)
+                            if (signArray[0].label === "finalized") {
+                                clearInterval(interval);
+                            }
+                        })
+                }, 1000)
+                setloadDelegStatus("complete")
             });
     }
 
@@ -123,7 +125,11 @@ function Delegation(props) {
         if (loadDelegStatus === "requesting" || loadDelegStatus === "sent" || loadDelegStatus === "processing" || loadDelegStatus === "complete") { return ("...") }
         else { return ("Stake now !") }
     }
-
+    function returnUnDelegLoading() {
+        //FIXME: instead of text, returns whole control with according disabled state
+        if (loadDelegStatus === "requesting" || loadDelegStatus === "sent" || loadDelegStatus === "processing" || loadDelegStatus === "complete") { return ("...") }
+        else { return ("Deactivate") }
+    }
     function returnDelegationActions() {
 
         // second display if account is initialized and a validator have been selected
@@ -133,19 +139,9 @@ function Delegation(props) {
                     <div className="summary-container">
                         <div className="summary-content">
                             <div>
-
                                 <div className="summary-t">
-                                    {/*<div>
-                                        <div className="summary-aya">DELEGATION<br />SUMMARY</div>
-                                    </div>*/}
                                 </div>
                                 <div>
-                                    {/* <div className="stake-voter-info">
-                                        <div className="stake-voter-info"> comission  <div className="black-bg">{voterCom} %    </div></div>
-                                        <div className="stake-voter-info"> total stake <div className="black-bg">{voterTotStake}</div></div>
-                                    </div>
-                                    <div>{selectedNode}</div> */}
-
                                     <div className="pre-delegation-summary-container">
                                         <div className="stake-numb-grid">Amount : <b>{props.balance} SAFE</b></div>
                                         <div className="stake-numb-grid">APY : <b>{apy} %</b></div>
@@ -205,18 +201,11 @@ function Delegation(props) {
 
                 console.log("** wgetParsedAccountInfo().then(function (result) : ");
 
-            }).catch((e) => {
-                console.log("getParsedAccountInfo ", e)
-                //constatus = false;
-            });
-
+            }).catch((e) => {console.log("getParsedAccountInfo ", e) });
             wgetCurrentEpoch().then(function (result) {
                 setepochProgress(result)
-                console.log("Delegation.js - wgetCurrentEpoch", result)
-            }).catch((e) => {
-                console.log("Delegation.js - wgetCurrentEpoch ", e)
-                //constatus = false;
-            });
+            }).catch((e) => {console.log("Delegation.js - wgetCurrentEpoch ", e)});
+
         } else if (props.status === "INITIALIZED") {
             //console.log("props.status INIT ZZBI ", propsStatus)
             wgetRemainingTime().then(function (result) {
@@ -232,7 +221,6 @@ function Delegation(props) {
     useEffect(() => {
         if (voter != null) {
             wgetMyVoterStats(voter).then(function (result) {
-                console.log("Delegation.js - wgetMyVoterStats ", voter);
                 var votercom = result[0].com;
                 var voterstake = result[0].stake;
                 var voterstakeTolam = voterstake / LAMPORTS_PER_SAFE;
@@ -240,9 +228,7 @@ function Delegation(props) {
                 setvoterTotStake(voterstakeTolam.toFixed(1));
             }).catch((e) => {
                 console.log("Delegation.js - wgetMyVoterStats ", e)
-                //constatus = false;
             });
-
         }
     }, [voter])
 
@@ -298,11 +284,12 @@ function Delegation(props) {
                     <div className="dotted-separator"></div>
                     <div className="vertical-space"></div>
                     {returnProgressEpoch()}
+                    <div className="card-button-center" onClick={() => { tryToDeactivate() }}>{returnUnDelegLoading()}</div>
                 </div>
+                
             )
         }
     }
-
 
     function returnCorrectUrlForNetwork() {
         const network = localStorage.getItem('network')
@@ -321,22 +308,18 @@ function Delegation(props) {
         }
     }
 
-
-    function returnDelegationInfoOnce() {
+    function returnDelegationInfoOnce(isType) {
         var one = "one";
         //
         return (
             <div>
                 <div className={styles.alertconfirmed}>
-
                     <div>
-                        <div className={styles.successbadge}>DELEGATION SUCCESS</div>
+                        <div className={styles.successbadge}>{isType} SUCCESS</div>
                     </div>
                     <div>
-
                         {returnCorrectUrlForNetwork()}
                     </div>
-
                 </div>
                 <div className={styles.onetimefx}>
                     <div className="active-stake-container">
@@ -360,20 +343,10 @@ function Delegation(props) {
                 </div>
             </div>
         )
-
     }
 
-    /*   useEffect(() => {
-           DelegationHub();
-       })*/
-
     function DelegationHub(loadDelegStatus) {
-
-        /*  if (props.status === null) {
-              return (
-                  <div>rentinfos & initialize info</div>
-              )
-          } */
+        // every conditions here are loaded from refresh by props nad live (instructions) by usestates
         console.log("Delegation.js - Delegation Hub loadDelegStatus ", loadDelegStatus)
 
         if (DelegConfAmount !== null) {
@@ -391,11 +364,17 @@ function Delegation(props) {
         } else {
             if (DelegConfStatus === "finalized") {
                 // this condition only show once after delegation
-                console.log("Delegation.js - COMPLETE TRIGGERED ", loadDelegStatus)
-                return (
-                    returnDelegationInfoOnce()
+                // add a condition instructionType
+                if (instructionType === "delegate") {
+                    return (
+                        returnDelegationInfoOnce(instructionType)
+                    )
+                } else if (instructionType === "deactivate") {
+                    return (
+                        returnDelegationSelect()
+                    )
+                }
 
-                )
             } else if (props.status === "INITIALIZED" || props.delegatedStatus === "inactive") {
                 return (
                     returnDelegationSelect()
@@ -411,9 +390,7 @@ function Delegation(props) {
 
 
     }
-    // if props.status == null return initialization & rent
-    // if props.status == initialized return select a validator
-    // if props.status == delegated return delegation infos status
+
     return (
         <Card styleName='staking-delegation' cardContent={
             <div>

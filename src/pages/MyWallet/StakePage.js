@@ -9,7 +9,7 @@ import Card from '../../components/common/Card';
 import Delegation from '../../components/stake/Delegation';
 
 
-import { wCreateStakeAccount, wCreateStakeKeypair, wgetStakeActivation, wWithdrawStake, wDesactivate } from '../../utils/stake';
+import { wCreateStakeAccount, wCreateStakeKeypair, wgetStakeActivation, wWithdrawStake } from '../../utils/stake';
 import { wKeypair, wgetSignatureStatus, wgetMiniRent, wgetSignatureConfirmation } from '../../utils/connection'
 
 
@@ -220,40 +220,7 @@ function StakePage(props) {
     }
 
 
-    async function tryToDeactivate() {
-        wDesactivate()
-            .then(function (val) {
-                if (val != null) {
-                    console.log("StakePage.js - tryToDeactivate()", val)
-                    // set interval HERE : set hook until .status is different finalized
-                    // put a condition to stop the set interval
-                    setInterval(function () {
-                        wgetSignatureConfirmation(val)
-                            .then(function (signArray) {
-                                //console.log(signArray)
-                                // set amount hook
-                                // set status hook
-                                var confamount = signArray[0].amount;
-                                var confstatus = signArray[0].label;
-                                setrecUnConfAmount(confamount)
-                                setrecUnConfstatus(confstatus)
-                                // if different finalized show amount ? loader ?
-                                console.log('%c StakePage.js : ', 'background: #da5820; color: #bada55', signArray[0].amount)
-                                console.log('%c StakePage.js : ', 'background: #da5820; color: #bada55', signArray[0].label)
-                                //console.log('%c StakePage.js recConfAmount : ', 'background: #da5820; color: #bada55', recConfAmount)
-                            })
-                    }, 3000);
 
-
-
-                }
-                // you access the value from the promise here
-                //console.log("PLEASE RETURN A SIGNATURE ", val);
-            })
-            .catch((e) => {
-                console.log("StakePage.js - tryToDeactivate() CATCH", e)
-            });
-    }
 
     console.log('%c StakePage.js recUnConfAmount : ', 'background: red; color: #bada55', recUnConfAmount)
     //console.log(recUnConfAmount)
@@ -419,7 +386,7 @@ function StakePage(props) {
                             }
                         </Popup>
 
-                        <div className="card-button-center" onClick={() => { tryToDeactivate() }}>Deactivate</div>
+
                     </div>
 
                 </div>
