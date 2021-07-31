@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import Popup from 'reactjs-popup';
-
+import { CoffeeLoading } from 'react-loadingg';
 //import Container from '../../components/common/Container'
 import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
@@ -285,14 +285,10 @@ function StakePage(props) {
         setwithdrwAmount(event.target.value);
     };
 
-
-
-
     function displayAuthorityAddress() {
         if (stakeInit != null) {
             return (
                 <div>
-
                     <div className="stake-auth">
                         <div className="stake-sauth-label">S-AUTH</div>
                         <div className="stake-subadd">{authKp}</div>
@@ -385,14 +381,10 @@ function StakePage(props) {
                             )
                             }
                         </Popup>
-
-
                     </div>
-
                 </div>
             )
         }
-
     }
 
     function displayUninitializedCard() {
@@ -400,7 +392,6 @@ function StakePage(props) {
             console.log("StakePage.js - Display non-initialized card")
             return (
                 <Card styleName='staking' cardContent={
-
                     <div className='stake-address-wrapper'>
                         <div className='safe-logo'></div>
                         <div className='safe-balance-numbers'>
@@ -409,11 +400,9 @@ function StakePage(props) {
                         <div className='stake-status'>
                             <div className="auth-container">
                                 <div className="stake-address">You are about to initialize and create your stake account</div>
-
                             </div>
                             <div className='horizontal-space'></div>
                             {/* to rework*/}
-
                         </div>
                         <div className='stake-numbers'>
                             <div className='stake-numb-grid'>Rent : 0.002282922<br />Fees : 0.000000001</div>
@@ -452,16 +441,31 @@ function StakePage(props) {
                 } />
             )
         }
+    }
+    console.log("variable test",)
 
+
+    if (wgetStakeStatus != null) {
+        return (
+            <div>
+                <Title titleHeader='Stake' />
+
+                {displayUninitializedCard()}
+                {displayDelegationComponent()}
+            </div>
+        );
+    } else {
+        // loading page
+        return (
+            <div>
+                <Title titleHeader='Stake' />
+                <Card styleName='page-loader' cardContent={
+                    <CoffeeLoading speed="0.7" size="large" />
+                } />
+            </div>
+        );
     }
 
-    return (
-        <div>
-            <Title titleHeader='Stake' />
-            {displayUninitializedCard()}
-            {displayDelegationComponent()}
-        </div>
-    );
 }
 
 export default StakePage;

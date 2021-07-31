@@ -113,7 +113,7 @@ https://michaelhly.github.io/solana-py/solana.html#module-solana.publickey
 ////
 https://solana-labs.github.io/solana-web3.js/classes/connection.html#getbalance
 https://github.com/araviel-io/SolanaWallet/tree/master/src < simple usage
-
+https://github.com/Fair-Exchange/safecoin-program-library/tree/master/token/js
 //React
 https://www.makeschool.com/mediabook/oa/tutorials/react-fundamentals-vm0/build-a-header-component/ < BASIC COMPONENT
 https://www.digitalocean.com/community/tutorials/how-to-create-wrapper-components-in-react-with-props

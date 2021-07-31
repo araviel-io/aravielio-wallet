@@ -347,7 +347,7 @@ function Delegation(props) {
 
     function DelegationHub(loadDelegStatus) {
         // every conditions here are loaded from refresh by props nad live (instructions) by usestates
-        console.log("Delegation.js - Delegation Hub loadDelegStatus ", loadDelegStatus)
+        //console.log("Delegation.js - Delegation Hub loadDelegStatus ", loadDelegStatus)
 
         if (DelegConfAmount !== null) {
             // it means that there is always a listener to the confirmation variable
@@ -387,8 +387,6 @@ function Delegation(props) {
                 )
             }
         }
-
-
     }
 
     return (
