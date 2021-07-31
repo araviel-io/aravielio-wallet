@@ -23,6 +23,10 @@ Web Wallet for Safecoin, the Community Edition (CE) of Solana.
 * Tokens listing\
 * Prepare for public stress test\
 
+### Notes:
+
+Use at your own risk, prefer devnet first.
+
 ## Build it yourself
 
 If you'd rather build the application yourself, please ensure you have nodejs/npm/yarn already installed locally.
