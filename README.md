@@ -25,7 +25,7 @@ Web Wallet for Safecoin, the Community Edition (CE) of Solana.
 
 ### Notes:
 
-Use at your own risk, prefer devnet first.
+Mnemonics are directly stored in browser for now, **use at your own risk**, prefer devnet first.
 
 ## Build it yourself
 
