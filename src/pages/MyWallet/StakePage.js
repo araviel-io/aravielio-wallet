@@ -20,7 +20,8 @@ import * as web from '@safecoin/web3.js';
 const network = localStorage.getItem('network')
 const connection = new web.Connection(network, "processed");
 // TODO: clear inputs if confirmed status
-
+// TODO: delegated validator info (picture from keybase, better sub-card)
+//TODO: reward tab
 function StakePage(props) {
 
     // never use those hooks for sending transactions, except if you know what you
@@ -300,6 +301,7 @@ function StakePage(props) {
                 </div>
             )
         } else {
+            // should never be shown
             return (
                 <div className="stake-fund-alert">DO NOT FUND THIS ADDRESS BEFORE INIT</div>
             )
@@ -348,48 +350,16 @@ function StakePage(props) {
                         delegatedStatus={wgetStakeStatus}
                     />
                     <div className="just-flex">
-                        <Popup
-                            trigger={<div className="card-button-center" onClick={() => { }}>Withdraww</div>}
-                            modal
-                            nested
-                        >
-                            {close => (
-                                <div className="modal">
 
-                                    <button className="close" onClick={close}>
-                                        &times;
-                                    </button>
-                                    <div className="header-form">
-                                        <div className="stake-withdraw-avaiable">Balance : {returnNetStakeBalance()}</div>
-                                    </div>
-                                    <div className="content">
-                                        <div className="text-form-withdraw">
-                                            {' '}
-                                            please note that immediate withdrawal of activated stake is not possible. Stake needs to be deactivated first.
-                                        </div>
-                                        <br />
-                                        <div className="label-stake-withdraw">Amount</div>
-                                        <input type="number" value={withdrwAmount} max={returnNetStakeBalance()} placeholder="0.00" className="input-amount-form" onChange={onChangeHandlerAmount} />
-                                        <div className="label-stake-withdraw">Recipient</div>
-                                        <input placeholder="Address" className="input-address-form" onChange={onChangeHandlerAddress} />
-                                    </div>
-
-                                    <div className="actions">
-                                        {returnWithdrawStatus()}
-                                    </div>
-                                </div>
-                            )
-                            }
-                        </Popup>
                     </div>
                 </div>
             )
         }
     }
 
-    function displayUninitializedCard() {
+    function displayTopCard() {
         if (stakeInit === null) {
-            console.log("StakePage.js - Display non-initialized card")
+            // Stake account uninitialized
             return (
                 <Card styleName='staking' cardContent={
                     <div className='stake-address-wrapper'>
@@ -415,7 +385,7 @@ function StakePage(props) {
             )
 
         } else {
-            console.log("StakePage.js - Display Initialized card")
+            // Stake account initialized
             return (
                 <Card styleName='staking-init' cardContent={
 
@@ -434,6 +404,41 @@ function StakePage(props) {
 
                         </div>
                         <div className='stake-numbers'>
+                            <div className='stake-numb-grid'>
+                                <Popup
+                                    trigger={<div className="button-withdraw-stake" onClick={() => { }}>Withdraww</div>}
+                                    modal
+                                    nested
+                                >
+                                    {close => (
+                                        <div className="modal">
+
+                                            <button className="close" onClick={close}>
+                                                &times;
+                                            </button>
+                                            <div className="header-form">
+                                                <div className="stake-withdraw-avaiable">Balance : {returnNetStakeBalance()}</div>
+                                            </div>
+                                            <div className="content">
+                                                <div className="text-form-withdraw">
+                                                    {' '}
+                                                    please note that immediate withdrawal of activated stake is not possible. Stake needs to be deactivated first.
+                                                </div>
+                                                <br />
+                                                <div className="label-stake-withdraw">Amount</div>
+                                                <input type="number" value={withdrwAmount} max={returnNetStakeBalance()} placeholder="0.00" className="input-amount-form" onChange={onChangeHandlerAmount} />
+                                                <div className="label-stake-withdraw">Recipient</div>
+                                                <input placeholder="Address" className="input-address-form" onChange={onChangeHandlerAddress} />
+                                            </div>
+
+                                            <div className="actions">
+                                                {returnWithdrawStatus()}
+                                            </div>
+                                        </div>
+                                    )
+                                    }
+                                </Popup>
+                            </div>
                             <div className='stake-numb-grid'>Balance : <b>{returnNetStakeBalance()}</b></div>
                             <div className='stake-numb-grid'>Status : <b>{returnDelegstatus()}</b></div>
                         </div>
@@ -442,15 +447,13 @@ function StakePage(props) {
             )
         }
     }
-    console.log("variable test",)
-
 
     if (wgetStakeStatus != null) {
         return (
             <div>
                 <Title titleHeader='Stake' />
 
-                {displayUninitializedCard()}
+                {displayTopCard()}
                 {displayDelegationComponent()}
             </div>
         );
@@ -460,7 +463,9 @@ function StakePage(props) {
             <div>
                 <Title titleHeader='Stake' />
                 <Card styleName='page-loader' cardContent={
-                    <CoffeeLoading speed="0.7" size="large" />
+                    <div className="page-loader-container">
+                        <CoffeeLoading speed="0.7" size="large" />
+                    </div>
                 } />
             </div>
         );

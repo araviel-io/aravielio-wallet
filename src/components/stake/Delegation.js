@@ -284,7 +284,11 @@ function Delegation(props) {
                     <div className="dotted-separator"></div>
                     <div className="vertical-space"></div>
                     {returnProgressEpoch()}
-                    <div className="card-button-center" onClick={() => { tryToDeactivate() }}>{returnUnDelegLoading()}</div>
+                    <div class="stake-numbers">
+                      
+                        <div className="card-button-center" onClick={() => { tryToDeactivate() }}>{returnUnDelegLoading()}</div>
+                    </div>
+                    
                 </div>
                 
             )
