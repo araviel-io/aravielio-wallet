@@ -78,7 +78,6 @@ export async function wCreateStakeAccount(mnfrom, stakeacc) {
   return needsign;
 }
 
-
 export async function wDelegate(selectedNode) {
   // FIXME: use parameter for node selection
   const getNetwork = localStorage.getItem('network')

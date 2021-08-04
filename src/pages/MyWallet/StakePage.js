@@ -8,14 +8,10 @@ import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
 import Delegation from '../../components/stake/Delegation';
 
-
 import { wCreateStakeAccount, wCreateStakeKeypair, wgetStakeActivation, wWithdrawStake } from '../../utils/stake';
 import { wKeypair, wgetSignatureStatus, wgetMiniRent, wgetSignatureConfirmation } from '../../utils/connection'
 
-
 import * as web from '@safecoin/web3.js';
-
-
 
 const network = localStorage.getItem('network')
 const connection = new web.Connection(network, "processed");
@@ -24,14 +20,7 @@ const connection = new web.Connection(network, "processed");
 //TODO: reward tab
 function StakePage(props) {
 
-    // never use those hooks for sending transactions, except if you know what you
-    // are doing (callbacks)
-    /*
-    const [accAdd, setaccAdd] = useState(null);
-    const [accbal, setaccbal] = useState(null);*/
-
     const [authKp, setauthAdd] = useState(null);
-    // const [authbal, setauthbal] = useState(null);
 
     const [stakeAdd, setstakeAdd] = useState(null);
     const [stakebal, setstakebal] = useState(null);
@@ -51,11 +40,6 @@ function StakePage(props) {
 
     // const [signature, setSignature] = useState(null);
     // const [rent, setRent] = useState(null);
-
-
-    // Setinterval thing
-    const [recUnConfAmount, setrecUnConfAmount] = useState("");
-    const [recUnConfstatus, setrecUnConfstatus] = useState("");
     // placeholder for a more dynamic UI
 
     function returnDelegstatus() {
@@ -81,9 +65,6 @@ function StakePage(props) {
         // var mnAuth = localStorage.getItem('auth-mnemonic')
         var mnStake = localStorage.getItem('stake-mnemonic')
 
-        // var stakestatus = await wgetParsedAccountInfo(mnStake);
-        // console.log("stake status : ", stakestatus)
-        //if (mnAuth == null || mnAuth === undefined) { wCreateAuthKeypair(); }
         if (mnStake == null || mnStake === undefined) { wCreateStakeKeypair(); }
 
         //var mnauth = localStorage.getItem('auth-mnemonic')
@@ -124,8 +105,6 @@ function StakePage(props) {
             }).catch((e) => {
                 console.log("getParsedAccountInfo ex", e)
             });
-
-
     }
 
     useEffect(() => {
@@ -177,8 +156,7 @@ function StakePage(props) {
                 if (val != null) {
                     setstakeInit("initialized");
                     setloadstakeInit("complete")
-                    //automatically rent withdraw authority > kinda dirthy
-                    //wCreateAuthority();
+
                 }
                 // you access the value from the promise here
                 //console.log("PLEASE RETURN A SIGNATURE ", val);
@@ -198,7 +176,8 @@ function StakePage(props) {
 
                 wgetSignatureStatus(signature)
                     .then(function (result) {
-                        console.log("StakePage.js - SIGNATURE DETAILS", result)
+
+                        console.log("NOW : wgetSignatureStatus(signature)", result)
                         if (result.value.err === null) {
                             setwithDrwSignStatus("confirmed");
                             //TODO: update balance
@@ -220,10 +199,7 @@ function StakePage(props) {
             });
     }
 
-
-
-
-    console.log('%c StakePage.js recUnConfAmount : ', 'background: red; color: #bada55', recUnConfAmount)
+    //console.log('%c StakePage.js recUnConfAmount : ', 'background: red; color: #bada55', recUnConfAmount)
     //console.log(recUnConfAmount)
     function returnStakeInitLoading() {
         if (loadstakeInit === "sent") { return ("...") }
@@ -249,7 +225,7 @@ function StakePage(props) {
     }
 
     function returnWithdrawStatus() {
-
+        console.log("NOW withDrwSignStatus", withDrwSignStatus)
         if (withDrwSignStatus === "confirmed") {
 
             return (
@@ -258,6 +234,17 @@ function StakePage(props) {
                 >
                     Sent !
                 </button>
+            )
+        } else if (withDrwSignStatus === "InsufficientFunds") {
+            return (
+                <div>
+                    <div>Insufficient funds</div>
+                    <button
+                        className="card-button-center"
+                        onClick={() => { tryToWithdrawStake(withdrwAmount, withdrwAddress); }}>
+                        Retry
+                    </button>
+                </div>
             )
         }
 
@@ -412,25 +399,33 @@ function StakePage(props) {
                                 >
                                     {close => (
                                         <div className="modal">
-
                                             <button className="close" onClick={close}>
                                                 &times;
                                             </button>
-                                            <div className="header-form">
-                                                <div className="stake-withdraw-avaiable">Balance : {returnNetStakeBalance()}</div>
-                                            </div>
                                             <div className="content">
-                                                <div className="text-form-withdraw">
-                                                    {' '}
-                                                    please note that immediate withdrawal of activated stake is not possible. Stake needs to be deactivated first.
+                                                <div className="hint-small">
+                                                    Balance : {returnNetStakeBalance()}
                                                 </div>
+                                                <div className="input-amount-form-container">
+                                                    <input type="number"
+                                                        value={withdrwAmount}
+                                                        max={returnNetStakeBalance()}
+                                                        placeholder="0.00"
+                                                        className="input-amount-form font-face-ob" onChange={onChangeHandlerAmount} />
+                                                    <div className="input-amount-form font-face-ob"> SAFE</div>
+                                                </div>
+                                                <div className="hint-small"> = $ 1,541 </div>
                                                 <br />
-                                                <div className="label-stake-withdraw">Amount</div>
-                                                <input type="number" value={withdrwAmount} max={returnNetStakeBalance()} placeholder="0.00" className="input-amount-form" onChange={onChangeHandlerAmount} />
-                                                <div className="label-stake-withdraw">Recipient</div>
-                                                <input placeholder="Address" className="input-address-form" onChange={onChangeHandlerAddress} />
+                                               
+                                                <div className="label-stake-withdraw">Transfert to</div>
+                                                <input placeholder="Enter receive address" className="input-address-form" onChange={onChangeHandlerAddress} />
+                                                <div className="label-stake-withdraw">Memo (W.I.P)</div>
+                                                <input placeholder="Enter memo" className="input-address-form"/>
                                             </div>
-
+                                            <div className="hint-small">
+                                                {' '}
+                                                please note that immediate withdrawal of activated stake is not possible. Stake needs to be deactivated first.
+                                            </div>
                                             <div className="actions">
                                                 {returnWithdrawStatus()}
                                             </div>

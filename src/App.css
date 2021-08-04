@@ -4,7 +4,15 @@
   align-items: center;
   background: #f5f8fa;
 }
-
+@font-face {
+  font-family: "OswaldBold";
+  src: local("OswaldBold"),
+   url("./assets/fonts/Oswald-Bold.ttf") format("truetype");
+  font-weight: bold;
+  }
+  .font-face-ob {
+    font-family: "OswaldBold";
+   }
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -638,6 +646,10 @@ margin-top: auto;
   background-color: #2d975d;
   cursor:not-allowed;
 }
+.error {
+  background-color: #97342d;
+  cursor:not-allowed;
+}
 .center-middle {
   display: flex;
   justify-content: center;
@@ -649,11 +661,12 @@ margin-top: auto;
 }
 
 .modal {
-  background-color: #F5F5F5;
+  background-color: #ffffff;
   /* font-size: 12px; */
   border-radius: 10px;
  /* padding: 30px;*/
-  max-width: 480px;
+  max-width: 550px;
+  filter: drop-shadow(0px 15px 15px rgba(37, 37, 37, 0.02));
 }
 .modal > .header {
   width: 100%;
@@ -688,7 +701,7 @@ margin-top: auto;
   border: inherit;
 }
 .popup-overlay {
-  background-color: #0000004b;
+  background-color: #ffffff6e;
 }
 .stake-withdraw-avaiable{
 
@@ -716,23 +729,35 @@ margin-top: auto;
   outline:none;
 }
 .input-amount-form{
-  font-family: Poppins;
+  -moz-appearance: textfield;
   font-style: normal;
-  font-weight: normal;
-  background: #FCFCFC;
+  font-weight: 700;
+  color:#6a28ec;
+  font-size: x-large;
+  text-align: center;
   border-radius: 10px;
-  -webkit-appearance: unset;
+  -webkit-appearance: none;
   appearance: unset;
   border: none;
+  text-align: right;
   padding: 5px 8px;
-  margin: 15px 5px;
-  height: 23px;
+  text-shadow: 0px 1px 4px rgb(79 12 97 / 15%);
 }
+.input-amount-form::-webkit-inner-spin-button {
+  
+    -webkit-appearance: none;
+    margin: 0;
+  }
 .input-amount-form:focus{
   border-color: inherit;
   -webkit-box-shadow: none;
   box-shadow: none;
   outline:none;
+}
+
+.input-amount-form-container {
+  text-align: center;
+  display:flex;
 }
 .label-stake-withdraw{
   font-family: Poppins;
@@ -742,14 +767,15 @@ margin-top: auto;
   /* line-height: 25px; */
   color: #363B64;
 }
-.text-form-withdraw{
-  padding: 12px;
+.hint-small {
+  text-align: center; 
+ /* padding: 12px;*/
   font-family: Poppins;
   font-style: normal;
   font-weight: 500;
-  font-size: 14px;
+  font-size: small;
   /* line-height: 25px; */
-  color: #363B64;
+  color: #00000080;
 }
 .header-form{
   background-color: #363b64;

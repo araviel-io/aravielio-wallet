@@ -52,6 +52,7 @@ function WalletPage(props) {
         wngetSafePrice().then(
             function (safeprice) {
                 setsafeprice(safeprice);
+                localStorage.setItem('safeprice', safeprice)
             })
             .catch((e) => {
                 console.log("*wngetSafePrice catch((e)", e)

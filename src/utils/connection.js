@@ -81,7 +81,7 @@ export async function wgetVoteAcc() {
     const activeLength = activeVoteAcc.length;
     const array = [];
 
-    console.log("first array test ", activeVoteAcc[0])
+    //console.log("first array test ", activeVoteAcc[0])
     for (let i = 0; i < activeLength; i += 1) {
         array.push({ value: activeVoteAcc[i].votePubkey, label: activeVoteAcc[i].votePubkey + " | " + activeVoteAcc[i].commission + " % " });
     }

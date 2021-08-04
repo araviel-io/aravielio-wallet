@@ -10,19 +10,9 @@ import NavCreateRestore from '../components/NavCreateRestore';
 import { useState } from 'react';
 import { useRef } from 'react';
 
-function validateMnemonic(mnemonic) {
-  //console.log("validateMNEMONIC", WordCount(mnemonic));
-  
-      return <Link className="menu-nav-button mbtnactive" to="/mywallet"> Restore</Link>;
-}
-
-
-
 function CreateWalletPage(props) {
 
   const [inputValue, setInputValue] = useState("");
-  // console.log("inputValue ", inputValue)
-  // localStorage.setItem('mnemonic', inputValue);
   const mn = genMnemonic();
   const email = useRef(null);
     function handleClick(e) {
@@ -37,13 +27,7 @@ function CreateWalletPage(props) {
         localStorage.setItem('pubkey', response);
        
       }
-    
-     
         balancePromiseEffect();
-     
-
-
-
       // history.push("/mywallet");
       console.log("inputValue ", inputValue)
       console.log("localstorage get", localStorage.getItem('pubkey'))
@@ -62,9 +46,7 @@ function CreateWalletPage(props) {
             <div className="btncontainer"onClick={handleClick}>
               <Link className="menu-nav-button mbtnactive" to="/mywallet"  > Create</Link>
             </div>
-            
         </div>
-     
       </div>
     );
    }
