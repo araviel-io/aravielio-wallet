@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import Popup from 'reactjs-popup';
 import { CoffeeLoading } from 'react-loadingg';
+import { ListOutline } from 'react-ionicons'
+import { RangeStepInput } from 'react-range-step-input';
 //import Container from '../../components/common/Container'
 import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
@@ -37,6 +39,8 @@ function StakePage(props) {
     const [withdrwAddress, setwithdrwAddress] = useState(null);
 
     const [withDrwSignStatus, setwithDrwSignStatus] = useState(null);
+    // DisplayContactOrAddressI > "address" if defualt
+    const [ContactOrAddress, setContactOrAddress] = useState("address");
 
     // const [signature, setSignature] = useState(null);
     // const [rent, setRent] = useState(null);
@@ -230,7 +234,7 @@ function StakePage(props) {
 
             return (
                 <button
-                    className="card-button-center complete"
+                    className="fancy-button-gradient complete"
                 >
                     Sent !
                 </button>
@@ -240,7 +244,7 @@ function StakePage(props) {
                 <div>
                     <div>Insufficient funds</div>
                     <button
-                        className="card-button-center"
+                        className="fancy-button-gradient"
                         onClick={() => { tryToWithdrawStake(withdrwAmount, withdrwAddress); }}>
                         Retry
                     </button>
@@ -248,18 +252,19 @@ function StakePage(props) {
             )
         }
 
-        if (withdrwAmount != null && withdrwAddress != null) {
+        if (withdrwAmount !== "" && withdrwAddress != null) {
             // display button unlock
+            console.log("withdrwAmount : ", withdrwAmount, "withdrwAddress : ", withdrwAddress)
             return (
                 <button
-                    className="card-button-center"
+                    className="fancy-button-gradient"
                     onClick={() => { tryToWithdrawStake(withdrwAmount, withdrwAddress); }}>
                     Withdraw
                 </button>
             )
         } else {
             return (
-                <button className="card-button-center disabled">
+                <button className="fancy-button-gradient-disabled">
                     Withdraw
                 </button>
             )
@@ -293,6 +298,24 @@ function StakePage(props) {
                 <div className="stake-fund-alert">DO NOT FUND THIS ADDRESS BEFORE INIT</div>
             )
         }
+
+    }
+    // dynamic : if contact button is clicked fire the ContactOrAddress useState
+    function displayContactOrAddress() {
+
+        return (
+            <div className="just-flex">
+                <input placeholder="Enter receive address" className="input-address-form" onChange={onChangeHandlerAddress} />
+                <div className="small-action-button">
+                    <ListOutline
+                        color={'#000'}
+                        height="22px"
+                        width="22px"
+                        style={{ verticalAlign: 'middle' }}
+                    />
+                </div>
+            </div>
+        )
 
     }
 
@@ -412,19 +435,28 @@ function StakePage(props) {
                                                         max={returnNetStakeBalance()}
                                                         placeholder="0.00"
                                                         className="input-amount-form font-face-ob" onChange={onChangeHandlerAmount} />
-                                                    <div className="input-amount-form font-face-ob"> SAFE</div>
+                                                    <div className="input-amount-form-cur font-face-ob fancy-text-gradient"> SAFE</div>
                                                 </div>
-                                                <div className="hint-small"> = $ 1,541 </div>
+                                                <div className="hint-small"> = $ <b>188.9</b> USD</div>
                                                 <br />
-                                               
                                                 <div className="label-stake-withdraw">Transfert to</div>
-                                                <input placeholder="Enter receive address" className="input-address-form" onChange={onChangeHandlerAddress} />
+                                                {displayContactOrAddress()}
+                                                <div className="vertical-space"></div>
+                                                {/* <div className="range-input-container">
+                                                    <RangeStepInput className="range-input" />
+                                                    </div>*/}
+                                                <div className="vertical-space"></div>
                                                 <div className="label-stake-withdraw">Memo (W.I.P)</div>
-                                                <input placeholder="Enter memo" className="input-address-form"/>
+                                                <input placeholder="Enter memo" className="input-address-form" />
+                                                <div className="just-flex-between">
+                                                    <div className="label-stake-withdraw">Network fees</div>
+                                                    <div className="txt-small-warning orange">0.000000001 SAFE</div>
+                                                </div>
+
                                             </div>
-                                            <div className="hint-small">
+                                            <div className="hint-small-phrase">
                                                 {' '}
-                                                please note that immediate withdrawal of activated stake is not possible. Stake needs to be deactivated first.
+                                                Immediate withdrawal of activated stake is not possible. Stake needs to be deactivated first.
                                             </div>
                                             <div className="actions">
                                                 {returnWithdrawStatus()}

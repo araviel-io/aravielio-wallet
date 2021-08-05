@@ -5,6 +5,5 @@ export function wngetSafePrice() {
     const promise = axios.get(ApiUrl)
     // using .then, create a new promise which extracts the data
     const dataPromise = promise.then((response) => response.data[0].price);
-    localStorage.setItem('safeprice', dataPromise)
     return dataPromise
 }
