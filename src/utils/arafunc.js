@@ -32,8 +32,12 @@ export const aSelCustomStyles = {
   }),
   control: (provided, state) => ({
     ...provided,
-    border: "1px solid black"
-
+    border: "1px solid #e8e8e8",
+    borderColor: state.isFocused ? "#927198" : "#927198", 
+    boxShadow: 'none',
+    '&:hover': {
+        border: '1px solid #927198',
+    }
   }),
   singleValue: (provided, state) => {
     const opacity = state.isDisabled ? 0.5 : 1;

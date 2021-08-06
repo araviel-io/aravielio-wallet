@@ -3,8 +3,9 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import Popup from 'reactjs-popup';
 import { CoffeeLoading } from 'react-loadingg';
-import { ListOutline, AddOutline } from 'react-ionicons'
+import { ListOutline, AddOutline,CheckmarkOutline } from 'react-ionicons'
 import Select from 'react-select'
+import { toast } from 'react-toastify';
 //import Container from '../../components/common/Container'
 import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
@@ -244,9 +245,15 @@ function StakePage(props) {
             )
 
         } else if (withDrwSignStatus === "InsufficientFunds") {
+            function insufficientFundsAlert() { 
+                toast.error("PAS DARCHEN FRER");
+                toast.clearWaitingQueue();
+             }
+            //setwithDrwSignStatus(null);
             return (
                 <div>
                     <div>Insufficient funds</div>
+                    {insufficientFundsAlert()}
                     <button
                         className="fancy-button-gradient"
                         onClick={() => { tryToWithdrawStake(withdrwAmount, withdrwAddress); }}>
@@ -254,6 +261,7 @@ function StakePage(props) {
                     </button>
                 </div>
             )
+            
         }
 
         if (withdrwAmount !== "" && withdrwAddress != null) {
@@ -319,7 +327,7 @@ function StakePage(props) {
 
         function SaveNewContact() {
             // FIXME: create utils function to handle saved address array
-           // localStorage.setItem("savedlabel", AddContactLabelValue)
+            // localStorage.setItem("savedlabel", AddContactLabelValue)
             //localStorage.setItem("savedaddress", AddContactAddressValue)
             // go back and show initial state
             aStoreContacts(AddContactLabelValue, AddContactAddressValue)
@@ -334,7 +342,7 @@ function StakePage(props) {
                 if (AddContactAddressValue !== "" && AddContactLabelValue !== "") {
                     return (
                         <div className="small-action-button">
-                            <AddOutline color={'#000'} height="22px" width="22px"
+                            <CheckmarkOutline color={'#000'} height="22px" width="22px" title="Save contact"
                                 onClick={() => { SaveNewContact() }}
                                 style={{ verticalAlign: 'middle' }}
                             />
@@ -343,7 +351,7 @@ function StakePage(props) {
                 } else {
                     return (
                         <div className="small-action-button-disabled">
-                            <AddOutline color={'#b5b5b5'} height="22px" width="22px" style={{ verticalAlign: 'middle' }} />
+                            <CheckmarkOutline color={'#b5b5b5'} height="22px" width="22px" style={{ verticalAlign: 'middle' }} />
                         </div>
                     )
                 }
@@ -352,28 +360,36 @@ function StakePage(props) {
             if (ToggleNewAddress === "closed") {
                 // TRANSFERT TO CONTACT (SELECT)
                 return (
-                    <div>
+                    <div className="transfert-fixed-container">
                         <div className="just-flex">
                             <div className="transfert-back-button" onClick={() => { setContactOrAddress("address") }}>
-                          back
+                                back
                             </div>
                             <div className="label-stake-withdraw">   Transfert to contact</div>
                         </div>
                         <div className="vertical-space"></div>
-                        <Select placeholder="Select you saved addresse..." className="input-react-select" isSearchable={false} styles={aSelCustomStyles} options={contactList} onChange={handleSelectedContact} />
-                        <div className="text-button" onClick={() => { setToggleNewAddress("toggle") }}>Add new contact +</div>
+                        <div className="just-flex">
+                            <Select placeholder="Select you saved addresse..." className="transfert-select-contact" isSearchable={false} styles={aSelCustomStyles} options={contactList} onChange={handleSelectedContact} />
+                            <div className="small-action-button">
+                                <AddOutline color={'#000'} height="22px" width="22px" title="Add new contact"
+                                    onClick={() => { setToggleNewAddress("toggle") }}
+                                    style={{ verticalAlign: 'middle' }}
+                                />
+                            </div>
+                        </div>
                     </div>
                 )
             } else {
                 // REGISTER NEW CONTACT (ADD)
                 return (
-                    <div>
+                    <div className="transfert-fixed-container">
                         <div className="just-flex">
                             <div className="transfert-back-button" onClick={() => { setToggleNewAddress("closed") }}>
-                          back
+                                back
                             </div>
                             <div className="label-stake-withdraw">   Register new contact</div>
                         </div>
+                        <div className="vertical-space"></div>
                         <div className="just-flex">
                             <input placeholder="Label" className="input-address-form add-contact-label" onChange={onChangeAddLabel} />
                             <input placeholder="Address" className="input-address-form" onChange={onChangeAddAddress} />
@@ -385,9 +401,11 @@ function StakePage(props) {
         }
 
         if (ContactOrAddress === "address") {
+            // SEND TO ADDRESS
             return (
-                <div>
+                <div className="transfert-fixed-container">
                     <div className="label-stake-withdraw">Transfert to</div>
+                    <div className="vertical-space"></div>
                     <div className="just-flex">
                         <input placeholder="Enter receive address" className="input-address-form" onChange={onChangeHandlerAddress} />
                         <div className="small-action-button">
@@ -505,7 +523,7 @@ function StakePage(props) {
                         <div className='stake-numbers'>
                             <div className='stake-numb-grid'>
                                 <Popup
-                                    trigger={<div className="button-withdraw-stake" onClick={() => { }}>Withdraww</div>}
+                                    trigger={<div className="button-withdraw-stake" onClick={() => { }}>Withdraw</div>}
                                     modal
                                     nested
                                 >
@@ -532,8 +550,10 @@ function StakePage(props) {
 
                                                 {displayContactOrAddress()}
                                                 <div className="vertical-space"></div>
+                                                {/*
                                                 <div className="label-stake-withdraw">Memo (W.I.P)</div>
                                                 <input placeholder="Enter memo" className="input-address-form" />
+                                                */}
                                                 <div className="just-flex-between">
                                                     <div className="label-stake-withdraw">Network fees</div>
                                                     <div className="txt-small-warning orange">0.000000001 SAFE</div>

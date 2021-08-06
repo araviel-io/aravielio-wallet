@@ -685,6 +685,7 @@ margin-top: auto;
   margin: auto;
   text-align: center;
   display:flex;
+  justify-content: center;
 }
 .modal > .close {
   cursor: pointer;
@@ -1028,4 +1029,10 @@ color:orange;
   border-radius: 8px;
   padding: 4px 6px;
   margin-right: 10px;
+}
+.transfert-select-contact {
+  width: -webkit-fill-available;
+}
+.transfert-fixed-container {
+  height:85px;
 }
