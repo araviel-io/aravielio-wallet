@@ -3,13 +3,14 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import Popup from 'reactjs-popup';
 import { CoffeeLoading } from 'react-loadingg';
-import { ListOutline } from 'react-ionicons'
-import { RangeStepInput } from 'react-range-step-input';
+import { ListOutline, AddOutline } from 'react-ionicons'
+import Select from 'react-select'
 //import Container from '../../components/common/Container'
 import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
 import Delegation from '../../components/stake/Delegation';
 
+import { aSafePriceForAmount, aStoreContacts, aGetContacts, aSelCustomStyles } from '../../utils/arafunc';
 import { wCreateStakeAccount, wCreateStakeKeypair, wgetStakeActivation, wWithdrawStake } from '../../utils/stake';
 import { wKeypair, wgetSignatureStatus, wgetMiniRent, wgetSignatureConfirmation } from '../../utils/connection'
 
@@ -17,9 +18,9 @@ import * as web from '@safecoin/web3.js';
 
 const network = localStorage.getItem('network')
 const connection = new web.Connection(network, "processed");
-// TODO: clear inputs if confirmed status
-// TODO: delegated validator info (picture from keybase, better sub-card)
-//TODO: reward tab
+//  TODO: clear inputs if confirmed status
+//  TODO: delegated validator info (picture from keybase, better sub-card)
+//  TODO: reward tab
 function StakePage(props) {
 
     const [authKp, setauthAdd] = useState(null);
@@ -39,8 +40,15 @@ function StakePage(props) {
     const [withdrwAddress, setwithdrwAddress] = useState(null);
 
     const [withDrwSignStatus, setwithDrwSignStatus] = useState(null);
+
+
     // DisplayContactOrAddressI > "address" if defualt
     const [ContactOrAddress, setContactOrAddress] = useState("address");
+    // Below is just UI state for dislaying add address into contacts
+    const [ToggleNewAddress, setToggleNewAddress] = useState("closed");
+    const [AddContactLabelValue, setAddContactLabelValue] = useState("");
+    const [AddContactAddressValue, setAddContactAddressValue] = useState("");
+    const [ContactSelection, setContactSelection] = useState("address");
 
     // const [signature, setSignature] = useState(null);
     // const [rent, setRent] = useState(null);
@@ -231,14 +239,10 @@ function StakePage(props) {
     function returnWithdrawStatus() {
         console.log("NOW withDrwSignStatus", withDrwSignStatus)
         if (withDrwSignStatus === "confirmed") {
-
             return (
-                <button
-                    className="fancy-button-gradient complete"
-                >
-                    Sent !
-                </button>
+                <button className="fancy-button-gradient complete">Sent !</button>
             )
+
         } else if (withDrwSignStatus === "InsufficientFunds") {
             return (
                 <div>
@@ -264,9 +268,7 @@ function StakePage(props) {
             )
         } else {
             return (
-                <button className="fancy-button-gradient-disabled">
-                    Withdraw
-                </button>
+                <button className="fancy-button-gradient-disabled">Withdraw</button>
             )
         }
     }
@@ -300,31 +302,119 @@ function StakePage(props) {
         }
 
     }
-    // dynamic : if contact button is clicked fire the ContactOrAddress useState
-    function displayContactOrAddress() {
+    //#region SendWithdraw Address & Contact 
+    const contactList = aGetContacts();
 
-        return (
-            <div className="just-flex">
-                <input placeholder="Enter receive address" className="input-address-form" onChange={onChangeHandlerAddress} />
-                <div className="small-action-button">
-                    <ListOutline
-                        color={'#000'}
-                        height="22px"
-                        width="22px"
-                        style={{ verticalAlign: 'middle' }}
-                    />
-                </div>
-            </div>
-        )
+    const handleSelectedContact = (event) => {
+        console.log("Selected Node : ", event.value)
+        setwithdrwAddress(event.value)
 
     }
 
+    // dynamic : if contact button is clicked fire the ContactOrAddress useState
+    const onChangeAddLabel = (event) => { setAddContactLabelValue(event.target.value) }
+    const onChangeAddAddress = (event) => { setAddContactAddressValue(event.target.value) }
+
+    function displayContactOrAddress() {
+
+        function SaveNewContact() {
+            // FIXME: create utils function to handle saved address array
+           // localStorage.setItem("savedlabel", AddContactLabelValue)
+            //localStorage.setItem("savedaddress", AddContactAddressValue)
+            // go back and show initial state
+            aStoreContacts(AddContactLabelValue, AddContactAddressValue)
+            setToggleNewAddress("closed");
+        }
+
+        function toggleAddOrInput() {
+
+            function checkInputFields() {
+
+                console.log("setAddContactLabelValue state : ", AddContactLabelValue, "setAddContactAddressValue state : ", AddContactAddressValue)
+                if (AddContactAddressValue !== "" && AddContactLabelValue !== "") {
+                    return (
+                        <div className="small-action-button">
+                            <AddOutline color={'#000'} height="22px" width="22px"
+                                onClick={() => { SaveNewContact() }}
+                                style={{ verticalAlign: 'middle' }}
+                            />
+                        </div>
+                    )
+                } else {
+                    return (
+                        <div className="small-action-button-disabled">
+                            <AddOutline color={'#b5b5b5'} height="22px" width="22px" style={{ verticalAlign: 'middle' }} />
+                        </div>
+                    )
+                }
+            }
+
+            if (ToggleNewAddress === "closed") {
+                // TRANSFERT TO CONTACT (SELECT)
+                return (
+                    <div>
+                        <div className="just-flex">
+                            <div className="transfert-back-button" onClick={() => { setContactOrAddress("address") }}>
+                          back
+                            </div>
+                            <div className="label-stake-withdraw">   Transfert to contact</div>
+                        </div>
+                        <div className="vertical-space"></div>
+                        <Select placeholder="Select you saved addresse..." className="input-react-select" isSearchable={false} styles={aSelCustomStyles} options={contactList} onChange={handleSelectedContact} />
+                        <div className="text-button" onClick={() => { setToggleNewAddress("toggle") }}>Add new contact +</div>
+                    </div>
+                )
+            } else {
+                // REGISTER NEW CONTACT (ADD)
+                return (
+                    <div>
+                        <div className="just-flex">
+                            <div className="transfert-back-button" onClick={() => { setToggleNewAddress("closed") }}>
+                          back
+                            </div>
+                            <div className="label-stake-withdraw">   Register new contact</div>
+                        </div>
+                        <div className="just-flex">
+                            <input placeholder="Label" className="input-address-form add-contact-label" onChange={onChangeAddLabel} />
+                            <input placeholder="Address" className="input-address-form" onChange={onChangeAddAddress} />
+                            {checkInputFields()}
+                        </div>
+                    </div>
+                )
+            }
+        }
+
+        if (ContactOrAddress === "address") {
+            return (
+                <div>
+                    <div className="label-stake-withdraw">Transfert to</div>
+                    <div className="just-flex">
+                        <input placeholder="Enter receive address" className="input-address-form" onChange={onChangeHandlerAddress} />
+                        <div className="small-action-button">
+                            <ListOutline
+                                color={'#000'}
+                                height="22px"
+                                width="22px"
+                                title="Chose a contact"
+                                onClick={() => { setContactOrAddress("contact") }}
+                                style={{ verticalAlign: 'middle' }}
+                            />
+                        </div>
+                    </div>
+                </div>
+            )
+        } else {
+            // localstorage get address list etc
+            return (
+                <div>
+                    {toggleAddOrInput()}
+
+                </div>
+            )
+        }
+    }
+    //#endregion
     function displayDelegationComponent() {
-        //var AuthSave = localStorage.getItem('auth-mnemonic')
-        //console.log("++**wgetStakeStatus : ", wgetStakeStatus);
-        var MainSave = localStorage.getItem('mnemonic')
-        var StakeSave = localStorage.getItem('stake-mnemonic')
-        //console.log("stakeinitstakeinit : ", stakeInit)
 
         if (delegStatus === null && stakeInit === "initialized") {
             // means initialized & not delegated FIXME: more intuitive conditions
@@ -344,7 +434,6 @@ function StakePage(props) {
                         status={"DELEGATED"}
                         balance={stakebal / web.LAMPORTS_PER_SAFE}
                         delegatedAmount={wgetStakeAmount * web.LAMPORTS_PER_SAFE}
-
                         delegatedStatus={wgetStakeStatus}
                     />
                 )
@@ -436,15 +525,12 @@ function StakePage(props) {
                                                         placeholder="0.00"
                                                         className="input-amount-form font-face-ob" onChange={onChangeHandlerAmount} />
                                                     <div className="input-amount-form-cur font-face-ob fancy-text-gradient"> SAFE</div>
+                                                    <div className="set-max" onClick={() => { setwithdrwAmount(returnNetStakeBalance()) }}>set max</div>
                                                 </div>
-                                                <div className="hint-small"> = $ <b>188.9</b> USD</div>
+                                                <div className="hint-small"> = $ <b>{aSafePriceForAmount(withdrwAmount)}</b> USD</div>
                                                 <br />
-                                                <div className="label-stake-withdraw">Transfert to</div>
+
                                                 {displayContactOrAddress()}
-                                                <div className="vertical-space"></div>
-                                                {/* <div className="range-input-container">
-                                                    <RangeStepInput className="range-input" />
-                                                    </div>*/}
                                                 <div className="vertical-space"></div>
                                                 <div className="label-stake-withdraw">Memo (W.I.P)</div>
                                                 <input placeholder="Enter memo" className="input-address-form" />

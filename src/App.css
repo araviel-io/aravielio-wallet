@@ -701,7 +701,7 @@ margin-top: auto;
   border: inherit;
 }
 .popup-overlay {
-  background-color: #ffffff6e;
+  background-color: #ffffffa1;
 }
 .stake-withdraw-avaiable{
 
@@ -728,7 +728,11 @@ margin-top: auto;
   border-color: inherit;
   -webkit-box-shadow: none;
   box-shadow: none;
+  border-bottom: 1px solid #927198;
   outline:none;
+}
+.input-address-form::placeholder{
+color:#9271988a;
 }
 .input-amount-form{
   -moz-appearance: textfield;
@@ -744,7 +748,7 @@ margin-top: auto;
   text-align: right;
   padding: 5px 8px;
   text-shadow: 0px 1px 4px rgb(79 12 97 / 15%);
-  width:50%;
+  width:45%;
 }
 .input-amount-form::-webkit-inner-spin-button {
   
@@ -908,6 +912,16 @@ margin: 10px;
   place-self: center;
   margin-left: 20px;
 }
+.small-action-button-disabled {
+  border: 0;
+  background-color: #fff;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 4px 4px;
+  cursor: not-allowed;
+  place-self: center;
+  margin-left: 20px;
+}
 .just-flex-between {
   margin-top: 20px;
   display: flex;
@@ -926,7 +940,7 @@ margin: 10px;
   position: relative;
   color:#927198;
   display: block;
-  max-width: 1000px;
+  max-width: fit-content;
   line-height: 1.5;
 }
 .fancy-button-gradient {
@@ -979,4 +993,39 @@ color:orange;
     align-self: center;
     text-align: right;
     font-weight: 600;
+}
+.text-button {
+  color: #fdbf8f;
+  text-transform: uppercase;
+  font-size: small;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+.add-contact-label {
+  width:30%;
+  margin-right: 15px;
+}
+.set-max {
+  align-self: center;
+  text-transform: uppercase;
+  font-family: monospace;
+  cursor: pointer;
+  background-color: #fff;
+  box-shadow: 0px 4px 7px rgb(0 0 0 / 7%);
+  border-radius: 8px;
+  padding: 4px 6px;
+  margin-left: 10px;
+}
+.transfert-back-button {
+  align-self: center;
+  text-transform: uppercase;
+  font-family: monospace;
+  cursor: pointer;
+  color: white;
+  background-color: #927198;
+  box-shadow: 0px 4px 7px #9271983d;
+  border-radius: 8px;
+  padding: 4px 6px;
+  margin-right: 10px;
 }
