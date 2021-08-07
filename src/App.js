@@ -31,9 +31,6 @@ function isSaved() {
 }
 
 function App() {
-
-  
-
   const [apiStatus, setApisStatus] = useState(true);
   const [saveStatus, setSaveStatus] = useState(true);
 

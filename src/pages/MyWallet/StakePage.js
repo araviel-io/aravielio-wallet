@@ -11,9 +11,9 @@ import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
 import Delegation from '../../components/stake/Delegation';
 
-import { aSafePriceForAmount, aStoreContacts, aGetContacts, aSelCustomStyles, aFeesForNetwork, aHrefSeeOnExplorer } from '../../utils/arafunc';
+import { aSafePriceForAmount, aStoreContacts, aGetContacts, aSelCustomStyles, aHrefSeeOnExplorer } from '../../utils/arafunc';
 import { wCreateStakeAccount, wCreateStakeKeypair, wgetStakeActivation, wWithdrawStake } from '../../utils/stake';
-import { wKeypair, wgetSignatureStatus, wgetMiniRent, wgetSignatureConfirmation } from '../../utils/connection'
+import { wKeypair, wgetSignatureStatus } from '../../utils/connection'
 
 import * as web from '@safecoin/web3.js';
 
@@ -72,13 +72,9 @@ function StakePage(props) {
         }
     }
     async function getAllKeypairs() {
-
         var mnMain = localStorage.getItem('mnemonic')
-        // var mnAuth = localStorage.getItem('auth-mnemonic')
         var mnStake = localStorage.getItem('stake-mnemonic')
-
         if (mnStake == null || mnStake === undefined) { wCreateStakeKeypair(); }
-
         //var mnauth = localStorage.getItem('auth-mnemonic')
         var mainkeypair = await wKeypair(mnMain);
         //var authkeypair = await wKeypair(mnAuth); // don't forget to right click on wKeypair > Go to definition for more
@@ -135,26 +131,10 @@ function StakePage(props) {
                     setwgetStakeAmount(inactivelamport / web.LAMPORTS_PER_SAFE);
                 }
                 setwgetStakeStatus(result.state);
-
-
             }).catch((e) => {
                 console.log("StakePage - wgetStakeActivation Promise ", e)
-                //constatus = false;
             });
-            // getMainAccountKeypair();
-        } else {
-
-            wgetMiniRent()
-                .then(function (result) {
-                    //setRent(result);
-                    console.log(result)
-                }).catch((e) => {
-                    console.log("StakePage - wgetStakeActivation Promise ", e)
-                    //constatus = false;
-                });
-        }
-
-
+        } 
     }, [stakeInit]);
 
     async function tryToCreateStakeAccount() {

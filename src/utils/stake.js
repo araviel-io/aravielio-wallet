@@ -19,18 +19,13 @@ export function wCreateStakeKeypair() {
 }
 
 export async function wgetParsedAccountInfo() {
-
-  // wCreateAuthKeypair();
   var mnStake = localStorage.getItem('stake-mnemonic')
-
   var stakeKP = await wKeypair(mnStake);
   var getaccountinfo = await connection.getParsedAccountInfo(stakeKP.publicKey);
-
   return getaccountinfo;
 }
 export async function wgetStakeActivation() {
   var mnStake = localStorage.getItem('stake-mnemonic')
-
   var stakeKP = await wKeypair(mnStake);
   var stakeActivation = await connection.getStakeActivation(stakeKP.publicKey);
   console.log("stakeinfo ", stakeActivation, "for : ", stakeKP.publicKey.toBase58())
@@ -47,7 +42,6 @@ export async function wCreateStakeAccount(mnfrom, stakeacc) {
     web.StakeProgram.space,
     'recent',
   );
-
   console.log("Creating new stake account... ")
   // Create Stake account without seed
   let createAndInitialize = web.StakeProgram.createAccount({
@@ -71,9 +65,7 @@ export async function wCreateStakeAccount(mnfrom, stakeacc) {
     })
     .catch((e) => {
       console.log("**createAndInitialize promise ERROR", e)
-
     });
-
   // this return is the return of the sendAndConfirmTransaction first .then
   return needsign;
 }
@@ -118,7 +110,6 @@ export async function wDelegate(selectedNode) {
 export async function wDesactivate() {
   var mnAuth = localStorage.getItem('mnemonic')
   var mnStake = localStorage.getItem('stake-mnemonic')
-
   var authkeypair = await wKeypair(mnAuth); // don't forget to right click on wKeypair > Go to definition for more
   var stakekeypair = await wKeypair(mnStake);
 

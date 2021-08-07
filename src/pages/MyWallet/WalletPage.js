@@ -16,8 +16,6 @@ import { wgetBalance, solRequestAirdrop } from '../../utils/connection';
 
 
 function WalletPage(props) {
-
-
     //  const { safelam } = wgetBalance(mnemonic);
     const mnemonic = localStorage.getItem('mnemonic')
     const network = localStorage.getItem('network')

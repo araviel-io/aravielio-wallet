@@ -10,7 +10,6 @@ const connection = new web.Connection(getNetwork, "max");
 
 function generateMnemonic() {
     var mn = bip39.generateMnemonic(256);
-
     return mn;
 }
 
@@ -81,12 +80,9 @@ export async function wgetVoteAcc() {
     const activeLength = activeVoteAcc.length;
     const array = [];
 
-    //console.log("first array test ", activeVoteAcc[0])
     for (let i = 0; i < activeLength; i += 1) {
         array.push({ value: activeVoteAcc[i].votePubkey, label: activeVoteAcc[i].votePubkey + " | " + activeVoteAcc[i].commission + " % " });
     }
-    //localStorage.setItem("voteAccounts", array)
-    //console.log("custom array: ",array)
     return array;
 }
 // don't know why i can't find getInflationRate method
@@ -137,9 +133,6 @@ export async function transferSafe(destination, amount) {
     );
 
     return await connection.sendTransaction(tx, [account], {
-        // Default look to be the safest.
-
-        /*  preflightCommitment: 'recent',*/
     })
         .then(
             function (TransactionSignature) {
@@ -184,7 +177,6 @@ export async function solRequestAirdrop() {
 
 // restore account (keypair) from mnemonic phrase
 export async function getAccountFromMnemonic(mnemonic) {
-
     // Account creation is completely local. Mainnet connection is used for getting balance and signing transaction
     const seed = await bip39.mnemonicToSeed(mnemonic);
     const derivedSeed = deriveSeed(seed);
@@ -237,16 +229,6 @@ function deriveSeed(seed) {
 export async function wgetVersion() {
     const clusterVer = await connection.getVersion();
     return clusterVer;
-}
-/*
-export async function wgetFees() {
-    const fees = connection.getFeeCalculatorForBlockhash
-    return fees;
-}*/
-export async function wgetMiniRent() {
-    const rent = await connection.getMinimumBalanceForRentExemption();
-    console.log("bordel", rent);
-    return rent;
 }
 // below is useless, for reference only
 export async function tryfetch() {

@@ -25,13 +25,14 @@ function LiveConfirmation(props) {
         //console.log("props.statusprops.statusprops.status : ", props.status)
         console.log('%c LiveConfirmation.js : props.status ', 'background: green; color: #bada55', props.status)
         if (props.status === "request" || props.status === "requesting" || props.status === "sent") {
+
             return (
                 <ThreeHorseLoading />
             );
 
         } else if (props.status === "processing") {
-            return (
 
+            return (
                 <div className={styles.confcontainer}>
                     <div className={styles.coffee}>
                         <CoffeeLoading speed="0.7" size="large" />
@@ -42,8 +43,6 @@ function LiveConfirmation(props) {
             );
 
         } else if (props.status === "confirmed") {
-
-
 
             return (
                 // return box with transaction link explorer
@@ -65,6 +64,7 @@ function LiveConfirmation(props) {
             );
             //finalized
         } else if (props.status === "InsufficientFunds") {
+
             return (
                 // return box with transaction link explorer
                 <div>
@@ -94,11 +94,8 @@ function LiveConfirmation(props) {
     return (
 
         <div>
-
             {returnLoaderOrSummary()}
-
         </div>
-
     );
 }
 
