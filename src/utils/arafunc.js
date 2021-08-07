@@ -1,5 +1,12 @@
-export function ConsoleLog(page, color, [varr]) {
-
+export function aFeesForNetwork() {
+    const network = localStorage.getItem('network')
+    var lamfees;
+    if (network === "https://api.devnet.solana.com") {
+        lamfees = 5000;
+    } else {
+        lamfees = 100000;
+    }
+    return lamfees;
 }
 export function aSafePriceForAmount(amount) {
     const safeprice = localStorage.getItem("safeprice");

@@ -11,7 +11,7 @@ import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
 import Delegation from '../../components/stake/Delegation';
 
-import { aSafePriceForAmount, aStoreContacts, aGetContacts, aSelCustomStyles } from '../../utils/arafunc';
+import { aSafePriceForAmount, aStoreContacts, aGetContacts, aSelCustomStyles, aFeesForNetwork } from '../../utils/arafunc';
 import { wCreateStakeAccount, wCreateStakeKeypair, wgetStakeActivation, wWithdrawStake } from '../../utils/stake';
 import { wKeypair, wgetSignatureStatus, wgetMiniRent, wgetSignatureConfirmation } from '../../utils/connection'
 
@@ -19,7 +19,6 @@ import * as web from '@safecoin/web3.js';
 
 const network = localStorage.getItem('network')
 const connection = new web.Connection(network, "processed");
-//  TODO: clear inputs if confirmed status
 //  TODO: delegated validator info (picture from keybase, better sub-card)
 //  TODO: reward tab
 function StakePage(props) {
@@ -178,7 +177,7 @@ function StakePage(props) {
     // never returns actions if accounts are not loaded
     async function tryToWithdrawStake(amount, address) {
         setwithDrwSignStatus("requesting");
-
+        console.log("tryToWithdrawStake AMOUNT : ", amount)
         wWithdrawStake(amount * web.LAMPORTS_PER_SAFE, address)
             .then(function (signature) {
                 // you access the value from the promise here
@@ -221,32 +220,43 @@ function StakePage(props) {
     }
 
     function returnNetStakeBalance() {
+        const fees = aFeesForNetwork();
+        const test = fees / (web.LAMPORTS_PER_SAFE);
         var balance;
-        //FIXME: merge all condition to wgetStakeStatus
         if (wgetStakeStatus === "inactive") {
             balance = stakebal / web.LAMPORTS_PER_SAFE;
         }
         else if (stakeInit === "delegated") {
             var rawbalance = stakebal / web.LAMPORTS_PER_SAFE;
             balance = rawbalance - wgetStakeAmount;
-            //console.log("wgetStakeAmountwgetStakeAmount : ", wgetStakeAmount)
         }
         else {
             balance = stakebal / web.LAMPORTS_PER_SAFE;
         }
-        return balance.toFixed(3);
+        return (balance - test).toFixed(4);
     }
 
     function returnWithdrawStatus() {
         console.log("NOW withDrwSignStatus", withDrwSignStatus)
         if (withDrwSignStatus === "confirmed") {
+            function successAlert() { 
+                toast.success("Success Notification !", {
+                    position: toast.POSITION.BOTTOM_RIGHT
+                  });
+                toast.clearWaitingQueue();
+             }
             return (
+                <div>
+                {successAlert()}
                 <button className="fancy-button-gradient complete">Sent !</button>
+                </div>
             )
 
         } else if (withDrwSignStatus === "InsufficientFunds") {
             function insufficientFundsAlert() { 
-                toast.error("PAS DARCHEN FRER");
+                toast.error("Insufficient funds !", {
+                    position: toast.POSITION.BOTTOM_RIGHT
+                  });
                 toast.clearWaitingQueue();
              }
             //setwithDrwSignStatus(null);
@@ -286,6 +296,7 @@ function StakePage(props) {
 
     const onChangeHandlerAmount = event => {
         setwithdrwAmount(event.target.value);
+        console.log("WITHDRAW AMOUNT : ", withdrwAmount)
     };
 
     function displayAuthorityAddress() {
@@ -556,7 +567,7 @@ function StakePage(props) {
                                                 */}
                                                 <div className="just-flex-between">
                                                     <div className="label-stake-withdraw">Network fees</div>
-                                                    <div className="txt-small-warning orange">0.000000001 SAFE</div>
+                                                    <div className="txt-small-warning orange">0.0001 SAFE</div>
                                                 </div>
 
                                             </div>
@@ -605,5 +616,6 @@ function StakePage(props) {
     }
 
 }
+
 
 export default StakePage;

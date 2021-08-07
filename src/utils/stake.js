@@ -156,7 +156,7 @@ export async function wWithdrawStake(minimumAmount, recipient) {
     stakePubkey: stakekeypair.publicKey,
     authorizedPubkey: authkeypair.publicKey,
     toPubkey: recipientpkp,
-    lamports: minimumAmount - 0.0001,
+    lamports: minimumAmount,
     /*
         stakePubkey: newAccountPubkey,
         authorizedPubkey: newAuthorized.publicKey,

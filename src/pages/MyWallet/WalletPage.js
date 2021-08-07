@@ -32,12 +32,9 @@ function WalletPage(props) {
         if (network === 'https://api.devnet.solana.com') {
             console.log("NETWORKLOL ", network)
             return (
-
                 <button onClick={solRequestAirdrop}>Request Airdrop</button>
-
             );
         }
-
     }
 
     useEffect(() => {
