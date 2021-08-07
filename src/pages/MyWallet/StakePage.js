@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import Popup from 'reactjs-popup';
 import { CoffeeLoading } from 'react-loadingg';
-import { ListOutline, AddOutline,CheckmarkOutline } from 'react-ionicons'
+import { ListOutline, AddOutline, CheckmarkOutline } from 'react-ionicons'
 import Select from 'react-select'
 import { toast } from 'react-toastify';
 //import Container from '../../components/common/Container'
@@ -11,7 +11,7 @@ import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
 import Delegation from '../../components/stake/Delegation';
 
-import { aSafePriceForAmount, aStoreContacts, aGetContacts, aSelCustomStyles, aFeesForNetwork } from '../../utils/arafunc';
+import { aSafePriceForAmount, aStoreContacts, aGetContacts, aSelCustomStyles, aFeesForNetwork, aHrefSeeOnExplorer } from '../../utils/arafunc';
 import { wCreateStakeAccount, wCreateStakeKeypair, wgetStakeActivation, wWithdrawStake } from '../../utils/stake';
 import { wKeypair, wgetSignatureStatus, wgetMiniRent, wgetSignatureConfirmation } from '../../utils/connection'
 
@@ -209,8 +209,16 @@ function StakePage(props) {
             .catch((e) => {
                 console.log("**tryToWithdrawStake ERROR FROM STAKEPAGE : ", e)
             });
+
     }
 
+    // why
+    useEffect(() => {
+        if (withDrwSignStatus === "confirmed") {
+            setwithDrwSignStatus("null");
+            setstakebal(stakebal - withdrwAmount)
+        }
+      }, [withDrwSignStatus, stakebal, withdrwAmount]);
     //console.log('%c StakePage.js recUnConfAmount : ', 'background: red; color: #bada55', recUnConfAmount)
     //console.log(recUnConfAmount)
     function returnStakeInitLoading() {
@@ -220,8 +228,8 @@ function StakePage(props) {
     }
 
     function returnNetStakeBalance() {
-        const fees = aFeesForNetwork();
-        const test = fees / (web.LAMPORTS_PER_SAFE);
+        //const fees = aFeesForNetwork();
+        // const test = fees / (web.LAMPORTS_PER_SAFE);
         var balance;
         if (wgetStakeStatus === "inactive") {
             balance = stakebal / web.LAMPORTS_PER_SAFE;
@@ -233,33 +241,48 @@ function StakePage(props) {
         else {
             balance = stakebal / web.LAMPORTS_PER_SAFE;
         }
-        return (balance - test).toFixed(4);
+        if (balance <= 0.0023) {
+            balance = 0;
+        } else if (balance >= 1) {
+            balance = balance.toFixed(1)
+        }
+        else {
+            balance = balance - 0.0023;
+            console.log("TEST balance TEST", balance)
+        }
+        return balance;
     }
 
     function returnWithdrawStatus() {
         console.log("NOW withDrwSignStatus", withDrwSignStatus)
         if (withDrwSignStatus === "confirmed") {
-            function successAlert() { 
-                toast.success("Success Notification !", {
+            function successAlert() {
+                toast(aHrefSeeOnExplorer(), {
                     position: toast.POSITION.BOTTOM_RIGHT
-                  });
+                });
                 toast.clearWaitingQueue();
-             }
+                
+            }
+            successAlert()
             return (
-                <div>
-                {successAlert()}
-                <button className="fancy-button-gradient complete">Sent !</button>
-                </div>
+                <button className="fancy-button-gradient">Sent !</button>)
+        }
+        if (withDrwSignStatus === "requesting" || withDrwSignStatus === "sent") {
+
+            return (
+                <button className="fancy-button-gradient">Sending...</button>
             )
 
-        } else if (withDrwSignStatus === "InsufficientFunds") {
-            function insufficientFundsAlert() { 
+        }
+        if (withDrwSignStatus === "InsufficientFunds") {
+            function insufficientFundsAlert() {
                 toast.error("Insufficient funds !", {
                     position: toast.POSITION.BOTTOM_RIGHT
-                  });
+                });
                 toast.clearWaitingQueue();
-             }
-            //setwithDrwSignStatus(null);
+                //setwithDrwSignStatus(null);
+            }
+            //
             return (
                 <div>
                     <div>Insufficient funds</div>
@@ -271,7 +294,7 @@ function StakePage(props) {
                     </button>
                 </div>
             )
-            
+
         }
 
         if (withdrwAmount !== "" && withdrwAddress != null) {
@@ -289,6 +312,7 @@ function StakePage(props) {
                 <button className="fancy-button-gradient-disabled">Withdraw</button>
             )
         }
+        
     }
     const onChangeHandlerAddress = event => {
         setwithdrwAddress(event.target.value);

@@ -1036,3 +1036,11 @@ color:orange;
 .transfert-fixed-container {
   height:85px;
 }
+.toast-txt-succes {
+  color: #207510;
+}
+.toast-href {
+  font-size: x-small;
+  text-transform: uppercase;
+  color:#927198;
+}

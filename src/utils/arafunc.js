@@ -1,3 +1,21 @@
+export function aHrefSeeOnExplorer(signature) {
+    const network = localStorage.getItem('network')
+    if (network === "https://api.devnet.solana.com") {
+        return (
+            <div>
+                 <div className="toast-txt-succes">Success !</div>
+                 <a className="toast-href" href={'https://explorer.solana.com/tx/' + signature + '?cluster=devnet'}>See on explorer</a>
+            </div>
+        );
+    } else if (network === "https://api.mainnet-beta.safecoin.org") {
+        return (
+            <div>
+                <div className="toast-txt-succes">Success !</div>
+                <a className="toast-href" href={'https://explorer.safecoin.org/tx/' + signature}>See on explorer</a>
+            </div>
+        );
+    }
+}
 export function aFeesForNetwork() {
     const network = localStorage.getItem('network')
     var lamfees;

@@ -42,23 +42,28 @@ function Delegation(props) {
     //wgetMyVoterStats(voter);
 
     useEffect(() => {
-        wgetVoteAcc()
+        if (NodeArray !== undefined) {
+            wgetVoteAcc()
             .then(
-                function (result) {
-                    setNodeArray([result]);
+                function (valistl) {
+                    setNodeArray([valistl]);
                 })
             .catch((e) => { console.log("error", e) });
-        wgetInflation()
+            //console.log("options template : ")
+        }
+        
+            wgetInflation()
             .then(
                 function (result) {
-                    setApy([result]);
+                    setApy(result);
                 })
             .catch((e) => { console.log("error", e) });
+
     }, [])
 
 
     const valist = NodeArray[0];
-    console.log("options template : ", valist)
+    //console.log("options template : ", valist)
 
     // only for select (pre-delegation)
     const handleSelectedNode = (event) => {
