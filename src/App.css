@@ -1044,3 +1044,7 @@ color:orange;
   text-transform: uppercase;
   color:#927198;
 }
+.transaction-container {
+  width: 220px;
+  height: 400px;
+}

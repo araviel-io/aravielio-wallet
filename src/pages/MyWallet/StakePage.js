@@ -341,10 +341,6 @@ function StakePage(props) {
     function displayContactOrAddress() {
 
         function SaveNewContact() {
-            // FIXME: create utils function to handle saved address array
-            // localStorage.setItem("savedlabel", AddContactLabelValue)
-            //localStorage.setItem("savedaddress", AddContactAddressValue)
-            // go back and show initial state
             aStoreContacts(AddContactLabelValue, AddContactAddressValue)
             setToggleNewAddress("closed");
         }

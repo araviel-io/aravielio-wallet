@@ -12,6 +12,7 @@ import { wgetBalance, solRequestAirdrop } from '../../utils/connection';
 ///// TODO: HERE
 // first mnemonic word
 // token listing
+// credit card style instead logo
 /////
 
 
