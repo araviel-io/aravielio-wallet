@@ -1,9 +1,9 @@
 // reference : https://github.com/solana-labs/solana-web3.js/blob/982dd0c9efe8b48e26f2dc96a09abe7975b16911/test/stake-program.test.js#L25
 import * as web from '@safecoin/web3.js';
 import { Authorized, Lockup, Connection } from '@safecoin/web3.js';
-import { genMnemonic, wKeypair } from './connection';
+import { genMnemonic, wKeypair, getEpochInfo } from './connection';
 import { ForceSignatureFromException } from './transfert'
-
+import { aFeesForNetwork } from '../../utils/arafunc';
 const getNetwork = localStorage.getItem('network')
 const connection = new web.Connection(getNetwork, 'max');
 // create authorized keypair from mnemonic
@@ -189,4 +189,16 @@ export async function wgetMyVoterStats(myvoteaddress) {
   }
 
   return array;
+}
+
+export async function wgetStakeRewardList(stakeaddress){
+  const epochInfo = await connection.getEpochInfo();
+  const actualEpoch = epochInfo.epoch;
+  const stakePubkey = new web.PublicKey(stakeaddress);
+  const getRewards = await connection.getInflationReward([stakePubkey], actualEpoch - 1)
+  const getPostBalance = getRewards.postBalance;
+
+  console.log("getPostBalance : ", getPostBalance)
+  // create human readable array
+  return getRewards;
 }

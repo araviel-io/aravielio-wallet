@@ -134,7 +134,7 @@ function StakePage(props) {
             }).catch((e) => {
                 console.log("StakePage - wgetStakeActivation Promise ", e)
             });
-        } 
+        }
     }, [stakeInit]);
 
     async function tryToCreateStakeAccount() {
@@ -198,7 +198,7 @@ function StakePage(props) {
             setwithDrwSignStatus("null");
             setstakebal(stakebal - withdrwAmount)
         }
-      }, [withDrwSignStatus, stakebal, withdrwAmount]);
+    }, [withDrwSignStatus, stakebal, withdrwAmount]);
     //console.log('%c StakePage.js recUnConfAmount : ', 'background: red; color: #bada55', recUnConfAmount)
     //console.log(recUnConfAmount)
     function returnStakeInitLoading() {
@@ -241,7 +241,7 @@ function StakePage(props) {
                     position: toast.POSITION.BOTTOM_RIGHT
                 });
                 toast.clearWaitingQueue();
-                
+
             }
             successAlert()
             return (
@@ -292,7 +292,7 @@ function StakePage(props) {
                 <button className="fancy-button-gradient-disabled">Withdraw</button>
             )
         }
-        
+
     }
     const onChangeHandlerAddress = event => {
         setwithdrwAddress(event.target.value);
@@ -474,7 +474,7 @@ function StakePage(props) {
                         status={"DELEGATED"}
                         balance={stakebal / web.LAMPORTS_PER_SAFE}
                         delegatedAmount={wgetStakeAmount * web.LAMPORTS_PER_SAFE}
-
+                        stakeadd={stakeAdd}
                         delegatedStatus={wgetStakeStatus}
                     />
                     <div className="just-flex">

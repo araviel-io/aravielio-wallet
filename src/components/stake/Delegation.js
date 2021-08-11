@@ -441,7 +441,7 @@ function Delegation(props) {
             </div>
             <Card styleName='staking-delegation' cardContent={
                 <div>
-                    {toggleValorReward === "validatorinfo" ? <div>{DelegationHub(loadDelegStatus)}</div> : <Rewards />}
+                    {toggleValorReward === "validatorinfo" ? <div>{DelegationHub(loadDelegStatus)}</div> : <Rewards stakeadd={props.stakeadd} />}
                 </div>
             }></Card>
         </div>
