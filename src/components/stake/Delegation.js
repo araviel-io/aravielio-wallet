@@ -2,17 +2,18 @@ import Card from '../common/Card';
 import React from 'react';
 import Select from 'react-select'
 import styles from './Delegation.module.css';
-
+import classNames from 'classnames/bind';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { LAMPORTS_PER_SAFE } from '@safecoin/web3.js';
-import { wDelegate, wgetParsedAccountInfo, wgetMyVoterStats,wDesactivate } from '../../utils/stake';
+import { wDelegate, wgetParsedAccountInfo, wgetMyVoterStats, wDesactivate } from '../../utils/stake';
 import { wgetVoteAcc, wgetCurrentEpoch, wgetRemainingTime, wgetInflation, wgetSignatureConfirmation } from '../../utils/connection'
 import { Line } from 'rc-progress';
 import { HourglassOutline } from 'react-ionicons'
 import { CoffeeLoading } from 'react-loadingg';
 
 import LiveConfirmation from '../../components/transfert/LiveConfirmation';
+import Rewards from './Rewards';
 function Delegation(props) {
 
     const [NodeArray, setNodeArray] = useState([]);
@@ -37,6 +38,7 @@ function Delegation(props) {
     const [DelegConfStatus, setDelegConfStatus] = useState(null);
 
     const [instructionType, setinstructionType] = useState(null);
+    const [toggleValorReward, settoggleValorReward] = useState("validatorinfo");
 
     const [apy, setApy] = useState(null);
     //wgetMyVoterStats(voter);
@@ -44,15 +46,15 @@ function Delegation(props) {
     useEffect(() => {
         if (NodeArray !== undefined) {
             wgetVoteAcc()
-            .then(
-                function (valistl) {
-                    setNodeArray([valistl]);
-                })
-            .catch((e) => { console.log("error", e) });
+                .then(
+                    function (valistl) {
+                        setNodeArray([valistl]);
+                    })
+                .catch((e) => { console.log("error", e) });
             //console.log("options template : ")
         }
-        
-            wgetInflation()
+
+        wgetInflation()
             .then(
                 function (result) {
                     setApy(result);
@@ -206,10 +208,10 @@ function Delegation(props) {
 
                 console.log("** wgetParsedAccountInfo().then(function (result) : ");
 
-            }).catch((e) => {console.log("getParsedAccountInfo ", e) });
+            }).catch((e) => { console.log("getParsedAccountInfo ", e) });
             wgetCurrentEpoch().then(function (result) {
                 setepochProgress(result)
-            }).catch((e) => {console.log("Delegation.js - wgetCurrentEpoch ", e)});
+            }).catch((e) => { console.log("Delegation.js - wgetCurrentEpoch ", e) });
 
         } else if (props.status === "INITIALIZED") {
             //console.log("props.status INIT ZZBI ", propsStatus)
@@ -238,7 +240,7 @@ function Delegation(props) {
     }, [voter])
 
     function returnProgressEpoch(one) {
-        
+
         var label = "Checking..."
         if (props.delegatedStatus === "activating") {
             label = "Activation cooldown :"
@@ -289,13 +291,13 @@ function Delegation(props) {
                     <div className="dotted-separator"></div>
                     <div className="vertical-space"></div>
                     {returnProgressEpoch()}
-                    <div class="stake-numbers">
-                      
+                    <div className="stake-numbers">
+
                         <div className="card-button-center" onClick={() => { tryToDeactivate() }}>{returnUnDelegLoading()}</div>
                     </div>
-                    
+
                 </div>
-                
+
             )
         }
     }
@@ -391,19 +393,41 @@ function Delegation(props) {
             }
 
             else if (props.status === "DELEGATED") {
-                return (
-                    returnDelegationInfo()
-                )
+                if (toggleValorReward === "validatorinfo") {
+                    return (
+                        returnDelegationInfo()
+                    )
+                } else {
+                   
+                    return (
+                        returnDelegationInfo()
+                    )
+                }
+
             }
         }
     }
 
+    var buttonClass = classNames('sub-navigation-item',
+    { 'sni-active': toggleValorReward === 'validatorinfo' },
+    { 'sni-active': toggleValorReward === 'rewards' }
+  );
+
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  
     return (
-        <Card styleName='staking-delegation' cardContent={
-            <div>
-                <div>{DelegationHub(loadDelegStatus)}</div>
+        <div>
+            <div className="sub-navigation-card">
+                <div key="1" className={buttonClass} onClick={() => { settoggleValorReward("validatorinfo") }}>Validator info</div>
+                <div className="sub-navigation-sep">/</div>
+                <div key="2" className={buttonClass} onClick={() => { settoggleValorReward("rewards") }}>Rewards</div>
             </div>
-        }></Card>
+            <Card styleName='staking-delegation' cardContent={
+                <div>
+                    { toggleValorReward === "validatorinfo" ? <div>{DelegationHub(loadDelegStatus)}</div> : <Rewards/> }
+                </div>
+            }></Card>
+        </div>
     );
 }
 

@@ -1,9 +1,10 @@
 import * as web from '@safecoin/web3.js';
-import { genMnemonic, wKeypair, wgetSignatureStatus } from './connection';
-
+import { wKeypair } from './connection';
+import { aFeesForNetwork } from './arafunc';
 const getNetwork = localStorage.getItem('network')
 const connection = new web.Connection(getNetwork, 'max');
 const mnAuth = localStorage.getItem('mnemonic')
+const fees = aFeesForNetwork();
 
 export function ForceSignatureFromException(exception) {
    //FIXME: move to arafunc
@@ -16,13 +17,14 @@ export function ForceSignatureFromException(exception) {
 }
 
 export async function tTransfertSafe(minimumAmount, recipient) {
+    var amountToLam = minimumAmount  * web.LAMPORTS_PER_SAFE;
     var authkeypair = await wKeypair(mnAuth);
     var recipientpkp = new web.PublicKey(recipient)
     var transaction = new web.Transaction().add(
         web.SystemProgram.transfer({
             fromPubkey: authkeypair.publicKey,
             toPubkey: recipientpkp,
-            lamports: minimumAmount,
+            lamports: amountToLam - fees,
         })
     );
     console.log("recipientpkprecipientpkp", recipientpkp)

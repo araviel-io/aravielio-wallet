@@ -12,15 +12,12 @@ import MaintenancePage from './pages/MaintenancePage';
 import { isApiAlive } from './utils/connection';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css"
 
 ///// TODO: HERE
 // Mobile condition component
-// return create restore if no localstorage mnemonic
 // encrypt more + seed passwd
-///// FIXME: 
-// sending state button
 
 // if true disable CreateWalletPage & RestoreWalletPage
 function isSaved() {

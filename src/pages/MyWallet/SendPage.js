@@ -7,12 +7,10 @@ import Select from 'react-select';
 import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
 import { toast } from 'react-toastify';
-import safelogo from '../../assets/img/safecoin_logov3.png'
 // complex
 import { aSafePriceForAmount, aStoreContacts, aGetContacts, aSelCustomStyles, aHrefSeeOnExplorer } from '../../utils/arafunc';
 import { tTransfertSafe } from '../../utils/transfert';
-import { genMnemonic, wKeypair, wgetSignatureStatus, wgetBalance } from '../../utils/connection';
-import * as web from '@safecoin/web3.js';
+import { wgetSignatureStatus, wgetBalance } from '../../utils/connection';
 
 
 function SendPage(props) {
@@ -39,7 +37,7 @@ function SendPage(props) {
     async function tryToSendSafe(amount, address) {
         setSendSignStatus("requesting");
         console.log("tryToWithdrawStake AMOUNT : ", amount)
-        tTransfertSafe(amount * web.LAMPORTS_PER_SAFE, address)
+        tTransfertSafe(amount, address)
             .then(function (signature) {
                 setSendSignStatus("sent");
                 wgetSignatureStatus(signature)
@@ -56,7 +54,6 @@ function SendPage(props) {
                                 .catch((e) => {
                                     console.log("**wgetBalance promise ERROR", e)
                                 });
-                            //TODO: update balance
                         } else {
                             setSendSignStatus(result.value.err.InstructionError[1]);
                         }
@@ -99,15 +96,9 @@ function SendPage(props) {
     // dynamic : if contact button is clicked fire the ContactOrAddress useState
     const onChangeAddLabel = (event) => { setAddContactLabelValue(event.target.value) }
     const onChangeAddAddress = (event) => { setAddContactAddressValue(event.target.value) }
-
-    const onChangeHandlerAddress = event => {
-        setwithdrwAddress(event.target.value);
-    };
-
-    const onChangeHandlerAmount = event => {
-        setwithdrwAmount(event.target.value);
-        console.log("WITHDRAW AMOUNT : ", withdrwAmount)
-    };
+    // Send : address & amount handlers
+    const onChangeHandlerAddress = event => { setwithdrwAddress(event.target.value) };
+    const onChangeHandlerAmount = event => { setwithdrwAmount(event.target.value) };
 
     function returnWithdrawStatus() {
         console.log("NOW withDrwSignStatus", sendSignStatus)
@@ -159,12 +150,12 @@ function SendPage(props) {
                 <button
                     className="fancy-button-gradient"
                     onClick={() => { tryToSendSafe(withdrwAmount, withdrwAddress); }}>
-                    Withdraw
+                    Send
                 </button>
             )
         } else {
             return (
-                <button className="fancy-button-gradient-disabled">Withdraw</button>
+                <button className="fancy-button-gradient-disabled">Send</button>
             )
         }
         
@@ -275,7 +266,6 @@ function SendPage(props) {
     }
     //#endregion
 
-
     return (
         <div>
             <Title titleHeader='Send' />
@@ -309,7 +299,7 @@ function SendPage(props) {
                     </div>
                     <div className="hint-small-phrase">
                         {' '}
-                        Immediate withdrawal of activated stake is not possible. Stake needs to be deactivated first.
+                        
                     </div>
                     <div className="actions">
                         {returnWithdrawStatus()}

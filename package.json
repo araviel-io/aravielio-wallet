@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^12.1.10",
     "axios": "^0.21.1",
     "bip39": "^3.0.4",
+    "classnames": "^2.3.1",
     "ed25519-hd-key": "^1.2.0",
     "qrcode.react": "^1.0.1",
     "rc-progress": "^3.1.4",

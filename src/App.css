@@ -1048,3 +1048,31 @@ color:orange;
   width: 220px;
   height: 400px;
 }
+.sub-navigation-card {
+  font-size: smaller;
+  font-family: Poppins;
+  align-items: center;
+  margin-top: 15px;
+  height: 50px;
+  display: flex;
+  width: 550px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 6px;
+  background-color: #ffffff;
+  filter: drop-shadow(0px 15px 15px rgba(37, 37, 37, 0.02));
+}
+.sub-navigation-item {
+  cursor: pointer;
+  padding-left:15px;
+  color:#A5A5A5;
+}
+.sub-navigation-sep {
+  margin-left:8px;
+  margin-right:8px;
+  color: #363B64;
+}
+.sni-active{
+  color: #363B64;
+  font-weight: 700;
+}

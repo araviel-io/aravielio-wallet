@@ -108,8 +108,6 @@ export async function wgetInflation() {
 // placeholder
 export async function wKeypair(mnemonic) {
 
-    //const mnemonic = localStorage.getItem('mnemonic')
-
     const seed = await bip39.mnemonicToSeed(mnemonic);
     const derivedSeed = deriveSeed(seed);
     var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
@@ -229,34 +227,6 @@ function deriveSeed(seed) {
 export async function wgetVersion() {
     const clusterVer = await connection.getVersion();
     return clusterVer;
-}
-// below is useless, for reference only
-export async function tryfetch() {
-
-    const connection = new web.Connection("https://api.mainnet-beta.solana.com", "max");
-    const ApiUrl = 'https://api.nomics.com/v1/currencies/ticker?key=601eff44ab249d337b38cbb045d7b62d&ids=SAFECOIN&interval=1h&convert=USD&per-page=5&page=1';
-    var p1 = new Promise(
-        // La fonction de résolution est appelée avec la capacité de
-        // tenir ou de rompre la promesse
-        function (resolve, reject) {
-
-
-            // On tient la promesse !
-            var test = resolve(ApiUrl);
-            console.log(test);
-            // return test
-        });
-
-    p1.then(
-        // On affiche un message avec la valeur
-        function (val) {
-            console.log("p1 prom", val);
-        }).catch(
-            // Promesse rejetée
-            function () {
-                //  console.log("promesse rompue");
-            });
-
 }
 
 export function genMnemonic() {

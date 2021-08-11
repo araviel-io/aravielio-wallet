@@ -1,9 +1,8 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Select from 'react-select'
 //import Container from '../../components/common/Container'
 import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
-import { clusterApiUrl } from '@safecoin/web3.js';
 
 function SettingsPage(props) {
 
@@ -30,8 +29,6 @@ function SettingsPage(props) {
         { value: 'devnet', label: 'Safe devnet' },
         { value: 'soldevnet', label: 'SOL devnet' }
     ]
-
-
 
     return (
         <div>
