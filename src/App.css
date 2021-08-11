@@ -1049,6 +1049,7 @@ color:orange;
   height: 400px;
 }
 .sub-navigation-card {
+  justify-content: space-around;
   font-size: smaller;
   font-family: Poppins;
   align-items: center;
@@ -1073,6 +1074,11 @@ color:orange;
   color: #363B64;
 }
 .sni-active{
+  cursor: pointer;
   color: #363B64;
   font-weight: 700;
+}
+.sni-unactive{
+  cursor: pointer;
+  color: #A5A5A5;
 }

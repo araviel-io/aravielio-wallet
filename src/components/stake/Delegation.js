@@ -398,7 +398,7 @@ function Delegation(props) {
                         returnDelegationInfo()
                     )
                 } else {
-                   
+
                     return (
                         returnDelegationInfo()
                     )
@@ -409,22 +409,39 @@ function Delegation(props) {
     }
 
     var buttonClass = classNames('sub-navigation-item',
-    { 'sni-active': toggleValorReward === 'validatorinfo' },
-    { 'sni-active': toggleValorReward === 'rewards' }
-  );
+        { 'sni-active': toggleValorReward === 'validatorinfo' },
+        { 'sni-active': toggleValorReward === 'rewards' }
+    );
 
-  const [activeIndex, setActiveIndex] = React.useState(0);
-  
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const handleOnClick = index => {
+        setActiveIndex(index); // remove the curly braces
+        if (index === 0) { settoggleValorReward("validatorinfo") }
+        if (index === 1) { settoggleValorReward("rewards") }
+    };
+
+    const label = ["Validator info", "Rewards"]
+    const navigation = label.map((el, index) => {
+        return (
+            <div
+                key={index}
+                onClick={() => handleOnClick(index)} // pass the index
+                className={activeIndex === index ? "sni-active" : "sni-unactive"}
+            >
+                {el}
+            </div>
+        );
+    });
+
     return (
         <div>
             <div className="sub-navigation-card">
-                <div key="1" className={buttonClass} onClick={() => { settoggleValorReward("validatorinfo") }}>Validator info</div>
-                <div className="sub-navigation-sep">/</div>
-                <div key="2" className={buttonClass} onClick={() => { settoggleValorReward("rewards") }}>Rewards</div>
+                {navigation}
             </div>
             <Card styleName='staking-delegation' cardContent={
                 <div>
-                    { toggleValorReward === "validatorinfo" ? <div>{DelegationHub(loadDelegStatus)}</div> : <Rewards/> }
+                    {toggleValorReward === "validatorinfo" ? <div>{DelegationHub(loadDelegStatus)}</div> : <Rewards />}
                 </div>
             }></Card>
         </div>
