@@ -3,7 +3,8 @@ import * as web from '@safecoin/web3.js';
 import { Authorized, Lockup, Connection } from '@safecoin/web3.js';
 import { genMnemonic, wKeypair, getEpochInfo } from './connection';
 import { ForceSignatureFromException } from './transfert'
-import { aFeesForNetwork } from '../../utils/arafunc';
+import { aIamportForNetwork } from './arafunc';
+
 const getNetwork = localStorage.getItem('network')
 const connection = new web.Connection(getNetwork, 'max');
 // create authorized keypair from mnemonic
@@ -35,7 +36,7 @@ export async function wgetStakeActivation() {
 export async function wCreateStakeAccount(mnfrom, stakeacc) {
 
   const from = await wKeypair(mnfrom); // always output keypair object "main" account
- // const authorized = await wKeypair(mnauthorized); // always output keypair object
+  // const authorized = await wKeypair(mnauthorized); // always output keypair object
   const newStakeAccount = await wKeypair(stakeacc);
 
   const minimumAmount = await connection.getMinimumBalanceForRentExemption(
@@ -191,14 +192,38 @@ export async function wgetMyVoterStats(myvoteaddress) {
   return array;
 }
 
-export async function wgetStakeRewardList(stakeaddress){
+export async function wgetStakeRewardList(stakeaddress) {
   const epochInfo = await connection.getEpochInfo();
   const actualEpoch = epochInfo.epoch;
   const stakePubkey = new web.PublicKey(stakeaddress);
-  const getRewards = await connection.getInflationReward([stakePubkey], actualEpoch - 1)
-  const getPostBalance = getRewards.postBalance;
 
+  // include into loop / array.push
+  /* const getRewards = await connection.getInflationReward([stakePubkey], actualEpoch - 1)
+   const getPostBalance = getRewards[0].postBalance / aIamportForNetwork();
+   const getRewardAmount = getRewards[0].amount / aIamportForNetwork();
+   const getConcernedEpoch = getRewards[0].epoch;*/
+
+  const linestoShow = 8;
+  const array = [];
+  try {
+    for (let i = 1; i < linestoShow; i += 1) {
+      const getRewards = await connection.getInflationReward([stakePubkey], actualEpoch - i)
+      const getPostBalance = getRewards[0].postBalance / aIamportForNetwork();
+      const getRewardAmount = getRewards[0].amount / aIamportForNetwork();
+      const getConcernedEpoch = getRewards[0].epoch;
+
+      array.push({ postbalance: getPostBalance, amount: getRewardAmount, epoch: getConcernedEpoch });
+
+
+    }
+  } catch (e) {
+console.log(e.message)
+  }
+
+  console.log("comstakefound", array)
+  /*console.log("getRewards : ", getRewards)
   console.log("getPostBalance : ", getPostBalance)
-  // create human readable array
-  return getRewards;
+  console.log("getRewardAmount : ", getRewardAmount)*/
+  // create human readable object
+  return array;
 }

@@ -1,3 +1,5 @@
+import { LAMPORTS_PER_SAFE } from "@safecoin/web3.js";
+
 export function aHrefSeeOnExplorer(signature) {
     const network = localStorage.getItem('network')
     if (network === "https://api.devnet.solana.com") {
@@ -26,6 +28,18 @@ export function aFeesForNetwork() {
     }
     return lamfees;
 }
+
+export function aIamportForNetwork() {
+    const network = localStorage.getItem('network')
+    var lamnet;
+    if (network === "https://api.devnet.solana.com") {
+        lamnet = 1000000000;
+    } else {
+        lamnet = 1000000000;
+    }
+    return lamnet;
+}
+
 export function aSafePriceForAmount(amount) {
     const safeprice = localStorage.getItem("safeprice");
     return (safeprice * amount).toFixed(2);
