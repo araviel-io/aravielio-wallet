@@ -659,7 +659,11 @@ margin-top: auto;
 .just-flex {
   display: flex;
 }
-
+.just-flex-sbetween {
+  display: flex;
+  justify-content: space-between;
+  font-family: Poppins;
+}
 .modal {
   background-color: #ffffff;
   /* font-size: 12px; */
@@ -1081,4 +1085,14 @@ color:orange;
 .sni-unactive{
   cursor: pointer;
   color: #A5A5A5;
+}
+.column-container {
+  font-weight: 600;
+}
+.green {
+  color : #60dc47c0;
+}
+.amount-plus::before {
+  content:'+ ';
+  color: #82ce72e0;
 }

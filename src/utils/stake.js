@@ -212,7 +212,9 @@ export async function wgetStakeRewardList(stakeaddress) {
       const getRewardAmount = getRewards[0].amount / aIamportForNetwork();
       const getConcernedEpoch = getRewards[0].epoch;
 
-      array.push({ postbalance: getPostBalance, amount: getRewardAmount, epoch: getConcernedEpoch });
+      var fixedPostBalance =  parseFloat(getPostBalance).toFixed(2);
+      var fixedRewardAmount =  parseFloat(getRewardAmount).toFixed(2);
+      array.push({ postbalance: fixedPostBalance, amount: fixedRewardAmount, epoch: getConcernedEpoch });
 
 
     }
@@ -220,7 +222,7 @@ export async function wgetStakeRewardList(stakeaddress) {
 console.log(e.message)
   }
 
-  console.log("comstakefound", array)
+  //console.log("comstakefound", array)
   /*console.log("getRewards : ", getRewards)
   console.log("getPostBalance : ", getPostBalance)
   console.log("getRewardAmount : ", getRewardAmount)*/
