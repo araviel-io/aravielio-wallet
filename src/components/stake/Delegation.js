@@ -6,7 +6,7 @@ import classNames from 'classnames/bind';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { LAMPORTS_PER_SAFE } from '@safecoin/web3.js';
-import { wDelegate, wgetParsedAccountInfo, wgetMyVoterStats, wDesactivate } from '../../utils/stake';
+import { wDelegate, wgetParsedAccountInfo, wgetMyVoterStats, wDesactivate, getValidatorInfos } from '../../utils/stake';
 import { wgetVoteAcc, wgetCurrentEpoch, wgetRemainingTime, wgetInflation, wgetSignatureConfirmation } from '../../utils/connection'
 import { Line } from 'rc-progress';
 import { HourglassOutline } from 'react-ionicons'
@@ -42,6 +42,8 @@ function Delegation(props) {
 
     const [apy, setApy] = useState(null);
     //wgetMyVoterStats(voter);
+
+    //getValidatorInfos()
 
     useEffect(() => {
         if (NodeArray !== undefined) {

@@ -99,12 +99,14 @@ function StakePage(props) {
                 var getStakingType;
                 try {
                     getStakingType = result.value.data.parsed.type;
+                    var getDelegationStatus = result.value.data.parsed.info.stake;
                 } catch (e) {
                     // FIXME: VERY DIRTY
                     getStakingType = null;
+                    console.log(" ISSUE getParsedAccountInfo", e.message)
                 }
                 //.data.parsed.type
-                var getDelegationStatus = result.value.data.parsed.info.stake;
+
                 //TODO: try to drastically reduces requests by : returning or callbacks or by splitting effect
                 setstakeInit(getStakingType);
                 console.log("StakePage.js -  setstakeInit(getStakingType); ", getStakingType)
@@ -592,28 +594,28 @@ function StakePage(props) {
         }
     }
 
-    if (wgetStakeStatus != null) {
-        return (
-            <div>
-                <Title titleHeader='Stake' />
 
-                {displayTopCard()}
-                {displayDelegationComponent()}
-            </div>
-        );
-    } else {
-        // loading page
-        return (
-            <div>
-                <Title titleHeader='Stake' />
-                <Card styleName='page-loader' cardContent={
-                    <div className="page-loader-container">
-                        <CoffeeLoading speed="0.7" size="large" />
-                    </div>
-                } />
-            </div>
-        );
-    }
+    return (
+        <div>
+            <Title titleHeader='Stake' />
+
+            {displayTopCard()}
+            {displayDelegationComponent()}
+        </div>
+    );
+
+    // loading page
+    /*  return (
+          <div>
+              <Title titleHeader='Stake' />
+              <Card styleName='page-loader' cardContent={
+                  <div className="page-loader-container">
+                      <CoffeeLoading speed="0.7" size="large" />
+                  </div>
+              } />
+          </div>
+      );*/
+
 
 }
 

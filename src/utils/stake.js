@@ -212,14 +212,14 @@ export async function wgetStakeRewardList(stakeaddress) {
       const getRewardAmount = getRewards[0].amount / aIamportForNetwork();
       const getConcernedEpoch = getRewards[0].epoch;
 
-      var fixedPostBalance =  parseFloat(getPostBalance).toFixed(2);
-      var fixedRewardAmount =  parseFloat(getRewardAmount).toFixed(2);
+      var fixedPostBalance = parseFloat(getPostBalance).toFixed(2);
+      var fixedRewardAmount = parseFloat(getRewardAmount).toFixed(2);
       array.push({ postbalance: fixedPostBalance, amount: fixedRewardAmount, epoch: getConcernedEpoch });
 
 
     }
   } catch (e) {
-console.log(e.message)
+    console.log(e.message)
   }
 
   //console.log("comstakefound", array)
@@ -228,4 +228,17 @@ console.log(e.message)
   console.log("getRewardAmount : ", getRewardAmount)*/
   // create human readable object
   return array;
+}
+
+const CONFIG_PROGRAM_ID = new web.PublicKey('Config1111111111111111111111111111111111111');
+
+export async function getValidatorInfos() {
+  const validatorInfoAccounts = await connection.getProgramAccounts(CONFIG_PROGRAM_ID);
+
+  console.log(validatorInfoAccounts.length);
+  return validatorInfoAccounts.flatMap(validatorInfoAccount => {
+    const validatorInfo = web.ValidatorInfo.fromConfigData(validatorInfoAccount.account.data);
+    console.log("ALARM ALARM FDP : ", validatorInfo)
+    return validatorInfo ? [validatorInfo] : [];
+  })
 }
