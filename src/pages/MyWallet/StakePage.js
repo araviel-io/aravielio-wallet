@@ -25,10 +25,13 @@ function StakePage(props) {
 
     const [authKp, setauthAdd] = useState(null);
 
+    const [MainBal, setMainBal] = useState(null);
+
     const [stakeAdd, setstakeAdd] = useState(null);
     const [stakebal, setstakebal] = useState(null);
     const [stakeInit, setstakeInit] = useState(null);
 
+    // only for text display
     const [loadstakeInit, setloadstakeInit] = useState(null);
 
     const [delegStatus, setdelegStatus] = useState(null);
@@ -92,26 +95,34 @@ function StakePage(props) {
         await connection.getBalance(stakekeypair.publicKey).then(function (result) {
             setstakebal(result);
         });
-
+        await connection.getBalance(mainkeypair.publicKey).then(function (result) {
+            setMainBal(result);
+            console.log("MAIN BALANCE FROM STAKE PAGE:", MainBal)
+        });
         await connection.getParsedAccountInfo(stakekeypair.publicKey)
             .then(function (result) {
-                console.log("StakePage.js - getParsedAccountInfo(stakekeypair.publicKey) ", result)
-                var getStakingType;
-                try {
-                    getStakingType = result.value.data.parsed.type;
-                    var getDelegationStatus = result.value.data.parsed.info.stake;
-                } catch (e) {
-                    // FIXME: VERY DIRTY
-                    getStakingType = null;
-                    console.log(" ISSUE getParsedAccountInfo", e.message)
-                }
-                //.data.parsed.type
+                if (result.value !== null) {
+                    console.log("StakePage.js - getParsedAccountInfo(stakekeypair.publicKey) ", result)
+                    var getStakingType;
+                    try {
+                        getStakingType = result.value.data.parsed.type;
+                        var getDelegationStatus = result.value.data.parsed.info.stake;
+                    } catch (e) {
+                        // FIXME: VERY DIRTY
+                        getStakingType = null;
+                        console.log(" ISSUE getParsedAccountInfo", e.message)
+                    }
+                    //.data.parsed.type
 
-                //TODO: try to drastically reduces requests by : returning or callbacks or by splitting effect
-                setstakeInit(getStakingType);
-                console.log("StakePage.js -  setstakeInit(getStakingType); ", getStakingType)
-                setdelegStatus(getDelegationStatus);
-                console.log("*getParsedAccountInfo : ", result);
+                    //TODO: try to drastically reduces requests by : returning or callbacks or by splitting effect
+                    setstakeInit(getStakingType);
+                    console.log("StakePage.js -  setstakeInit(getStakingType); ", getStakingType)
+                    setdelegStatus(getDelegationStatus);
+                    console.log("*getParsedAccountInfo : ", result);
+                } else {
+                    // it means created but NOT init
+                    setstakeInit("NOT INIT");
+                }
             }).catch((e) => {
                 console.log("getParsedAccountInfo ex", e)
             });
@@ -154,7 +165,9 @@ function StakePage(props) {
                 }
                 // you access the value from the promise here
                 //console.log("PLEASE RETURN A SIGNATURE ", val);
-            });
+            }).catch((e) => {
+                console.log("Can't create stake account : ", e.message)
+            });;
     }
     // never returns actions if accounts are not loaded
     async function tryToWithdrawStake(amount, address) {
@@ -204,9 +217,16 @@ function StakePage(props) {
     //console.log('%c StakePage.js recUnConfAmount : ', 'background: red; color: #bada55', recUnConfAmount)
     //console.log(recUnConfAmount)
     function returnStakeInitLoading() {
-        if (loadstakeInit === "sent") { return ("...") }
+        if (loadstakeInit === "sent") {
+            return (<div className="card-button-bottom disabled">Initializing ...</div>)
+        }
         else if (loadstakeInit === "complete") { return ("good") }
-        else { return ("Initialize") }
+        else if (MainBal === 0 && stakeInit === "NOT INIT") { 
+            return (<div className="card-button-bottom disabled">Can't initialize</div>)
+        }
+        else {
+            return (<div className="card-button-bottom" onClick={() => { tryToCreateStakeAccount() }}>Initialize</div>)
+        }   
     }
 
     function returnNetStakeBalance() {
@@ -305,28 +325,6 @@ function StakePage(props) {
         console.log("WITHDRAW AMOUNT : ", withdrwAmount)
     };
 
-    function displayAuthorityAddress() {
-        if (stakeInit != null) {
-            return (
-                <div>
-                    <div className="stake-auth">
-                        <div className="stake-sauth-label">S-AUTH</div>
-                        <div className="stake-subadd">{authKp}</div>
-                    </div>
-                    <div className="stake-auth">
-                        <div className="stake-sauth-label">W-AUTH</div>
-                        <div className="stake-subadd">{authKp}</div>
-                    </div>
-                </div>
-            )
-        } else {
-            // should never be shown
-            return (
-                <div className="stake-fund-alert">DO NOT FUND THIS ADDRESS BEFORE INIT</div>
-            )
-        }
-
-    }
     //#region SendWithdraw Address & Contact 
     const contactList = aGetContacts();
 
@@ -488,15 +486,12 @@ function StakePage(props) {
     }
 
     function displayTopCard() {
-        if (stakeInit === null) {
+        if (stakeInit === "NOT INIT") {
+            // this condition is triggered connection.getParsedAccountInfo(stakekeypair.publicKey)
             // Stake account uninitialized
             return (
                 <Card styleName='staking' cardContent={
                     <div className='stake-address-wrapper'>
-                        <div className='safe-logo'></div>
-                        <div className='safe-balance-numbers'>
-
-                        </div>
                         <div className='stake-status'>
                             <div className="auth-container">
                                 <div className="stake-address">You are about to initialize and create your stake account</div>
@@ -507,9 +502,12 @@ function StakePage(props) {
                         <div className='stake-numbers'>
                             <div className='stake-numb-grid'>Rent : 0.002282922<br />Fees : 0.000000001</div>
                             <div className='stake-numb-grid'>
-                                <div className="card-button-bottom" onClick={() => { tryToCreateStakeAccount() }}>{returnStakeInitLoading()}</div>
+                                {returnStakeInitLoading()}
+
                             </div>
                         </div>
+                        {MainBal === 0 ? <div className="init-alert-minimum">alert</div> : <></>}
+                        
                     </div>
                 } />
             )
@@ -527,7 +525,16 @@ function StakePage(props) {
                         <div className='stake-status'>
                             <div className="auth-container">
                                 <div className="stake-address">{stakeAdd}</div>
-                                {displayAuthorityAddress()}
+                                <div>
+                                    <div className="stake-auth">
+                                        <div className="stake-sauth-label">S-AUTH</div>
+                                        <div className="stake-subadd">{authKp}</div>
+                                    </div>
+                                    <div className="stake-auth">
+                                        <div className="stake-sauth-label">W-AUTH</div>
+                                        <div className="stake-subadd">{authKp}</div>
+                                    </div>
+                                </div>
                             </div>
                             <div className='horizontal-space'></div>
                             {/* to rework*/}
@@ -594,29 +601,28 @@ function StakePage(props) {
         }
     }
 
+    if (stakeInit != null) {
+        return (
+            <div>
+                <Title titleHeader='Stake' />
 
-    return (
-        <div>
-            <Title titleHeader='Stake' />
-
-            {displayTopCard()}
-            {displayDelegationComponent()}
-        </div>
-    );
-
-    // loading page
-    /*  return (
-          <div>
-              <Title titleHeader='Stake' />
-              <Card styleName='page-loader' cardContent={
-                  <div className="page-loader-container">
-                      <CoffeeLoading speed="0.7" size="large" />
-                  </div>
-              } />
-          </div>
-      );*/
-
-
+                {displayTopCard()}
+                {displayDelegationComponent()}
+            </div>
+        );
+    } else {
+        // loading page
+        return (
+            <div>
+                <Title titleHeader='Stake' />
+                <Card styleName='page-loader' cardContent={
+                    <div className="page-loader-container">
+                        <CoffeeLoading speed="0.7" size="large" />
+                    </div>
+                } />
+            </div>
+        );
+    }
 }
 
 

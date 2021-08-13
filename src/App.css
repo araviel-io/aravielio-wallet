@@ -639,7 +639,8 @@ margin-top: auto;
   background-color: #363B64;
 }
 .disabled{
-  background-color: #6e6e6e;
+  background-color: #820e0ec2;
+  color: #d69d9d;
   cursor:not-allowed;
 }
 .complete{
