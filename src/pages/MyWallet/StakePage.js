@@ -112,9 +112,6 @@ function StakePage(props) {
                         getStakingType = null;
                         console.log(" ISSUE getParsedAccountInfo", e.message)
                     }
-                    //.data.parsed.type
-
-                    //TODO: try to drastically reduces requests by : returning or callbacks or by splitting effect
                     setstakeInit(getStakingType);
                     console.log("StakePage.js -  setstakeInit(getStakingType); ", getStakingType)
                     setdelegStatus(getDelegationStatus);

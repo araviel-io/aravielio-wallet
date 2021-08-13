@@ -85,6 +85,18 @@ export async function wgetVoteAcc() {
     }
     return array;
 }
+export async function wgetVoteAccVerTwo() {
+    const voteAccounts = await connection.getVoteAccounts();
+    const activeVoteAcc = voteAccounts.current;
+    // const activeVoteAccCom = voteAccounts.current;
+    const activeLength = activeVoteAcc.length;
+    const array = [];
+
+    for (let i = 0; i < activeLength; i += 1) {
+        array.push({ value: activeVoteAcc[i].votePubkey, label: activeVoteAcc[i].votePubkey + " | " + activeVoteAcc[i].commission + " % " });
+    }
+    return array;
+}
 // don't know why i can't find getInflationRate method
 export async function wgetInflation() {
     try {

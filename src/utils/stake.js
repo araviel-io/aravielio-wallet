@@ -1,7 +1,7 @@
 // reference : https://github.com/solana-labs/solana-web3.js/blob/982dd0c9efe8b48e26f2dc96a09abe7975b16911/test/stake-program.test.js#L25
 import * as web from '@safecoin/web3.js';
-import { Authorized, Lockup, Connection } from '@safecoin/web3.js';
-import { genMnemonic, wKeypair, getEpochInfo } from './connection';
+import { Authorized, Lockup } from '@safecoin/web3.js';
+import { genMnemonic, wKeypair } from './connection';
 import { ForceSignatureFromException } from './transfert'
 import { aIamportForNetwork } from './arafunc';
 
@@ -233,12 +233,42 @@ export async function wgetStakeRewardList(stakeaddress) {
 const CONFIG_PROGRAM_ID = new web.PublicKey('Config1111111111111111111111111111111111111');
 
 export async function getValidatorInfos() {
-  const validatorInfoAccounts = await connection.getProgramAccounts(CONFIG_PROGRAM_ID);
 
-  console.log(validatorInfoAccounts.length);
-  return validatorInfoAccounts.flatMap(validatorInfoAccount => {
-    const validatorInfo = web.ValidatorInfo.fromConfigData(validatorInfoAccount.account.data);
-    console.log("ALARM ALARM FDP : ", validatorInfo)
-    return validatorInfo ? [validatorInfo] : [];
-  })
+  const voteAccounts = await connection.getVoteAccounts();
+  const validatorInfoAccounts = await connection.getParsedProgramAccounts(CONFIG_PROGRAM_ID);
+  const activeVoteAcc = voteAccounts.current;
+  // const activeVoteAccCom = voteAccounts.current;
+  const activeLength = activeVoteAcc.length;
+  const key = 1;
+  const array2 = [];
+  var ValInfoShift = validatorInfoAccounts.slice(1);
+  const valInfoLength = ValInfoShift.length;
+// x address * all active validators 
+  console.log("ValInfoShiftValInfoShiftValInfoShift ", ValInfoShift)
+  for (let i = 0; i < valInfoLength; i += 1) {
+    console.log("allo")
+    // check if pubkey from validatorInfoAccounts is found in the activeVoteAcc array
+    const tempInfoPubkeyArr = ValInfoShift[i].account.data.parsed.info.keys[key].pubkey;
+    const nameval = ValInfoShift[i].account.data.parsed.info.configData.name
+    const tempActive = activeVoteAcc[i].nodePubkey;
+
+    for (let a = 0; a < activeLength; a += 1) {
+      console.log("nested")
+
+      if (tempInfoPubkeyArr[i] === tempActive[a]) {
+        array2.push({ pubkey: tempActive, name: nameval });
+      }
+    }
+
+  }
+
+  console.log("getValidatorInfos purified array", array2)
+  /*
+    console.log(validatorInfoAccounts.length);
+    return validatorInfoAccounts.flatMap(validatorInfoAccount => {
+      const validatorInfo = web.ValidatorInfo.fromConfigData(validatorInfoAccount.account.data);
+      console.log("ALARM ALARM FDP : ", validatorInfo)
+      return validatorInfo ? [validatorInfo] : [];
+    })*/
+  //console.log("VALIDATOR INFOS : ", validatorInfoAccounts)
 }

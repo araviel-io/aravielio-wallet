@@ -43,8 +43,6 @@ function Delegation(props) {
     const [apy, setApy] = useState(null);
     //wgetMyVoterStats(voter);
 
-    //getValidatorInfos()
-
     useEffect(() => {
         if (NodeArray !== undefined) {
             wgetVoteAcc()
@@ -53,7 +51,6 @@ function Delegation(props) {
                         setNodeArray([valistl]);
                     })
                 .catch((e) => { console.log("error", e) });
-            //console.log("options template : ")
         }
 
         wgetInflation()
@@ -62,9 +59,7 @@ function Delegation(props) {
                     setApy(result);
                 })
             .catch((e) => { console.log("error", e) });
-
     }, [])
-
 
     const valist = NodeArray[0];
     //console.log("options template : ", valist)
@@ -182,7 +177,7 @@ function Delegation(props) {
         return (
             <div>
                 <div className="stake-validator-dpd-cont">
-                    <Select placeholder="Select a validator..." className="input-react-select" isSearchable={false} options={valist} onChange={handleSelectedNode} />
+                    <Select placeholder="Select or search a validator..." className="input-react-select" isSearchable={true} options={valist} onChange={handleSelectedNode} />
                 </div>
                 <div>
                     {returnDelegationActions()}
@@ -195,21 +190,9 @@ function Delegation(props) {
         console.log("Delegation.js - PROPSSTATUS : ", props.status)
         if (props.status === "DELEGATED") {
             wgetParsedAccountInfo().then(function (result) {
-
                 var voter = result.value.data.parsed.info.stake.delegation.voter;
-                var activationEpoch = result.value.data.parsed.info.stake.delegation.activationEpoch;
-                var authstake = result.value.data.parsed.info.meta.authorized.staker;
-                var withdrawer = result.value.data.parsed.info.meta.authorized.staker;
                 setvoter(voter);
-                /*
-                setActivationEpoch(activationEpoch);
-                setstakeAuthority(authstake);
-                setwithdrawAuthority(withdrawer);*/
-
-                //var test = await getvoter(voter);
-
                 console.log("** wgetParsedAccountInfo().then(function (result) : ");
-
             }).catch((e) => { console.log("getParsedAccountInfo ", e) });
             wgetCurrentEpoch().then(function (result) {
                 setepochProgress(result)
@@ -438,9 +421,14 @@ function Delegation(props) {
 
     return (
         <div>
-            <div className="sub-navigation-card">
-                {navigation}
-            </div>
+            {props.status === "DELEGATED" ?
+                    <div className="sub-navigation-card">
+                        {navigation}
+                    </div>
+                :
+                <></>
+                }
+
             <Card styleName='staking-delegation' cardContent={
                 <div>
                     {toggleValorReward === "validatorinfo" ? <div>{DelegationHub(loadDelegStatus)}</div> : <Rewards stakeadd={props.stakeadd} />}
