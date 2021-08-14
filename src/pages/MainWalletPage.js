@@ -19,7 +19,6 @@ import SettingsPage from './MyWallet/SettingsPage';
 import { wgetVersion } from '../utils/connection'
 
 function MainWalletPage(props) {
-  console.log("MainWalletPage Loaded")
   const [version, setVersion] = useState("");
 
   useEffect(() => {

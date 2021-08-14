@@ -63,8 +63,6 @@ function Delegation(props) {
     }, [])
 
     const valist = NodeArray[0];
-    //console.log("options template : ", valist)
-
     // only for select (pre-delegation)
     const handleSelectedNode = (event) => {
         console.log("Selected Node : ", event.value)
@@ -260,9 +258,7 @@ function Delegation(props) {
     }
 
     function returnDelegationInfo() {
-
-
-        //console.log("ZEBI ZEBI ZEBI : ", voterInfos[0].name)
+        // https://keybase.io/_/api/1.0/user/lookup.json?usernames=araviel
         // show only if retrieved status is delegated
         //console.log("Delegation.js props.delegatedStatus", props.delegatedStatus)
         if (props.delegatedStatus === null || props.delegatedStatus === undefined) {
@@ -296,12 +292,9 @@ function Delegation(props) {
                     <div className="vertical-space"></div>
                     {returnProgressEpoch()}
                     <div className="stake-numbers">
-
                         <div className="card-button-center" onClick={() => { tryToDeactivate() }}>{returnUnDelegLoading()}</div>
                     </div>
-
                 </div>
-
             )
         }
     }

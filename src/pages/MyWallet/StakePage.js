@@ -497,13 +497,13 @@ function StakePage(props) {
                             {/* to rework*/}
                         </div>
                         <div className='stake-numbers'>
-                            <div className='stake-numb-grid'>Rent : 0.002282922<br />Fees : 0.000000001</div>
+                            <div className='stake-numb-grid'>Rent : 0.002282922<br />Fees : 0.0002</div>
                             <div className='stake-numb-grid'>
                                 {returnStakeInitLoading()}
 
                             </div>
                         </div>
-                        {MainBal === 0 ? <div className="init-alert-minimum">alert</div> : <></>}
+                        {MainBal === 0 ? <div className="stake-fund-alert">Please fund your main address to initialize</div> : <></>}
                         
                     </div>
                 } />

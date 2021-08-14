@@ -17,12 +17,10 @@ import { wgetBalance, solRequestAirdrop } from '../../utils/connection';
 
 
 function WalletPage(props) {
-    console.log("WalletPage Loaded")
-    //  const { safelam } = wgetBalance(mnemonic);
+
     const mnemonic = localStorage.getItem('mnemonic')
     const network = localStorage.getItem('network')
-    //console.log("GET ITEM MNEMONIC", mnemonic)
-    //safecoin cluster query state
+
     const [balance, setBalance] = useState();
     // nomics query
     const [safeprice, setsafeprice] = useState();
