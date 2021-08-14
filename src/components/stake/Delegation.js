@@ -2,7 +2,6 @@ import Card from '../common/Card';
 import React from 'react';
 import Select from 'react-select'
 import styles from './Delegation.module.css';
-import classNames from 'classnames/bind';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { LAMPORTS_PER_SAFE } from '@safecoin/web3.js';

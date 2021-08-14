@@ -38,24 +38,24 @@ function WalletPage(props) {
     }
 
     useEffect(() => {
-       // balancePromiseEffect();
-       //FIXME: check if wallet is created before effect
-        wgetBalance(mnemonic).then(
-            function (balance) {
-                setBalance(balance);
-            })
-            .catch((e) => {
-                console.log("*wgetBalance catch((e)", e)
-            });
-        wngetSafePrice().then(
-            function (safeprice) {
-                setsafeprice(safeprice);
-                localStorage.setItem('safeprice', safeprice)
-            })
-            .catch((e) => {
-                console.log("*wngetSafePrice catch((e)", e)
-            });
-        }, []);
+        if (localStorage.hasOwnProperty("mnemonic")) {
+            wgetBalance(mnemonic).then(
+                function (balance) {
+                    setBalance(balance);
+                })
+                .catch((e) => {
+                    console.log("*wgetBalance catch((e)", e)
+                });
+            wngetSafePrice().then(
+                function (safeprice) {
+                    setsafeprice(safeprice);
+                    localStorage.setItem('safeprice', safeprice)
+                })
+                .catch((e) => {
+                    console.log("*wngetSafePrice catch((e)", e)
+                })
+        }
+    }, []);
 
     function returnBalance() {
         if (balance === "NaN") {

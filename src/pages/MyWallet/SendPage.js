@@ -19,8 +19,6 @@ function SendPage(props) {
 
     const [balance, setBalance] = useState(0);
     // 
-    const [sendStatus, setSendStatus] = useState('Send');
-
     const [withdrwAmount, setwithdrwAmount] = useState("");
     const [withdrwAddress, setwithdrwAddress] = useState(null);
     const [sendSignStatus, setSendSignStatus] = useState(null);
@@ -30,9 +28,6 @@ function SendPage(props) {
     const [ToggleNewAddress, setToggleNewAddress] = useState("closed");
     const [AddContactLabelValue, setAddContactLabelValue] = useState("");
     const [AddContactAddressValue, setAddContactAddressValue] = useState("");
-    const [ContactSelection, setContactSelection] = useState("address");
-
-
 
     async function tryToSendSafe(amount, address) {
         setSendSignStatus("requesting");

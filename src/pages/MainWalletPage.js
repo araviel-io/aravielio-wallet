@@ -19,17 +19,20 @@ import SettingsPage from './MyWallet/SettingsPage';
 import { wgetVersion } from '../utils/connection'
 
 function MainWalletPage(props) {
-console.log("MainWalletPage Loaded")
+  console.log("MainWalletPage Loaded")
   const [version, setVersion] = useState("");
 
   useEffect(() => {
-    wgetVersion()
-      .then(
-        function (result) {
-          setVersion(result['solana-core']);
-        })
-      .catch((e) => { console.log("version error", e) });
+    if (localStorage.hasOwnProperty("mnemonic")) {
+      wgetVersion()
+        .then(
+          function (result) {
+            setVersion(result['solana-core']);
+          })
+        .catch((e) => { console.log("version error", e) });
+    }
   }, [version])
+
   function selectedNetwork() {
     // console.log("NETWORKLOL ", network)
     const network = localStorage.getItem('network')
