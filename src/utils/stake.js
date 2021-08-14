@@ -230,10 +230,11 @@ export async function wgetStakeRewardList(stakeaddress) {
   return array;
 }
 
-const CONFIG_PROGRAM_ID = new web.PublicKey('Config1111111111111111111111111111111111111');
 
+
+// don't use it, find a proper way
 export async function getValidatorInfos() {
-
+  const CONFIG_PROGRAM_ID = new web.PublicKey('Config1111111111111111111111111111111111111');
   const voteAccounts = await connection.getVoteAccounts();
   const validatorInfoAccounts = await connection.getParsedProgramAccounts(CONFIG_PROGRAM_ID);
   const activeVoteAcc = voteAccounts.current;
@@ -271,4 +272,33 @@ export async function getValidatorInfos() {
       return validatorInfo ? [validatorInfo] : [];
     })*/
   //console.log("VALIDATOR INFOS : ", validatorInfoAccounts)
+}
+
+export async function wgetMyVoterInfo(votePubkey) {
+  const CONFIG_PROGRAM_ID = new web.PublicKey('Config1111111111111111111111111111111111111');
+  const votekey = new web.PublicKey(votePubkey);
+
+  const votePubkeytoIdentity = await connection.getParsedAccountInfo(votekey);
+  const finalvoteidentity = votePubkeytoIdentity.value.data.parsed.info.nodePubkey;
+
+  const validatorInfoAccounts = await connection.getParsedProgramAccounts(CONFIG_PROGRAM_ID);
+  
+  var ValInfoShift = validatorInfoAccounts.slice(1);
+  const valInfoLength = ValInfoShift.length;
+
+  //console.log("stake.js votePubkeytoIdentity: ", finalvoteidentity)
+  const array = [];
+
+  for (let i = 0; i < valInfoLength; i += 1) {
+    const tempInfoPubkeyArr = ValInfoShift[i].account.data.parsed.info.keys[1].pubkey;
+    
+    //console.log("stake.js voteDataInfo: ", voteDataInfo)
+    if (finalvoteidentity === tempInfoPubkeyArr) {
+      const voteDataInfo =  ValInfoShift[i].account.data.parsed.info.configData;
+      array.push({ keybaseUsername: voteDataInfo.keybaseUsername, name: voteDataInfo.name, website: voteDataInfo.website  });
+      //console.log("FOND THIS IDENTITY ON INFO ", voteDataInfo)
+    }
+  }
+  console.log("ALL VALIDATOR INFO ", array)
+  return array;
 }

@@ -46,12 +46,15 @@ function App() {
     sendIsSavedEffect();
   });
 
-  console.log("saveStatus ", saveStatus);
+
+
+  
+  //console.log("saveStatus ", saveStatus);
 
   if (apiStatus === true) {
     if (saveStatus === false) {
       // if mobile >>> display mobile classes
-      console.log('App Checkconn true', apiStatus)
+      //console.log('App Checkconn true', apiStatus)
       return (
         <div className="App">
           <Router>
@@ -92,7 +95,7 @@ function App() {
     }
   }
   else {
-    console.log('App Checkconn false ',);
+    //console.log('App Checkconn false ',);
     return (
       <MaintenancePage />
     );

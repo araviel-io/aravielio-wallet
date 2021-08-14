@@ -19,8 +19,8 @@ import SettingsPage from './MyWallet/SettingsPage';
 import { wgetVersion } from '../utils/connection'
 
 function MainWalletPage(props) {
-
-  const [version, setVersion] = useState(null);
+console.log("MainWalletPage Loaded")
+  const [version, setVersion] = useState("");
 
   useEffect(() => {
     wgetVersion()
@@ -29,7 +29,7 @@ function MainWalletPage(props) {
           setVersion(result['solana-core']);
         })
       .catch((e) => { console.log("version error", e) });
-  }, [])
+  }, [version])
   function selectedNetwork() {
     // console.log("NETWORKLOL ", network)
     const network = localStorage.getItem('network')

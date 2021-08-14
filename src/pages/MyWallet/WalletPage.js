@@ -17,6 +17,7 @@ import { wgetBalance, solRequestAirdrop } from '../../utils/connection';
 
 
 function WalletPage(props) {
+    console.log("WalletPage Loaded")
     //  const { safelam } = wgetBalance(mnemonic);
     const mnemonic = localStorage.getItem('mnemonic')
     const network = localStorage.getItem('network')
@@ -38,6 +39,7 @@ function WalletPage(props) {
 
     useEffect(() => {
        // balancePromiseEffect();
+       //FIXME: check if wallet is created before effect
         wgetBalance(mnemonic).then(
             function (balance) {
                 setBalance(balance);

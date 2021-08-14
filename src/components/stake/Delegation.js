@@ -6,7 +6,8 @@ import classNames from 'classnames/bind';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { LAMPORTS_PER_SAFE } from '@safecoin/web3.js';
-import { wDelegate, wgetParsedAccountInfo, wgetMyVoterStats, wDesactivate, getValidatorInfos } from '../../utils/stake';
+import { aSelCustomStyles } from '../../utils/arafunc';
+import { wDelegate, wgetParsedAccountInfo, wgetMyVoterStats, wDesactivate, wgetMyVoterInfo } from '../../utils/stake';
 import { wgetVoteAcc, wgetCurrentEpoch, wgetRemainingTime, wgetInflation, wgetSignatureConfirmation } from '../../utils/connection'
 import { Line } from 'rc-progress';
 import { HourglassOutline } from 'react-ionicons'
@@ -21,6 +22,7 @@ function Delegation(props) {
     // getAccountinfo area
     const [voter, setvoter] = useState(null);
     const [voterCom, setvoterCom] = useState(null);
+    const [voterInfos, setvoterInfos] = useState([]);
     const [voterTotStake, setvoterTotStake] = useState(null);
 
     const [epochProgress, setepochProgress] = useState(null);
@@ -44,7 +46,7 @@ function Delegation(props) {
     //wgetMyVoterStats(voter);
 
     useEffect(() => {
-        if (NodeArray !== undefined) {
+        if (NodeArray !== undefined && props.status !== "DELEGATED") {
             wgetVoteAcc()
                 .then(
                     function (valistl) {
@@ -147,13 +149,13 @@ function Delegation(props) {
                                 </div>
                                 <div>
                                     <div className="pre-delegation-summary-container">
-                                        <div className="stake-numb-grid">Amount : <b>{props.balance} SAFE</b></div>
+                                        <div className="stake-numb-grid">Stake amount : <b>{props.balance} SAFE</b></div>
                                         <div className="stake-numb-grid">APY : <b>{apy} %</b></div>
                                         <div className="stake-numb-grid">V.COM : <b>{voterCom} %</b></div>
                                     </div>
                                     <div className="stake-activation-eta-container"><HourglassOutline color={'#00000'} height="40px" width="40px" />
                                         <div className="stake-activation-eta-info">
-                                            your staking will be active in approx.<br /> <b>{remainingTime}</b> hours after delegation.
+                                            your staking will be effective in approx.<br /> <b>{remainingTime}</b> hours after delegation.
                                         </div>
                                     </div>
                                 </div>
@@ -177,7 +179,7 @@ function Delegation(props) {
         return (
             <div>
                 <div className="stake-validator-dpd-cont">
-                    <Select placeholder="Select or search a validator..." className="input-react-select" isSearchable={true} options={valist} onChange={handleSelectedNode} />
+                    <Select placeholder="Select or search a validator..." className="input-react-select" styles={aSelCustomStyles} isSearchable={true} options={valist} onChange={handleSelectedNode} />
                 </div>
                 <div>
                     {returnDelegationActions()}
@@ -192,7 +194,7 @@ function Delegation(props) {
             wgetParsedAccountInfo().then(function (result) {
                 var voter = result.value.data.parsed.info.stake.delegation.voter;
                 setvoter(voter);
-                console.log("** wgetParsedAccountInfo().then(function (result) : ");
+                console.log("** wgetParsedAccountInfo().then(function (result) : ", voter);
             }).catch((e) => { console.log("getParsedAccountInfo ", e) });
             wgetCurrentEpoch().then(function (result) {
                 setepochProgress(result)
@@ -222,6 +224,21 @@ function Delegation(props) {
                 console.log("Delegation.js - wgetMyVoterStats ", e)
             });
         }
+    }, [voter]) 
+    useEffect(() => {
+        if (voter != null) {
+            wgetMyVoterInfo(voter).then(function (tagrandmere) {
+   /*             var votercom = result[0].com;
+                var voterstake = result[0].stake;
+                var voterstakeTolam = voterstake / LAMPORTS_PER_SAFE;
+                setvoterCom(votercom);
+                setvoterTotStake(voterstakeTolam.toFixed(1));*/
+                console.log("VOTER INFOS WALLAH wgetMyVoterInfo", tagrandmere)
+                setvoterInfos(tagrandmere);
+            }).catch((e) => {
+                console.log("Delegation.js - wgetMyVoterStats ", e)
+            });
+        }
     }, [voter])
 
     function returnProgressEpoch(one) {
@@ -244,6 +261,9 @@ function Delegation(props) {
     }
 
     function returnDelegationInfo() {
+
+
+        //console.log("ZEBI ZEBI ZEBI : ", voterInfos[0].name)
         // show only if retrieved status is delegated
         //console.log("Delegation.js props.delegatedStatus", props.delegatedStatus)
         if (props.delegatedStatus === null || props.delegatedStatus === undefined) {
@@ -392,11 +412,6 @@ function Delegation(props) {
             }
         }
     }
-
-    var buttonClass = classNames('sub-navigation-item',
-        { 'sni-active': toggleValorReward === 'validatorinfo' },
-        { 'sni-active': toggleValorReward === 'rewards' }
-    );
 
     const [activeIndex, setActiveIndex] = useState(0);
 

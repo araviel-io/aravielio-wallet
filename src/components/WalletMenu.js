@@ -31,15 +31,7 @@ class WalletMenuItem extends Component {
       active: 0 // default / refresh
     };
 
-    
-    setActiveLoad = () => {
-      
-      var test = localStorage.getItem('location');
-      console.log("setActiveLoad ");
-      this.setState({
-        active: test
-      });
-    };
+  
 
 
     setActive = (i) => {
@@ -77,15 +69,7 @@ class WalletMenuItem extends Component {
         href: "/mywallet/settings"
       }
     ];
-    componentDidMount() {
-     // this.setState({ isLoaded: true });
-     
- /*    var test = localStorage.getItem('location');
-     console.log("test ", test);
-     this.setState({
-       active: test
-     });*/
-    }
+
     render() {
       
     

@@ -65,25 +65,28 @@ export function aGetContacts() {
 export const aSelCustomStyles = {
   option: (provided, state) => ({
     ...provided,
-    borderBottom: '1px dotted pink',
-    color: state.isSelected ? 'white' : 'blue',
-    padding: 5,
+    borderBottom: '1px dotted #c1c1c1',
+    cursor:'pointer',
+    color: state.isSelected ? 'white' : '#927198',
+    padding: 8,
   }),
   control: (provided, state) => ({
     ...provided,
     border: "1px solid #e8e8e8",
+   /* background: "#927198",
+    color: 'white',*/
     borderColor: state.isFocused ? "#927198" : "#927198", 
     boxShadow: 'none',
     '&:hover': {
         border: '1px solid #927198',
     }
   }),
-  singleValue: (provided, state) => {
+ /*singleValue: (provided, state) => {
     const opacity = state.isDisabled ? 0.5 : 1;
     const transition = 'opacity 300ms';
 
     return { ...provided, opacity, transition };
-  }
+  }*/
 }
 
 function aTrimAddress(longaddress) {
