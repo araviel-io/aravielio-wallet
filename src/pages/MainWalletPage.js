@@ -17,10 +17,12 @@ import StakePage from './MyWallet/StakePage';
 import SettingsPage from './MyWallet/SettingsPage';
 
 import { wgetVersion } from '../utils/connection'
+import TransactionList from '../components/TransactionList';
 
 function MainWalletPage(props) {
   const [version, setVersion] = useState("");
-
+  const whichpage = localStorage.getItem("page");
+  
   useEffect(() => {
     if (localStorage.hasOwnProperty("mnemonic")) {
       wgetVersion()
@@ -29,9 +31,10 @@ function MainWalletPage(props) {
             setVersion(result['solana-core']);
           })
         .catch((e) => { console.log("version error", e) });
+        
     }
   }, [version])
-
+  
   function selectedNetwork() {
     // console.log("NETWORKLOL ", network)
     const network = localStorage.getItem('network')
@@ -71,9 +74,6 @@ function MainWalletPage(props) {
               <SettingsPage />
             </Route>
           </Switch>
-        </div>
-        <div className="transaction-container">
-
         </div>
       </Router>
     </div>

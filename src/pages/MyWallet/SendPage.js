@@ -11,10 +11,12 @@ import { toast } from 'react-toastify';
 import { aSafePriceForAmount, aStoreContacts, aGetContacts, aSelCustomStyles, aHrefSeeOnExplorer } from '../../utils/arafunc';
 import { tTransfertSafe } from '../../utils/transfert';
 import { wgetSignatureStatus, wgetBalance } from '../../utils/connection';
+import TransactionList from '../../components/TransactionList';
 
 
 function SendPage(props) {
 
+    localStorage.setItem('page', "sendpage")
     const mnemonic = localStorage.getItem('mnemonic')
 
     const [balance, setBalance] = useState(0);
@@ -42,7 +44,7 @@ function SendPage(props) {
                             setSendSignStatus("confirmed");
                             wgetBalance(mnemonic).then(
                                 function (balance) {
-                                     console.log("**wgetBalance   : ", balance); 
+                                    console.log("**wgetBalance   : ", balance);
                                     setBalance(balance - withdrwAmount);
                                     console.log("**wgetBalance promise : ", balance)
                                 })
@@ -54,9 +56,9 @@ function SendPage(props) {
                         }
                         setwithdrwAmount(0);
                     })
-                    .catch((e) => {console.log("*---- getSignatureStatus(signature) : ", e)});
+                    .catch((e) => { console.log("*---- getSignatureStatus(signature) : ", e) });
             })
-            .catch((e) => {console.log("**tryToWithdrawStake ERROR FROM STAKEPAGE : ", e)});
+            .catch((e) => { console.log("**tryToWithdrawStake ERROR FROM STAKEPAGE : ", e) });
     }
 
     useEffect(() => {
@@ -69,7 +71,7 @@ function SendPage(props) {
                     //console.log("**wgetBalance promise ERROR", e)
                 });
         }
-        }, [balance]);
+    }, [balance]);
 
     function returnBalance() {
         if (balance == null) {
@@ -103,7 +105,7 @@ function SendPage(props) {
                     position: toast.POSITION.BOTTOM_RIGHT
                 });
                 toast.clearWaitingQueue();
-                
+
             }
             successAlert()
             return (
@@ -153,7 +155,7 @@ function SendPage(props) {
                 <button className="fancy-button-gradient-disabled">Send</button>
             )
         }
-        
+
     }
 
     function displayContactOrAddress() {
@@ -262,46 +264,49 @@ function SendPage(props) {
     //#endregion
 
     return (
-        <div>
-            <Title titleHeader='Send' />
-            <Card cardContent={
-                <div>
-                    <div className="content">
-                        <div className="hint-small">
-                            Balance : {returnBalance()}
-                        </div>
-                        <div className="input-amount-form-container">
-                            <input type="number"
-                                value={withdrwAmount}
-                                max={returnBalance()}
-                                placeholder="0.00"
-                                className="input-amount-form font-face-ob" onChange={onChangeHandlerAmount} />
-                            <div className="input-amount-form-cur font-face-ob fancy-text-gradient"> SAFE</div>
-                            <div className="set-max" onClick={() => { setwithdrwAmount(returnBalance()) }}>set max</div>
-                        </div>
-                        <div className="hint-small"> = $ <b>{aSafePriceForAmount(withdrwAmount)}</b> USD</div>
-                        <br />
-                        {displayContactOrAddress()}
-                        <div className="vertical-space"></div>
-                        {/*
+        <div className="just-flex myanim">
+            <div>
+                <Title titleHeader='Send' />
+                <Card cardContent={
+                    <div>
+                        <div className="content">
+                            <div className="hint-small">
+                                Balance : {returnBalance()}
+                            </div>
+                            <div className="input-amount-form-container">
+                                <input type="number"
+                                    value={withdrwAmount}
+                                    max={returnBalance()}
+                                    placeholder="0.00"
+                                    className="input-amount-form font-face-ob" onChange={onChangeHandlerAmount} />
+                                <div className="input-amount-form-cur font-face-ob fancy-text-gradient"> SAFE</div>
+                                <div className="set-max" onClick={() => { setwithdrwAmount(returnBalance()) }}>set max</div>
+                            </div>
+                            <div className="hint-small"> = $ <b>{aSafePriceForAmount(withdrwAmount)}</b> USD</div>
+                            <br />
+                            {displayContactOrAddress()}
+                            <div className="vertical-space"></div>
+                            {/*
                          <div className="label-stake-withdraw">Memo (W.I.P)</div>
                          <input placeholder="Enter memo" className="input-address-form" />
                          */}
-                        <div className="just-flex-between">
-                            <div className="label-stake-withdraw">Network fees</div>
-                            <div className="txt-small-warning orange">0.0001 SAFE</div>
+                            <div className="just-flex-between">
+                                <div className="label-stake-withdraw">Network fees</div>
+                                <div className="txt-small-warning orange">0.0001 SAFE</div>
+                            </div>
+                        </div>
+                        <div className="hint-small-phrase">
+                            {' '}
+
+                        </div>
+                        <div className="actions">
+                            {returnWithdrawStatus()}
                         </div>
                     </div>
-                    <div className="hint-small-phrase">
-                        {' '}
-                        
-                    </div>
-                    <div className="actions">
-                        {returnWithdrawStatus()}
-                    </div>
-                </div>
-            }>
-            </Card>
+                }>
+                </Card>
+            </div>
+            <TransactionList page="sendpage" />
         </div>
     );
 }

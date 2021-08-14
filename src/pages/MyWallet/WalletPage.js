@@ -7,7 +7,8 @@ import Card from '../../components/common/Card';
 import safelogo from '../../assets/img/safecoin-logo.png';
 
 import { wngetSafePrice } from '../../utils/nomics';
-import { wgetBalance, solRequestAirdrop } from '../../utils/connection';
+import { wgetBalance, solRequestAirdrop, wgetLatestTransactions } from '../../utils/connection';
+import TransactionList from '../../components/TransactionList';
 
 ///// TODO: HERE
 // first mnemonic word
@@ -20,6 +21,8 @@ function WalletPage(props) {
 
     const mnemonic = localStorage.getItem('mnemonic')
     const network = localStorage.getItem('network')
+    const getAddress = localStorage.getItem('pubkey')
+
 
     const [balance, setBalance] = useState();
     // nomics query
@@ -52,6 +55,7 @@ function WalletPage(props) {
                 .catch((e) => {
                     console.log("*wngetSafePrice catch((e)", e)
                 })
+                wgetLatestTransactions(getAddress);
         }
     }, []);
 
@@ -75,27 +79,33 @@ function WalletPage(props) {
         }
     }
     return (
-        <div>
-            <Title titleHeader='Wallet' />
-            <Card styleName='safecoin' cardContent={
-                <div className='safe-balance-wrapper'>
-                    <div className='safe-logo'><img className="menu-logo" src={safelogo} alt="Araviel.io Wallet" /></div>
-                    <div className='safe-balance-numbers'>
-                        {checkDevnet()}
-                        <div className='safe-usd'> $
-                            {returnSafePrice()}
+        <div className="just-flex">
+            <div>
+                <Title titleHeader='Wallet' />
+                <Card styleName='safecoin' cardContent={
+                    <div className='safe-balance-wrapper'>
+                        <div className='safe-logo'><img className="menu-logo" src={safelogo} alt="Araviel.io Wallet" /></div>
+                        <div className='safe-balance-numbers'>
+                            {checkDevnet()}
+                            <div className='safe-usd'> $
+                                {returnSafePrice()}
+                            </div>
+                            <div className='safe-amount'>{returnBalance()} SAFE</div>
                         </div>
-                        <div className='safe-amount'>{returnBalance()} SAFE</div>
                     </div>
-                </div>
-            } />
-            <Title titleHeader='Tokens' />
-            <Card cardContent={
-                <div className='safe-balance-wrapper'>
-                    <div>No Tokens found</div>
-                </div>
-            } />
+                } />
+                <Title titleHeader='Tokens' />
+                <Card cardContent={
+                    <div className='safe-balance-wrapper'>
+                        <div>No Tokens found</div>
+                    </div>
+                } />
+            </div>
+            <div>
+                <TransactionList page="mainwallet" />
+            </div>
         </div>
+
     );
 }
 

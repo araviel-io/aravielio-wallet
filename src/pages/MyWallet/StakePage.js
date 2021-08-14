@@ -16,13 +16,14 @@ import { wCreateStakeAccount, wCreateStakeKeypair, wgetStakeActivation, wWithdra
 import { wKeypair, wgetSignatureStatus } from '../../utils/connection'
 
 import * as web from '@safecoin/web3.js';
+import TransactionList from '../../components/TransactionList';
 
 const network = localStorage.getItem('network')
 const connection = new web.Connection(network, "processed");
 //  TODO: delegated validator info (picture from keybase, better sub-card)
 //  TODO: reward tab
 function StakePage(props) {
-
+    localStorage.setItem('page', "stakepage")
     const [authKp, setauthAdd] = useState(null);
 
     const [MainBal, setMainBal] = useState(null);
@@ -160,8 +161,6 @@ function StakePage(props) {
                     setloadstakeInit("complete")
 
                 }
-                // you access the value from the promise here
-                //console.log("PLEASE RETURN A SIGNATURE ", val);
             }).catch((e) => {
                 console.log("Can't create stake account : ", e.message)
             });;
@@ -201,9 +200,7 @@ function StakePage(props) {
             .catch((e) => {
                 console.log("**tryToWithdrawStake ERROR FROM STAKEPAGE : ", e)
             });
-
     }
-
     // why
     useEffect(() => {
         if (withDrwSignStatus === "confirmed") {
@@ -218,12 +215,12 @@ function StakePage(props) {
             return (<div className="card-button-bottom disabled">Initializing ...</div>)
         }
         else if (loadstakeInit === "complete") { return ("good") }
-        else if (MainBal === 0 && stakeInit === "NOT INIT") { 
+        else if (MainBal === 0 && stakeInit === "NOT INIT") {
             return (<div className="card-button-bottom disabled">Can't initialize</div>)
         }
         else {
             return (<div className="card-button-bottom" onClick={() => { tryToCreateStakeAccount() }}>Initialize</div>)
-        }   
+        }
     }
 
     function returnNetStakeBalance() {
@@ -504,7 +501,7 @@ function StakePage(props) {
                             </div>
                         </div>
                         {MainBal === 0 ? <div className="stake-fund-alert">Please fund your main address to initialize</div> : <></>}
-                        
+
                     </div>
                 } />
             )
@@ -600,11 +597,15 @@ function StakePage(props) {
 
     if (stakeInit != null) {
         return (
-            <div>
-                <Title titleHeader='Stake' />
-
-                {displayTopCard()}
-                {displayDelegationComponent()}
+            <div className="just-flex">
+                <div>
+                    <Title titleHeader='Stake' />
+                    {displayTopCard()}
+                    {displayDelegationComponent()}
+                </div>
+                <div>
+                    <TransactionList page="stakepage" />
+                </div>
             </div>
         );
     } else {

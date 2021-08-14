@@ -660,6 +660,7 @@ margin-top: auto;
 .just-flex {
   display: flex;
 }
+
 .just-flex-sbetween {
   display: flex;
   justify-content: space-between;

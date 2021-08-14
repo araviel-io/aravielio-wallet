@@ -7,7 +7,7 @@ import { derivePath } from 'ed25519-hd-key';
 //var ApiUrl = web.clusterApiUrl("mainnet-beta");
 const getNetwork = localStorage.getItem('network')
 const connection = new web.Connection(getNetwork, "max");
-
+const con2 = new web.Connection(getNetwork, "confirmed");
 function generateMnemonic() {
     var mn = bip39.generateMnemonic(256);
     return mn;
@@ -228,6 +228,15 @@ export async function wgetSignatureConfirmation(sign) {
       });
 
     return signStatusArr;
+}
+
+export async function wgetLatestTransactions(address) {
+    const addresstoPubkey = new web.PublicKey(address);
+    const signature = await con2.getConfirmedSignaturesForAddress2(addresstoPubkey)
+    // signature = array
+    // now transform signature into processable array :
+    console.log("GET SIGNATURES  : ", signature)
+
 }
 
 // derivation path, should not be changed (compliant to wallet.safecoin.org)
