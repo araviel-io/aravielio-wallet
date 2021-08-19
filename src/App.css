@@ -1079,10 +1079,7 @@ color:orange;
   text-transform: uppercase;
   color:#927198;
 }
-.transaction-container {
-  width: 220px;
-  height: 400px;
-}
+
 .sub-navigation-card {
   justify-content: space-around;
   font-size: smaller;
@@ -1126,4 +1123,78 @@ color:orange;
 .amount-plus::before {
   content:'+ ';
   color: #82ce72e0;
+}
+
+
+
+.sideinfo-title {
+  margin-left: 20px;
+    margin-top: 20px;
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 21px;
+    line-height: 54px;
+    margin-bottom: 5px;
+    color: #363B64;
+}
+.transaction-container {
+  margin-top: 60px;
+  width: 250px;
+  height: 400px;
+}
+.transaction-item-container {
+  margin-top:8px;
+  margin-bottom: 8px;
+  margin-left: 20px;
+}
+.transaction-item {
+  margin-bottom: 15px;
+  margin-top:15px;
+  font-family: Poppins;
+  font-size: small;
+  display:flex;
+  align-items: center;
+  background-color: #FCFCFC;
+  box-shadow: 0px 20px 50px rgb(191 21 108 / 5%);
+  border-radius: 14px;
+  height: 55px;
+}
+
+.transaction-item-icon-green {
+  height: 40px;
+  width: 40px;
+  background-color: #4CBC9A;
+  border-radius: 13px;
+  margin-left: 8px;
+  margin-right: 8px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+.transaction-item-icon-red {
+  height: 40px;
+  width: 40px;
+  background-color: #FE8289;
+  border-radius: 13px;
+  margin-left: 8px;
+  margin-right: 8px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+.transaction-item-amount{
+  text-align: end;
+  padding-right:15px;
+  font-weight: 600;
+  flex: 1;
+}
+.transaction-address {
+  font-family: monospace;
+}
+.tia-sent {
+  color:#fe8289;
+}
+.tia-received {
+  color:#4cbc9a;
 }

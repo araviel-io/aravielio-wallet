@@ -17,12 +17,11 @@ import StakePage from './MyWallet/StakePage';
 import SettingsPage from './MyWallet/SettingsPage';
 
 import { wgetVersion } from '../utils/connection'
-import TransactionList from '../components/TransactionList';
 
 function MainWalletPage(props) {
   const [version, setVersion] = useState("");
   const whichpage = localStorage.getItem("page");
-  
+
   useEffect(() => {
     if (localStorage.hasOwnProperty("mnemonic")) {
       wgetVersion()

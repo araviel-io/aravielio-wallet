@@ -214,29 +214,64 @@ export async function wgetSignatureConfirmation(sign) {
     // to be called at a setInterval > returns confirmations amount and MAX
     const signStatusArr = [];
     await connection.getSignatureStatus(sign)
-    .then(
-        function (status) {
-            //parse signature and retrieve the confirmation amount
-        var confAmount = status.value.confirmations;
-        var confStatus = status.value.confirmationStatus;
-        console.log('%c connection.js : ', 'background: #222; color: #bada55', confStatus, confAmount, status )
-        signStatusArr.push({ amount: confAmount, label: confStatus});
-        //return confStatus;
-        })
-      .catch((e) => {
+        .then(
+            function (status) {
+                //parse signature and retrieve the confirmation amount
+                var confAmount = status.value.confirmations;
+                var confStatus = status.value.confirmationStatus;
+                console.log('%c connection.js : ', 'background: #222; color: #bada55', confStatus, confAmount, status)
+                signStatusArr.push({ amount: confAmount, label: confStatus });
+                //return confStatus;
+            })
+        .catch((e) => {
 
-      });
+        });
 
     return signStatusArr;
 }
 
 export async function wgetLatestTransactions(address) {
     const addresstoPubkey = new web.PublicKey(address);
-    const signature = await con2.getConfirmedSignaturesForAddress2(addresstoPubkey)
+    const Signs = await con2.getConfirmedSignaturesForAddress2(addresstoPubkey)
     // signature = array
-    // now transform signature into processable array :
-    console.log("GET SIGNATURES  : ", signature)
+    const signCount = Signs.length;
+    const signatureArray = [];
+    const preparedArray = []
+    var parsedSign = [];
 
+    for (let i = 0; i < signCount; i += 1) {
+        parsedSign = Signs[i].signature;
+        signatureArray.push(parsedSign);
+    }
+    // now transform signature into processable array :
+    const fetchTrans = await con2.getParsedConfirmedTransactions(signatureArray)
+    for (let i = 0; i < signCount; i += 1) {
+        const insType = fetchTrans[i].transaction.message.instructions[0].parsed.type
+        // supported instructions : transfert - withdraw
+        if (insType === "createAccount") {
+            // don't proceed this instruction yet
+        } else if (insType === "withdraw") {
+            // for withdraw we need to manipulate the array a little bit differently
+            const insAmount = fetchTrans[i].transaction.message.instructions[0].parsed.info.lamports;
+            const insDest = fetchTrans[i].transaction.message.instructions[0].parsed.info.destination;
+            const insSource = fetchTrans[i].transaction.message.instructions[0].parsed.info.voteAccount;
+            preparedArray.push({ type: insType, amount: insAmount, source: insSource, destination: insDest  });
+        } else {
+            const insAmount = fetchTrans[i].transaction.message.instructions[0].parsed.info.lamports;
+            const insDest = fetchTrans[i].transaction.message.instructions[0].parsed.info.destination;
+            const insSource = fetchTrans[i].transaction.message.instructions[0].parsed.info.source;
+            preparedArray.push({ type: insType, amount: insAmount, source: insSource, destination: insDest  });
+        }
+
+        //const finalBal = (postBal - preBal) / web.LAMPORTS_PER_SAFE;
+       //console.log("FETCH Transactions type   : ", insType)
+        
+    }
+
+  /*  console.log("FETCH SIGNATURES parsedSign  : ", parsedSign)
+    console.log("FETCH SIGNATURES  : ", fetchTrans)
+    console.log("FETCH preparedArray  : ", preparedArray)*/
+    return preparedArray;
 }
 
 // derivation path, should not be changed (compliant to wallet.safecoin.org)

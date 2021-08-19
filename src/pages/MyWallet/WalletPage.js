@@ -27,6 +27,7 @@ function WalletPage(props) {
     const [balance, setBalance] = useState();
     // nomics query
     const [safeprice, setsafeprice] = useState();
+    const [mainAddress, setmainAddress] = useState();
     // Display airdrop button if solana devnet
     function checkDevnet() {
 
@@ -56,6 +57,7 @@ function WalletPage(props) {
                     console.log("*wngetSafePrice catch((e)", e)
                 })
                 wgetLatestTransactions(getAddress);
+                setmainAddress(getAddress);
         }
     }, []);
 
@@ -78,6 +80,18 @@ function WalletPage(props) {
             return (trunc)
         }
     }
+
+    function tryTogetRecentTransactions() {
+
+        if (mainAddress !== undefined) {
+            return (
+                <TransactionList page="mainwallet" address={mainAddress} />
+            )
+        } else {
+
+        }
+    }
+
     return (
         <div className="just-flex">
             <div>
@@ -102,7 +116,8 @@ function WalletPage(props) {
                 } />
             </div>
             <div>
-                <TransactionList page="mainwallet" />
+            { tryTogetRecentTransactions()}
+              
             </div>
         </div>
 

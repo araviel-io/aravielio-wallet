@@ -88,6 +88,10 @@ export const aSelCustomStyles = {
     return { ...provided, opacity, transition };
   }*/
 }
+export function aTrimAddressEnd(longaddress) {
+    var firstschar = longaddress.substr(0, 6);
+    return (" " + firstschar + " \u00B7\u00B7\u00B7");
+}
 
 function aTrimAddress(longaddress) {
     var firstschar = longaddress.substr(0, 4);
