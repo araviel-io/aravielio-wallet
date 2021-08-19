@@ -20,10 +20,13 @@ import TransactionList from '../../components/TransactionList';
 
 const network = localStorage.getItem('network')
 const connection = new web.Connection(network, "processed");
+const getAddress = localStorage.getItem('pubkey')
 //  TODO: delegated validator info (picture from keybase, better sub-card)
 //  TODO: reward tab
 function StakePage(props) {
     localStorage.setItem('page', "stakepage")
+    const [mainAddress, setmainAddress] = useState();
+
     const [authKp, setauthAdd] = useState(null);
 
     const [MainBal, setMainBal] = useState(null);
@@ -127,6 +130,7 @@ function StakePage(props) {
     }
 
     useEffect(() => {
+        setmainAddress(getAddress);
         getAllKeypairs();
         console.log("   ddd d   stakeInitstakeInit", stakeInit)
         if (stakeInit !== null) {
@@ -479,6 +483,18 @@ function StakePage(props) {
         }
     }
 
+
+    function tryTogetRecentTransactions() {
+        // will be someday converted to tryTogetRecentInstructions
+        if (mainAddress !== undefined) {
+            return (
+                <TransactionList page="mainwallet" address={mainAddress} />
+            )
+        } else {
+            // placeholder for later use
+        }
+    }
+
     function displayTopCard() {
         if (stakeInit === "NOT INIT") {
             // this condition is triggered connection.getParsedAccountInfo(stakekeypair.publicKey)
@@ -604,7 +620,7 @@ function StakePage(props) {
                     {displayDelegationComponent()}
                 </div>
                 <div>
-                    <TransactionList page="stakepage" />
+                {tryTogetRecentTransactions()}
                 </div>
             </div>
         );

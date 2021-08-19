@@ -74,7 +74,7 @@ function TransactionList(props) {
     }
 
     console.log("FROM TRANSACTION LIST TransactionArray  :", TransactionArray)
-    if (props.page === "mainwallet") {
+    if (props.page === "mainwallet" || props.page === "stakepage") {
         return (
             <div className="transaction-container">
                 <div className="sideinfo-title">Transactions</div>
