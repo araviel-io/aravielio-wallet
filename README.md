@@ -1,6 +1,6 @@
+![alt text](https://preview.redd.it/1o5u0lwerhi71.png?width=1112&format=png&auto=webp&s=8b463dda45a104d306b8860efb99525df4edfc47)
+
 ![Easy staking on Safecoin (Solana CE)](https://i.imgur.com/8CSV5UH.gif)
-![alt text](https://i.imgur.com/FbmzGXD.png)
-![alt text](https://i.imgur.com/TnIV44k.png)
 
 # Araviel.io SafeCoin Wallet
 
