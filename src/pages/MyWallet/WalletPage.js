@@ -115,10 +115,8 @@ function WalletPage(props) {
                     </div>
                 } />
             </div>
-            <div>
             { tryTogetRecentTransactions()}
               
-            </div>
         </div>
 
     );

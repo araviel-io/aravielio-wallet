@@ -17,7 +17,10 @@ import TransactionList from '../../components/TransactionList';
 function SendPage(props) {
 
     localStorage.setItem('page', "sendpage")
+    const getAddress = localStorage.getItem('pubkey')
     const mnemonic = localStorage.getItem('mnemonic')
+
+    const [mainAddress, setmainAddress] = useState();
 
     const [balance, setBalance] = useState(0);
     // 
@@ -62,6 +65,7 @@ function SendPage(props) {
     }
 
     useEffect(() => {
+        setmainAddress(getAddress);
         if (sendSignStatus == null) {
             wgetBalance(mnemonic).then(
                 function (balance) {
@@ -156,6 +160,18 @@ function SendPage(props) {
             )
         }
 
+    }
+
+
+    function tryTogetRecentTransactions() {
+        // will be someday converted to tryTogetRecentInstructions
+        if (mainAddress !== undefined) {
+            return (
+                <TransactionList page="mainwallet" address={mainAddress} />
+            )
+        } else {
+            // placeholder for later use
+        }
     }
 
     function displayContactOrAddress() {
@@ -306,7 +322,7 @@ function SendPage(props) {
                 }>
                 </Card>
             </div>
-            <TransactionList page="sendpage" />
+            { tryTogetRecentTransactions()}
         </div>
     );
 }

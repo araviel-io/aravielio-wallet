@@ -90,7 +90,8 @@ function TransactionList(props) {
     }
 
     return (
-        <div className="transaction-container">
+        <div>
+            test
         </div>
     );
 }
