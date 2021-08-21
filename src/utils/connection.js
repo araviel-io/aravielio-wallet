@@ -121,9 +121,9 @@ export async function wgetInflation() {
 export async function wKeypair(mnemonic) {
 
     const seed = await bip39.mnemonicToSeed(mnemonic);
-    const derivedSeed = deriveSeed(seed);
+    const derivedSeed = deriveSeed(seed); // look like secret key 64
     var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
-    //console.log("executed from wKeypair ", account.publicKey.toBase58());
+    console.log("executed from wKeypair ", derivedSeed);
     return account;
 }
 
@@ -185,15 +185,6 @@ export async function solRequestAirdrop() {
     });
 }
 
-// restore account (keypair) from mnemonic phrase
-export async function getAccountFromMnemonic(mnemonic) {
-    // Account creation is completely local. Mainnet connection is used for getting balance and signing transaction
-    const seed = await bip39.mnemonicToSeed(mnemonic);
-    const derivedSeed = deriveSeed(seed);
-    var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
-
-    return account;
-}
 
 //get public key from mnemonic
 export async function wgetPubKey(mnemonic) {
@@ -245,27 +236,30 @@ export async function wgetLatestTransactions(address) {
     }
     // now transform signature into processable array :
     const fetchTrans = await con2.getParsedConfirmedTransactions(signatureArray)
+    console.log("FETCH fetchTrans   : ", fetchTrans)
     for (let i = 0; i < signCount; i += 1) {
-        const insType = fetchTrans[i].transaction.message.instructions[0].parsed.type
-        // supported instructions : transfert - withdraw
-        if (insType === "createAccount") {
-            // don't proceed this instruction yet
-        } else if (insType === "withdraw") {
-            // for withdraw we need to manipulate the array a little bit differently
-            const insAmount = fetchTrans[i].transaction.message.instructions[0].parsed.info.lamports;
-            const insDest = fetchTrans[i].transaction.message.instructions[0].parsed.info.destination;
-            const insSource = fetchTrans[i].transaction.message.instructions[0].parsed.info.voteAccount;
-            preparedArray.push({ type: insType, amount: insAmount, source: insSource, destination: insDest  });
-        } else {
-            const insAmount = fetchTrans[i].transaction.message.instructions[0].parsed.info.lamports;
-            const insDest = fetchTrans[i].transaction.message.instructions[0].parsed.info.destination;
-            const insSource = fetchTrans[i].transaction.message.instructions[0].parsed.info.source;
-            preparedArray.push({ type: insType, amount: insAmount, source: insSource, destination: insDest  });
+        try {
+            const insType = fetchTrans[i].transaction.message.instructions[0].parsed.type
+            // supported instructions : transfert - withdraw
+            if (insType === "createAccount") {
+                // don't proceed this instruction yet
+            } else if (insType === "withdraw") {
+                // for withdraw we need to manipulate the array a little bit differently
+                const insAmount = fetchTrans[i].transaction.message.instructions[0].parsed.info.lamports;
+                const insDest = fetchTrans[i].transaction.message.instructions[0].parsed.info.destination;
+                const insSource = fetchTrans[i].transaction.message.instructions[0].parsed.info.voteAccount;
+                preparedArray.push({ type: insType, amount: insAmount, source: insSource, destination: insDest  });
+            } else {
+                const insAmount = fetchTrans[i].transaction.message.instructions[0].parsed.info.lamports;
+                const insDest = fetchTrans[i].transaction.message.instructions[0].parsed.info.destination;
+                const insSource = fetchTrans[i].transaction.message.instructions[0].parsed.info.source;
+                preparedArray.push({ type: insType, amount: insAmount, source: insSource, destination: insDest  });
+            }
+        } catch(e) {
+            console.warn(e.message)
         }
-
-        //const finalBal = (postBal - preBal) / web.LAMPORTS_PER_SAFE;
-       //console.log("FETCH Transactions type   : ", insType)
-        
+    //const finalBal = (postBal - preBal) / web.LAMPORTS_PER_SAFE;
+    //console.log("FETCH Transactions type   : ", insType)
     }
 
   /*  console.log("FETCH SIGNATURES parsedSign  : ", parsedSign)

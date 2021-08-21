@@ -12,6 +12,7 @@ import { useRef } from 'react';
 
 function CreateWalletPage(props) {
 
+  // if password null createUnencryptedAccount
   const [inputValue, setInputValue] = useState("");
   const mn = genMnemonic();
   const email = useRef(null);
