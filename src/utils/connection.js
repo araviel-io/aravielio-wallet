@@ -120,11 +120,11 @@ export async function wgetInflation() {
 // placeholder
 export async function wKeypair(mnemonic) {
 
-    const seed = await bip39.mnemonicToSeed(mnemonic);
-    const derivedSeed = deriveSeed(seed); // look like secret key 64
-    var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
-    console.log("executed from wKeypair ", derivedSeed);
-    return account;
+    const seed = await bip39.mnemonicToSeed(mnemonic); // raw secret key 64
+    const derivedSeed = deriveSeed(seed); // derived secret key (seed) from derivation path
+    //var account = new web.Account(nacl.sign.keyPair.fromSeed(derivedSeed).secretKey);
+    var keypair = new web.Keypair(nacl.sign.keyPair.fromSeed(derivedSeed));
+    return keypair;
 }
 
 export async function transferSafe(destination, amount) {
