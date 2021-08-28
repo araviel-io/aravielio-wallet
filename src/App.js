@@ -18,6 +18,23 @@ import "react-toastify/dist/ReactToastify.css"
 ///// TODO: HERE
 // Mobile condition component
 // encrypt more + seed passwd
+// the root here, is doing a full check of : localstorage states : localstorage network state & account, api status
+function checkCorruptedStorage() {
+  // check if localstorage keys are presents
+  if ("network" in localStorage) {
+    var test = localStorage.getItem("network")
+    //alert(test);
+    if (localStorage.getItem("network") === "" || localStorage.getItem("network") === null) {
+      // key broken, revive it
+      localStorage.setItem("network", "https://api.mainnet-beta.safecoin.org")
+      window.location.reload();
+    }
+  } else {
+    localStorage.setItem("network", "https://api.mainnet-beta.safecoin.org")
+    window.location.reload();
+  }
+}
+checkCorruptedStorage();
 
 // if true disable CreateWalletPage & RestoreWalletPage
 function isSaved() {
@@ -27,7 +44,9 @@ function isSaved() {
   return getsave;
 }
 
+
 function App() {
+
   const [apiStatus, setApisStatus] = useState(true);
   const [saveStatus, setSaveStatus] = useState(true);
 
@@ -48,7 +67,7 @@ function App() {
 
 
 
-  
+
   //console.log("saveStatus ", saveStatus);
 
   if (apiStatus === true) {

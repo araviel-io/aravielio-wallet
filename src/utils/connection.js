@@ -5,6 +5,7 @@ import * as bip39 from 'bip39';
 import { derivePath } from 'ed25519-hd-key';
 
 //var ApiUrl = web.clusterApiUrl("mainnet-beta");
+// FIXME: rework below, better handline of localstorage
 const getNetwork = localStorage.getItem('network')
 const connection = new web.Connection(getNetwork, "max");
 const con2 = new web.Connection(getNetwork, "confirmed");
@@ -222,6 +223,7 @@ export async function wgetSignatureConfirmation(sign) {
 }
 
 export async function wgetLatestTransactions(address) {
+    // the result array of this depends on which page the address is received
     const addresstoPubkey = new web.PublicKey(address);
     const Signs = await con2.getConfirmedSignaturesForAddress2(addresstoPubkey)
     // signature = array

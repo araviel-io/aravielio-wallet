@@ -9,6 +9,7 @@ import safelogo from '../../assets/img/safecoin-logo.png';
 import { wngetSafePrice } from '../../utils/nomics';
 import { wgetBalance, solRequestAirdrop, wgetLatestTransactions } from '../../utils/connection';
 import TransactionList from '../../components/TransactionList';
+import {testFromBordel, loadMnemonicAndSeed, getUnlockedMnemonicAndSeed, getAccountFromSeed, getUnencryptedAccountFromSeed} from '../../utils/wallet'
 
 ///// TODO: HERE
 // first mnemonic word
@@ -18,6 +19,7 @@ import TransactionList from '../../components/TransactionList';
 
 
 function WalletPage(props) {
+
 
     const mnemonic = localStorage.getItem('mnemonic')
     const network = localStorage.getItem('network')
@@ -29,6 +31,10 @@ function WalletPage(props) {
     const [safeprice, setsafeprice] = useState();
     const [mainAddress, setmainAddress] = useState();
     // Display airdrop button if solana devnet
+    /*var test = getUnencryptedAccountFromSeed(seed,0,"bip44Change")
+console.log("testaya ", test.publicKey.toBase58())
+    var test2 =getUnlockedMnemonicAndSeed()
+    console.log("test2  ", test2)*/
     function checkDevnet() {
 
         if (network === 'https://api.devnet.solana.com') {

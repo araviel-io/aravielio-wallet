@@ -12,7 +12,9 @@
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
     "axios": "^0.21.1",
+    "bip32": "^2.0.6",
     "bip39": "^3.0.4",
+    "bs58": "^4.0.1",
     "ed25519-hd-key": "^1.2.0",
     "qrcode.react": "^1.0.1",
     "rc-progress": "^3.1.4",
@@ -55,5 +57,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/bs58": "^4.0.1"
+  }
 }
