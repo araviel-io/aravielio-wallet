@@ -21,7 +21,7 @@ import { wgetVersion } from '../utils/connection'
 function MainWalletPage(props) {
   const [version, setVersion] = useState("");
   const whichpage = localStorage.getItem("page");
-
+  localStorage.setItem('page', "mainpage")
   useEffect(() => {
     if (localStorage.hasOwnProperty("mnemonic")) {
       wgetVersion()

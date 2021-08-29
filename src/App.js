@@ -13,28 +13,16 @@ import { isApiAlive } from './utils/connection';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
+
+import { hasLockedMnemonicAndSeed } from './utils/wallet';
+
 import "react-toastify/dist/ReactToastify.css"
 
 ///// TODO: HERE
 // Mobile condition component
 // encrypt more + seed passwd
 // the root here, is doing a full check of : localstorage states : localstorage network state & account, api status
-function checkCorruptedStorage() {
-  // check if localstorage keys are presents
-  if ("network" in localStorage) {
-    var test = localStorage.getItem("network")
-    //alert(test);
-    if (localStorage.getItem("network") === "" || localStorage.getItem("network") === null) {
-      // key broken, revive it
-      localStorage.setItem("network", "https://api.mainnet-beta.safecoin.org")
-      window.location.reload();
-    }
-  } else {
-    localStorage.setItem("network", "https://api.mainnet-beta.safecoin.org")
-    window.location.reload();
-  }
-}
-checkCorruptedStorage();
+
 
 // if true disable CreateWalletPage & RestoreWalletPage
 function isSaved() {
@@ -49,6 +37,9 @@ function App() {
 
   const [apiStatus, setApisStatus] = useState(true);
   const [saveStatus, setSaveStatus] = useState(true);
+
+  const [IsAccountLocked, setIsAccountLocked] = useState();
+  const [IsAccountCreated, setIsAccountCreated] = useState();
 
   async function sendApiStatusPromiseEffect() {
     const apisstatus = await isApiAlive();
@@ -66,7 +57,17 @@ function App() {
   });
 
 
+  useEffect(() => {
+    setIsAccountLocked(hasLockedMnemonicAndSeed());
+    if ("locked" in localStorage || "unlocked" in localStorage) {
+      alert('yes');
+    } else {
+      alert('no');
+    }
+  }, []);
 
+
+  console.log("IsAccountLocked : ", IsAccountLocked)
 
   //console.log("saveStatus ", saveStatus);
 

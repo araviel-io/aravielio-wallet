@@ -6,6 +6,26 @@ import { derivePath } from 'ed25519-hd-key';
 
 //var ApiUrl = web.clusterApiUrl("mainnet-beta");
 // FIXME: rework below, better handline of localstorage
+
+function checkCorruptedStorage() {
+    // check if localstorage keys are presents
+    if ("network" in localStorage) {
+        var test = localStorage.getItem("network")
+        //alert(test);
+        if (localStorage.getItem("network") === "" || localStorage.getItem("network") === null) {
+            // key broken, revive it
+            localStorage.setItem("network", "https://api.mainnet-beta.safecoin.org")
+            window.location.reload();
+        }
+    } else {
+        localStorage.setItem("network", "https://api.mainnet-beta.safecoin.org")
+        window.location.reload();
+    }
+}
+checkCorruptedStorage();
+
+
+
 const getNetwork = localStorage.getItem('network')
 const connection = new web.Connection(getNetwork, "max");
 const con2 = new web.Connection(getNetwork, "confirmed");
@@ -224,6 +244,7 @@ export async function wgetSignatureConfirmation(sign) {
 
 export async function wgetLatestTransactions(address) {
     // the result array of this depends on which page the address is received
+    console.log(address)
     const addresstoPubkey = new web.PublicKey(address);
     const Signs = await con2.getConfirmedSignaturesForAddress2(addresstoPubkey)
     // signature = array
@@ -250,23 +271,23 @@ export async function wgetLatestTransactions(address) {
                 const insAmount = fetchTrans[i].transaction.message.instructions[0].parsed.info.lamports;
                 const insDest = fetchTrans[i].transaction.message.instructions[0].parsed.info.destination;
                 const insSource = fetchTrans[i].transaction.message.instructions[0].parsed.info.voteAccount;
-                preparedArray.push({ type: insType, amount: insAmount, source: insSource, destination: insDest  });
+                preparedArray.push({ type: insType, amount: insAmount, source: insSource, destination: insDest });
             } else {
                 const insAmount = fetchTrans[i].transaction.message.instructions[0].parsed.info.lamports;
                 const insDest = fetchTrans[i].transaction.message.instructions[0].parsed.info.destination;
                 const insSource = fetchTrans[i].transaction.message.instructions[0].parsed.info.source;
-                preparedArray.push({ type: insType, amount: insAmount, source: insSource, destination: insDest  });
+                preparedArray.push({ type: insType, amount: insAmount, source: insSource, destination: insDest });
             }
-        } catch(e) {
-            console.warn(e.message)
+        } catch (e) {
+            console.warn("WARN", e.message)
         }
-    //const finalBal = (postBal - preBal) / web.LAMPORTS_PER_SAFE;
-    //console.log("FETCH Transactions type   : ", insType)
+        //const finalBal = (postBal - preBal) / web.LAMPORTS_PER_SAFE;
+        //console.log("FETCH Transactions type   : ", insType)
     }
 
-  /*  console.log("FETCH SIGNATURES parsedSign  : ", parsedSign)
-    console.log("FETCH SIGNATURES  : ", fetchTrans)
-    console.log("FETCH preparedArray  : ", preparedArray)*/
+    /*  console.log("FETCH SIGNATURES parsedSign  : ", parsedSign)
+      console.log("FETCH SIGNATURES  : ", fetchTrans)
+      console.log("FETCH preparedArray  : ", preparedArray)*/
     return preparedArray;
 }
 

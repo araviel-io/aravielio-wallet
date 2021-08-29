@@ -15,12 +15,12 @@ function TransactionList(props) {
     const [mainadd, setmainadd] = useState();
 
     useEffect(() => {
-        wgetLatestTransactions(props.address).then(
+        wgetLatestTransactions(mainAddress).then(
             function (valistl) {
                 setTransactionArray(valistl)
                 setmainadd(mainAddress)
             })
-            .catch((e) => { console.log("error wgetLatestTransactions", e) });
+            //.catch((e) => { console.log("error wgetLatestTransactions", e) });
     }, [])
 
     function displayPrettyTransaction(item) {
@@ -75,23 +75,36 @@ function TransactionList(props) {
 
     console.log("FROM TRANSACTION LIST TransactionArray  :", TransactionArray)
     if (props.page === "mainwallet" || props.page === "stakepage") {
-        return (
-            <div className="transaction-container">
-                <div className="sideinfo-title">Transactions</div>
-                <div className="transaction-item-container">
-                    {TransactionArray.map((item, i) => (
-                        <div className="transaction-item" key={i}>
-                            {displayPrettyTransaction(item)}
+        if (TransactionArray.length === 0) { // no transac
+            return (
+                <div className="transaction-container">
+                    <div className="sideinfo-title">Transactions</div>
+                    <div className="transaction-item-container">
+                        <div className="transaction-item">
+                            No transactions
                         </div>
-                    ))}
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        } else {
+            return (
+                <div className="transaction-container">
+                    <div className="sideinfo-title">Transactions</div>
+                    <div className="transaction-item-container">
+                        {TransactionArray.map((item, i) => (
+                            <div className="transaction-item" key={i}>
+                                {displayPrettyTransaction(item)}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )
+        }
     }
 
     return (
         <div>
-            test
+            Loading
         </div>
     );
 }
