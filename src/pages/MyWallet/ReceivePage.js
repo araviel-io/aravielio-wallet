@@ -5,6 +5,7 @@ import Title from '../../components/common/Title';
 import Card from '../../components/common/Card';
 import QRCode from 'qrcode.react';
 import TransactionList from '../../components/TransactionList';
+import {getUnlockedMnemonicAndSeed} from '../../utils/wallet'
 function ReceivePage(props) {
 
     return (

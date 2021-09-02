@@ -14,9 +14,10 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { ToastContainer } from 'react-toastify';
 
-import { hasLockedMnemonicAndSeed } from './utils/wallet';
+import { hasLockedMnemonicAndSeed, getUnlockedMnemonicAndSeed } from './utils/wallet';
 
 import "react-toastify/dist/ReactToastify.css"
+import LoginPage from './pages/LoginPage';
 
 ///// TODO: HERE
 // Mobile condition component
@@ -60,19 +61,22 @@ function App() {
   useEffect(() => {
     setIsAccountLocked(hasLockedMnemonicAndSeed());
     if ("locked" in localStorage || "unlocked" in localStorage) {
-      alert('yes');
+      setIsAccountCreated(true)
+      //alert('yes');
     } else {
-      alert('no');
+      //alert('no');
+      setIsAccountCreated(false)
     }
+
   }, []);
 
-
+  console.log("IsAccountCreated : ", IsAccountCreated)
   console.log("IsAccountLocked : ", IsAccountLocked)
 
   //console.log("saveStatus ", saveStatus);
 
   if (apiStatus === true) {
-    if (saveStatus === false) {
+    if (IsAccountCreated === false) {
       // if mobile >>> display mobile classes
       //console.log('App Checkconn true', apiStatus)
       return (
@@ -99,6 +103,7 @@ function App() {
         </div>
       );
     } else {
+      // CREATED & UNLOCKED
       return (
         <div className="App">
           <ToastContainer limit={1} />

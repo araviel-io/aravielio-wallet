@@ -20,7 +20,7 @@ import {testFromBordel, loadMnemonicAndSeed, getUnlockedMnemonicAndSeed, getAcco
 
 function WalletPage(props) {
 
-
+    console.log("props.test : ", props.test)
     const mnemonic = localStorage.getItem('mnemonic')
     const network = localStorage.getItem('network')
     const getAddress = localStorage.getItem('pubkey')

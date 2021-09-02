@@ -10,7 +10,6 @@ import { derivePath } from 'ed25519-hd-key';
 function checkCorruptedStorage() {
     // check if localstorage keys are presents
     if ("network" in localStorage) {
-        var test = localStorage.getItem("network")
         //alert(test);
         if (localStorage.getItem("network") === "" || localStorage.getItem("network") === null) {
             // key broken, revive it

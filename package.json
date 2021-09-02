@@ -58,6 +58,7 @@
     ]
   },
   "devDependencies": {
-    "@types/bs58": "^4.0.1"
+    "@types/bs58": "^4.0.1",
+    "@types/react-router-dom": "^5.1.8"
   }
 }
