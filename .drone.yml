@@ -1,0 +1,41 @@
+---
+kind: pipeline
+name: npm-testing
+
+trigger:
+  event:
+  - push
+  - pull_request
+
+steps:
+- name: test
+  image: node:14.18
+  commands:
+  - npm install
+  - npm test
+- name: build
+  image: node:14.18
+  commands:
+  - npm install
+  - npm run build
+
+---
+kind: pipeline
+name: yarn-testing
+
+trigger:
+  event:
+  - push
+  - pull_request
+
+steps:
+- name: test
+  image: node:14.18
+  commands:
+  - yarn test
+- name: build
+  image: node:14.18
+  commands:
+  - yarn test
+  - yarn build
+

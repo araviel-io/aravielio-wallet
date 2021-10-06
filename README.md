@@ -1,10 +1,15 @@
+
+[![Build Status](https://ara.ci.clamifa.net/api/badges/araviel-io/aravielio-wallet/status.svg)](https://ara.ci.clamifa.net/araviel-io/aravielio-wallet)
+
+# Araviel.io SafeCoin Wallet
+
+Web Wallet for Safecoin, the Community Edition (CE) of Solana.
+
 ![alt text](https://preview.redd.it/1o5u0lwerhi71.png?width=1112&format=png&auto=webp&s=8b463dda45a104d306b8860efb99525df4edfc47)
 
 ![Easy staking on Safecoin (Solana CE)](https://i.imgur.com/8CSV5UH.gif)
 
-# Araviel.io SafeCoin Wallet
-
-Not a production build, for now it's only intended for testing and dev, have fun !
+**Not a production build, for now.** It's only intended for testing and dev, have fun !
 
 ### Features : 
 
@@ -14,8 +19,6 @@ Not a production build, for now it's only intended for testing and dev, have fun
 * Stake account creation\
 * Delegating / Undelegating to chosen validator\
 * Change networks and features Solana airdrops for playing with balance with no harm done !
-
-Web Wallet for Safecoin, the Community Edition (CE) of Solana.
 
 ### Further development:
 
