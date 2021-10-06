@@ -13,7 +13,7 @@ import { tTransfertSafe } from '../../utils/transfert';
 import { wgetSignatureStatus, wgetBalance } from '../../utils/connection';
 import TransactionList from '../../components/TransactionList';
 
-
+// test
 function SendPage(props) {
 
     localStorage.setItem('page', "sendpage")
