@@ -30,7 +30,7 @@ function isSaved() {
 function App() {
   const [apiStatus, setApisStatus] = useState(true);
   const [saveStatus, setSaveStatus] = useState(true);
-
+  localStorage.setItem('network', "https://api.mainnet-beta.safecoin.org")
   async function sendApiStatusPromiseEffect() {
     const apisstatus = await isApiAlive();
     setApisStatus(apisstatus);

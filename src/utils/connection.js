@@ -5,6 +5,7 @@ import * as bip39 from 'bip39';
 import { derivePath } from 'ed25519-hd-key';
 
 //var ApiUrl = web.clusterApiUrl("mainnet-beta");
+localStorage.setItem('network', "https://api.mainnet-beta.safecoin.org")
 const getNetwork = localStorage.getItem('network')
 const connection = new web.Connection(getNetwork, "max");
 const con2 = new web.Connection(getNetwork, "confirmed");
