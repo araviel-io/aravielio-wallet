@@ -10,11 +10,6 @@ trigger:
   - pull_request
   
 steps:
-- name: test
-  image: node:14.18
-  commands:
-  - npm install
-  - npm test
 
 - name: build
   image: node:14.18
