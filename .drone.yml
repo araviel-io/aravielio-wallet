@@ -15,7 +15,7 @@ platform:
  
 steps:
 - name: test
-  image: node:14.19
+  image: node:14.18
   # temp
   failure: ignore
   commands:
