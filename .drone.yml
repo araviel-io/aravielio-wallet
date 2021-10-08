@@ -1,13 +1,26 @@
 ---
 kind: pipeline
-name: npm-testing
+name: node-lts
 
 trigger:
+  branch:
+  - master
   event:
   - push
   - pull_request
 
+platform:
+  os: linux
+  arch: amd64 
+ 
 steps:
+- name: test
+  image: node:14.18
+  # temp
+  failure: ignore
+  commands:
+  - npm install
+  - npm test
 
 - name: build
   image: node:14.18
@@ -15,55 +28,33 @@ steps:
   - npm install
   - npm run build
 
-- name: notify
-  image: appleboy/drone-discord
-  settings:
-    webhook_id:
-      from_secret: discord-id
-    webhook_token:
-      from_secret: discord-token
-    message: >
-      {{#success build.status}}
-        Build npm {{build.number}} succeeded!
-        By {{build.author}} - {{build.link}}
-      {{else}}
-        Build npm {{build.number}} failed!
-        By {{build.author}} - {{build.link}}
-      {{/success}}
-
 ---
 kind: pipeline
-name: yarn-testing
+name: node-latest
 
 trigger:
+  branch:
+  - master
   event:
   - push
   - pull_request
 
+platform:
+  os: linux
+  arch: amd64
+
 steps:
 - name: test
-  image: node:14.18
+  image: node:16.10
+  # temp
+  failure: ignore
   commands:
-  - yarn test
+  - npm install
+  - npm test
 
 - name: build
-  image: node:14.18
+  image: node:16.10
   commands:
-  - yarn test
-  - yarn build
+  - npm install
+  - npm run build
 
-- name: notify
-  image: appleboy/drone-discord
-  settings:
-    webhook_id:
-      from_secret: discord-id
-    webhook_token:
-      from_secret: discord-token
-    message: >
-      {{#success build.status}}
-        Build yarn {{build.number}} succeeded!
-        By {{build.author}} - {{build.link}}
-      {{else}}
-        Build yarn {{build.number}} failed!
-        By {{build.author}} - {{build.link}}
-      {{/success}}
